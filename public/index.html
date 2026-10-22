@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Save on Streaming: Pay for One Service at a Time | SubRotato</title>
+<meta name="description" content="A free planner for streaming and game subscriptions. Add what you want to watch or play. We tell you which service to pay for each month. No account.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://subrotato.vercel.app/">
+<link rel="alternate" hreflang="en" href="https://subrotato.vercel.app/">
+<link rel="alternate" hreflang="es" href="https://subrotato.vercel.app/es.html">
+<link rel="alternate" hreflang="x-default" href="https://subrotato.vercel.app/">
+<meta property="og:site_name" content="SubRotato">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://subrotato.vercel.app/">
+<meta property="og:title" content="SubRotato: pay for one streaming service at a time">
+<meta property="og:description" content="Tell us what you watch and play. We tell you what to pay for each month. Free, no account.">
+<meta property="og:image" content="https://subrotato.vercel.app/og.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="SubRotato: pay for one streaming service at a time. A plan card says what to keep and cancel.">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="es_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SubRotato: pay for one streaming service at a time">
+<meta name="twitter:description" content="Tell us what you watch and play. We tell you what to pay for each month. Free, no account.">
+<meta name="twitter:image" content="https://subrotato.vercel.app/og.png">
+<meta name="twitter:image:alt" content="SubRotato: pay for one streaming service at a time. A plan card says what to keep and cancel.">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://subrotato.vercel.app/#website","name":"SubRotato","url":"https://subrotato.vercel.app/","inLanguage":["en","es"],"publisher":{"@id":"https://subrotato.vercel.app/#org"}},{"@type":"Organization","@id":"https://subrotato.vercel.app/#org","name":"SubRotato","url":"https://subrotato.vercel.app/","logo":"https://subrotato.vercel.app/logo.svg"},{"@type":"WebApplication","@id":"https://subrotato.vercel.app/app.html#app","name":"SubRotato","url":"https://subrotato.vercel.app/app.html","description":"Plans which streaming and game subscriptions to pay for each month, so you pay for one service at a time.","applicationCategory":"FinanceApplication","operatingSystem":"Any (web browser)","browserRequirements":"Requires JavaScript","inLanguage":"en","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["A year plan, month by month: which subscriptions to keep, cancel or start","Keeps a service until a show’s last episode or a game is done","Ways to pay less: yearly prices, bundles and free trials","Release dates for new shows, movies, games and sports seasons","Prices for the US, Canada, the UK, Australia and Mexico","Bank statement scan that stays on your device","A monthly check-in that updates your plan","Keep a favorite service all year; the plan works around it","The right price option: when to upgrade and step down","Cost per hour for each service: Worth it, Fair or Pricey","Works in English and Spanish","No account; your plan stays on your device"],"image":"https://subrotato.vercel.app/og.png","publisher":{"@id":"https://subrotato.vercel.app/#org"}},{"@type":"FAQPage","@id":"https://subrotato.vercel.app/#faq","inLanguage":"en","mainEntity":[{"@type":"Question","name":"Is it free?","acceptedAnswer":{"@type":"Answer","text":"Yes. No ads, no account, no catch."}},{"@type":"Question","name":"Does it cancel things for me?","acceptedAnswer":{"@type":"Answer","text":"No. It tells you what to do. You do it on each service."}},{"@type":"Question","name":"Can I change what it picks?","acceptedAnswer":{"@type":"Answer","text":"Yes. Tap Keep or Cancel on any service. Your plan adjusts."}},{"@type":"Question","name":"Where is my information kept?","acceptedAnswer":{"@type":"Answer","text":"Only on your phone or computer. Search sends only the name you type."}},{"@type":"Question","name":"Are the prices right?","acceptedAnswer":{"@type":"Answer","text":"We check them by hand. You can change any price to match your bill."}},{"@type":"Question","name":"Which countries does it work in?","acceptedAnswer":{"@type":"Answer","text":"The US, Canada, the UK, Australia and Mexico. Prices are in your money."}},{"@type":"Question","name":"Is it in Spanish?","acceptedAnswer":{"@type":"Answer","text":"Yes. Tap Español at the top of the page."}}]}]}</script>
+<meta name="theme-color" content="#3A2CFF">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2216%22%20fill%3D%22%233A2CFF%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2216%22%20fill%3D%22none%22%20stroke%3D%22%23FFFFFF%22%20stroke-width%3D%225.5%22%2F%3E%3Ccircle%20cx%3D%2243.31%22%20cy%3D%2220.69%22%20r%3D%228.5%22%20fill%3D%22%23FFE24A%22%20stroke%3D%22%233A2CFF%22%20stroke-width%3D%223.5%22%2F%3E%3C%2Fsvg%3E">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,600..900&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* The same tokens as the app (public/app.html), so the two read as one product. */
+:root{
+  color-scheme:light;
+  --bg:#F3F1FF; --surface:#FFFFFF; --ink:#1A1446; --muted:#5B5690; --line:#DAD5F6;
+  --blue:#3A2CFF; --onblue:#FFFFFF; --pink:#E0246F; --lemon:#FFE24A; --mint:#087C5C;
+  --svc0:#3A2CFF; --svc1:#E0246F; --svc2:#0B8A66; --svc3:#B45309; --svc4:#0284C7; --svc5:#8B5CF6;
+  --display:"Anybody","Arial Narrow",Impact,sans-serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#100D2B; --surface:#1B1745; --ink:#F1EFFF; --muted:#ACA7DC; --line:#342F72;
+    --blue:#8177FF; --onblue:#0F0B33; --pink:#FF7AB1; --lemon:#FFE24A; --mint:#3BE0AA;
+    --svc0:#6E64FF; --svc1:#E23178; --svc2:#0B8F69; --svc3:#D97706; --svc4:#0284C7; --svc5:#8B5CF6;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#100D2B; --surface:#1B1745; --ink:#F1EFFF; --muted:#ACA7DC; --line:#342F72;
+  --blue:#8177FF; --onblue:#0F0B33; --pink:#FF7AB1; --lemon:#FFE24A; --mint:#3BE0AA;
+  --svc0:#6E64FF; --svc1:#E23178; --svc2:#0B8F69; --svc3:#D97706; --svc4:#0284C7; --svc5:#8B5CF6;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.5;-webkit-text-size-adjust:100%}
+a{color:var(--blue)}
+:focus-visible{outline:3px solid var(--pink);outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+.skip{position:absolute;left:-9999px;display:inline-flex;align-items:center;min-height:44px}.skip:focus{left:16px;top:12px;z-index:9;background:var(--surface);padding:10px 14px;border-radius:10px}
+
+/* header */
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 0 calc(16px)}
+.brand{display:inline-flex;align-items:center;gap:10px;min-height:44px;color:var(--ink);text-decoration:none;font-family:var(--display);font-stretch:78%;font-weight:850;font-size:24px;line-height:1}
+.logo{flex:none;width:36px;height:36px;display:inline-block}.logo svg{display:block;width:100%;height:100%}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 22px;border-radius:14px;border:2px solid var(--blue);background:var(--blue);color:var(--onblue);font:inherit;font-weight:800;text-decoration:none;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--blue)}
+.btn.small{min-height:44px;padding:8px 16px;font-size:16px;white-space:nowrap}
+@media (max-width:420px){.top-r .btn{display:none}}   /* phones: no room beside the name; Make my plan sits right below */
+.btn:hover{filter:brightness(1.08)}
+
+/* hero */
+.hero{display:grid;gap:28px;padding:20px 0 40px;align-items:center}
+.kicker{display:inline-block;margin:0 0 12px;padding:4px 12px;border-radius:999px;background:var(--lemon);color:#1A1446;font-weight:800;font-size:14px;letter-spacing:.02em}
+h1{margin:0;font-family:var(--display);font-stretch:62%;font-weight:900;font-size:clamp(44px,11vw,84px);line-height:.92;letter-spacing:-.01em;color:var(--blue);text-wrap:balance}   /* no word alone on the last line */
+.lead{margin:16px 0 0;font-size:clamp(18px,2.4vw,22px);font-weight:600;max-width:34ch;text-wrap:pretty}
+.ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+.promise{margin:14px 0 0;color:var(--muted);font-size:15px}
+
+/* the plan card: what the app shows, in miniature */
+.card{background:var(--surface);border:2px solid var(--line);border-radius:22px;padding:20px;box-shadow:0 18px 50px rgba(26,20,70,.12);max-width:460px;justify-self:center;width:100%}
+.card .lbl{margin:0;font-weight:700;color:var(--muted);font-size:14px}
+.card .big{margin:0;font-family:var(--display);font-stretch:70%;font-weight:900;font-size:52px;line-height:1}
+.card .was{margin:2px 0 14px;font-size:15px}
+.card .was b{color:var(--mint)}
+.lines{list-style:none;margin:0;padding:0}
+.lines li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.lines .nm{display:flex;align-items:center;gap:8px;font-weight:700}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--c);flex:none}
+.tag{padding:3px 12px;border-radius:999px;font-size:14px;font-weight:800;color:var(--onblue);background:var(--mint)}   /* dark text on the light dark-mode colours */
+.tag.stop{background:var(--pink)}
+.tag.later{background:transparent;color:var(--muted);border:2px solid var(--line)}
+.bars{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;align-items:end;height:64px;margin-top:16px}
+.bars i{display:block;border-radius:5px 5px 0 0;background:var(--pink)}
+.bars i.off{background:var(--line)}
+.mon{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;margin-top:4px;font-size:12px;font-weight:700;color:var(--muted);text-align:center}
+.card .note{margin:12px 0 0;font-size:13px;color:var(--muted)}
+
+/* sections */
+section{padding:44px 0}
+h2{margin:0 0 8px;font-family:var(--display);font-stretch:70%;font-weight:900;font-size:clamp(32px,6vw,48px);line-height:1;text-wrap:balance}
+.sub{margin:0 0 24px;color:var(--muted);font-size:18px;max-width:52ch;text-wrap:pretty}
+.steps{display:grid;gap:14px;list-style:none;margin:0;padding:0}
+.steps li{display:grid;grid-template-columns:44px 1fr;gap:4px 14px;background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:18px}
+.pn{grid-row:span 2;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--blue) 14%,var(--surface));color:var(--blue);font-family:var(--display);font-stretch:70%;font-weight:900;font-size:24px;padding-top:3px}
+.steps b{font-size:19px}
+.steps span{color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;list-style:none;margin:0;padding:0}
+.chips li{padding:8px 14px;border-radius:12px;background:var(--surface);border:2px solid var(--line);font-weight:700}
+.chips.kinds li{border-color:var(--blue);color:var(--blue)}
+.grid3{display:grid;gap:14px}
+.tile{background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:20px}
+.tile h3{margin:0 0 6px;font-size:19px}
+.tile p{margin:0;color:var(--muted);text-wrap:pretty}
+.band{background:var(--blue);color:var(--onblue);border-radius:26px;padding:34px 24px;text-align:center}
+.band h2{color:var(--onblue)}
+.band p{margin:0 auto 20px;max-width:46ch;font-size:18px}
+.band .btn{background:var(--onblue);color:var(--blue);border-color:var(--onblue)}
+.faq{display:grid;gap:10px}
+.faq details{background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:0 18px}
+.faq summary{min-height:56px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-weight:800;cursor:pointer;list-style:none}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";flex:none;font-size:22px;font-weight:800;line-height:1;color:var(--blue)}   /* a fold shows it opens, like the app */
+.faq details[open]>summary::after{content:"\2013"}
+.faq p{margin:0 0 16px;color:var(--muted)}
+footer{padding:28px 0 48px;color:var(--muted);font-size:14px;border-top:1px solid var(--line)}
+footer p{margin:6px 0}
+
+@media (min-width:860px){
+  .hero{grid-template-columns:1.1fr .9fr;padding:40px 0 64px}
+  .grid3{grid-template-columns:repeat(3,1fr)}
+  .steps{grid-template-columns:repeat(2,1fr)}   /* four steps: two by two */
+  section{padding:56px 0}
+}
+.top-r{display:flex;align-items:center;gap:14px}.lang{font-weight:700;color:var(--ink);min-height:44px;display:inline-flex;align-items:center}
+
+/* the year chart: the app's step 4 in miniature */
+.year{margin:0;background:var(--surface);border:2px solid var(--line);border-radius:22px;padding:18px 18px 14px}
+.yr-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.yr{width:100%;min-width:300px;border-collapse:separate;border-spacing:3px;table-layout:fixed;font-size:14px}
+.yr th{font-weight:700;color:var(--muted);font-size:12px;text-align:center;padding:0 0 4px}
+.yr th[scope=row]{text-align:left;color:var(--ink);font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 6px 0 0}
+.yr thead th:first-child{text-align:left;width:19%}   /* a fixed table takes its widths from the first row */
+.yr tr.cost th{text-align:left}
+.yr td{height:26px;border-radius:6px;background:color-mix(in srgb,var(--line) 55%,transparent)}
+.yr td.on{background:var(--c)}
+.yr tr.cost th,.yr tr.cost td{background:none;height:auto;padding-top:6px;font-size:12px;font-weight:800;text-align:center;color:var(--ink)}
+.yr tr.cost td.z{color:var(--mint)}
+.yr tr.cost th[scope=row]{text-align:left}
+.yr .m1{display:none}
+.yr .dot{display:inline-block;margin-right:6px;vertical-align:1px}
+.year figcaption{margin:10px 0 0;color:var(--muted);font-size:14px}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.keep{display:grid;gap:12px;list-style:none;margin:18px 0 0;padding:0}
+.keep li{background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:14px 16px}
+.keep b{display:block;font-size:17px}.keep span{color:var(--muted)}
+.lands-l{margin:22px 0 10px}.chips.lands{margin-top:0}.chips.lands li{border-style:dashed}
+@media (max-width:560px){.yr{min-width:0}.yr .dot{display:none}.yr tr.cost{display:none}   /* phones: the caption says what it costs */
+  .yr .m3{display:none}.yr .m1{display:inline}.yr thead th:first-child{width:31%}.yr th[scope=row]{font-size:13px}.yr td{height:22px}.yr tr.cost td{font-size:10.5px}}
+@media (min-width:860px){.keep{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to the page</a>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="./"><span class="logo" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#3A2CFF"/><circle cx="32" cy="32" r="16" fill="none" stroke="#FFFFFF" stroke-width="5.5"/><circle cx="43.31" cy="20.69" r="8.5" fill="#FFE24A" stroke="#3A2CFF" stroke-width="3.5"/></svg></span>SubRotato</a>
+    <span class="top-r"><a class="lang" href="./es.html" hreflang="es" lang="es">Español</a><a class="btn small" href="./app.html">Open the app</a></span>
+  </header>
+
+  <main id="main">
+    <div class="hero">
+      <div>
+        <p class="kicker">Free. No account.</p>
+        <h1>Pay for one streaming service at a time.</h1>
+        <p class="lead">Tell us what you watch and play. We tell you what to pay for each month.</p>
+        <div class="ctas">
+          <a class="btn" href="./app.html">Make my plan</a>
+          <a class="btn ghost" href="./app.html#example">See an example</a>
+        </div>
+        <p class="promise">Your plan stays on your phone or computer.</p>
+      </div>
+
+      <figure class="card" aria-label="A made-up example of a plan">
+        <p class="lbl">This month you pay</p>
+        <p class="big">$42.98</p>
+        <p class="was">Your bill today is $105.94. <b>Save $62.96.</b></p>
+        <ul class="lines">
+          <li><span class="nm"><i class="dot" style="--c:var(--svc0)"></i>Game Pass</span><span class="tag">Keep</span></li>
+          <li><span class="nm"><i class="dot" style="--c:var(--svc1)"></i>Netflix</span><span class="tag">Keep</span></li>
+          <li><span class="nm"><i class="dot" style="--c:var(--svc2)"></i>Disney+</span><span class="tag stop">Cancel</span></li>
+          <li><span class="nm"><i class="dot" style="--c:var(--svc3)"></i>Apple TV</span><span class="tag later">Back in January</span></li>
+        </ul>
+        <div class="bars" aria-hidden="true"><i style="height:100%"></i><i style="height:69%"></i><i style="height:29%"></i><i style="height:64%"></i><i style="height:35%"></i><i style="height:35%"></i><i class="off" style="height:8%"></i><i class="off" style="height:8%"></i><i class="off" style="height:8%"></i><i class="off" style="height:8%"></i><i class="off" style="height:8%"></i><i class="off" style="height:8%"></i></div>
+        <div class="mon" aria-hidden="true"><span>O</span><span>N</span><span>D</span><span>J</span><span>F</span><span>M</span><span>A</span><span>M</span><span>J</span><span>J</span><span>A</span><span>S</span></div>
+        <p class="note">A made-up example. Yours uses your own list.</p>
+      </figure>
+    </div>
+
+    <section aria-labelledby="h-how">
+      <h2 id="h-how">Four steps. One minute.</h2>
+      <p class="sub">No sign-up. Just tap, add, and read.</p>
+      <ol class="steps">
+        <li><span class="pn" aria-hidden="true">1</span><b>Tap what you pay for</b><span>Netflix, Game Pass, Crunchyroll and more.</span></li>
+        <li><span class="pn" aria-hidden="true">2</span><b>Add what you want</b><span>Shows, movies and games. We find the service.</span></li>
+        <li><span class="pn" aria-hidden="true">3</span><b>See what to do this month</b><span>Keep one, cancel one, start one later.</span></li>
+        <li><span class="pn" aria-hidden="true">4</span><b>Check the next months</b><span>What to pay each month, and what you save.</span></li>
+      </ol>
+    </section>
+
+    <section aria-labelledby="h-year">
+      <h2 id="h-year">Your year, month by month.</h2>
+      <p class="sub">Each row is a service. A colored month is one you pay for.</p>
+      <figure class="year">
+        <div class="yr-scroll"><table class="yr" aria-label="A made-up year plan: which service is paid each month">
+          <thead><tr><th scope="col">Service</th><th scope="col"><span class="m3">Oct</span><span class="m1" aria-hidden="true">O</span></th><th scope="col"><span class="m3">Nov</span><span class="m1" aria-hidden="true">N</span></th><th scope="col"><span class="m3">Dec</span><span class="m1" aria-hidden="true">D</span></th><th scope="col"><span class="m3">Jan</span><span class="m1" aria-hidden="true">J</span></th><th scope="col"><span class="m3">Feb</span><span class="m1" aria-hidden="true">F</span></th><th scope="col"><span class="m3">Mar</span><span class="m1" aria-hidden="true">M</span></th><th scope="col"><span class="m3">Apr</span><span class="m1" aria-hidden="true">A</span></th><th scope="col"><span class="m3">May</span><span class="m1" aria-hidden="true">M</span></th><th scope="col"><span class="m3">Jun</span><span class="m1" aria-hidden="true">J</span></th><th scope="col"><span class="m3">Jul</span><span class="m1" aria-hidden="true">J</span></th><th scope="col"><span class="m3">Aug</span><span class="m1" aria-hidden="true">A</span></th><th scope="col"><span class="m3">Sep</span><span class="m1" aria-hidden="true">S</span></th></tr></thead>
+          <tbody>
+          <tr style="--c:var(--svc0)"><th scope="row"><i class="dot" style="--c:var(--svc0)"></i>Game Pass</th><td class="on"><span class="vh">Paid</span></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr style="--c:var(--svc1)"><th scope="row"><i class="dot" style="--c:var(--svc1)"></i>Netflix</th><td class="on"><span class="vh">Paid</span></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr style="--c:var(--svc2)"><th scope="row"><i class="dot" style="--c:var(--svc2)"></i>Disney+</th><td></td><td class="on"><span class="vh">Paid</span></td><td class="on"><span class="vh">Paid</span></td><td class="on"><span class="vh">Paid</span></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr style="--c:var(--svc3)"><th scope="row"><i class="dot" style="--c:var(--svc3)"></i>Apple TV</th><td></td><td></td><td></td><td class="on"><span class="vh">Paid</span></td><td class="on"><span class="vh">Paid</span></td><td class="on"><span class="vh">Paid</span></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr style="--c:var(--svc5)"><th scope="row"><i class="dot" style="--c:var(--svc5)"></i>PS Plus</th><td></td><td class="on"><span class="vh">Paid</span></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr class="cost"><th scope="row">Paid</th><td>$43</td><td>$29</td><td>$12</td><td>$27</td><td>$15</td><td>$15</td><td class="z">$0</td><td class="z">$0</td><td class="z">$0</td><td class="z">$0</td><td class="z">$0</td><td class="z">$0</td></tr>
+          </tbody>
+        </table></div>
+        <figcaption>A made-up plan. Six months of paying, then $0. It saves $493.</figcaption>
+      </figure>
+      <h3 class="vh">How long it keeps each one</h3>
+      <ul class="keep"><li><b>Weekly shows</b><span>It keeps the service until the last episode.</span></li><li><b>Long games</b><span>It gives them the months they need.</span></li><li><b>Coming later</b><span>It waits for the release date.</span></li></ul>
+    </section>
+
+
+    <section aria-labelledby="h-what">
+      <h2 id="h-what">Everything you watch and play.</h2>
+      <p class="sub">Release dates and new episodes, checked every week. Plus how long each game takes.</p>
+      <ul class="chips kinds" aria-label="Kinds">
+        <li>Shows</li><li>Movies</li><li>Games</li><li>Indie games</li><li>Anime</li><li>K-dramas</li><li>World TV</li><li>US sports seasons</li>
+      </ul>
+      <p class="sub" style="margin-top:24px">16 services in the US. Plus Crave, NOW, ITVX, Stan, Binge and Kayo. Add your own too.</p>
+      <ul class="chips" aria-label="Services">
+        <li>Netflix</li><li>Disney+</li><li>Hulu</li><li>HBO Max</li><li>Prime Video</li><li>Apple TV</li><li>Peacock</li><li>Paramount+</li>
+        <li>Crunchyroll</li><li>Viki</li><li>KOCOWA+</li><li>ViX</li><li>BritBox</li><li>Acorn TV</li><li>Game Pass</li><li>PS Plus</li>
+      </ul>
+      <p class="sub lands-l">Prices in five countries:</p>
+      <ul class="chips lands" aria-label="Countries"><li>United States</li><li>Canada</li><li>United Kingdom</li><li>Australia</li><li>Mexico</li></ul>
+    </section>
+
+    <section aria-labelledby="h-math">
+      <h2 id="h-math">It does the math.</h2>
+      <p class="sub">More ways it saves you money and time.</p>
+      <div class="grid3">
+        <div class="tile"><h3>Ways to pay less</h3><p>A yearly price, a bundle or a free trial? It points them out.</p></div>
+        <div class="tile"><h3>Scan a bank file</h3><p>See what you pay now. The file never leaves your device.</p></div>
+        <div class="tile"><h3>New releases</h3><p>Shows, movies, games and US sports seasons. Dates checked every week.</p></div>
+        <div class="tile"><h3>Monthly check-in</h3><p>Next month, tick what you did. Your plan updates.</p></div>
+        <div class="tile"><h3>Your country</h3><p>Prices for the US, Canada, the UK, Australia and Mexico.</p></div>
+        <div class="tile"><h3>English or Spanish</h3><p>Use it in the language you like.</p></div>
+        <div class="tile"><h3>Your call</h3><p>Want to keep one all year? Tap Keep. The plan works around it.</p></div>
+        <div class="tile"><h3>The right price option</h3><p>A new game needs Game Pass Ultimate? It says when to Upgrade and Step down.</p></div>
+        <div class="tile"><h3>Cost per hour</h3><p>See what each hour costs: Worth it, Fair or Pricey.</p></div>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-why">
+      <h2 id="h-why">Why one at a time?</h2>
+      <p class="sub">You cannot watch them all at once. So why pay for them all at once?</p>
+      <div class="grid3">
+        <div class="tile"><h3>Watch it, then switch</h3><p>Finish your shows on one service. Then cancel it and start the next.</p></div>
+        <div class="tile"><h3>It knows the dates</h3><p>A show out in March? We wait until March to pay for it.</p></div>
+        <div class="tile"><h3>It knows your time</h3><p>Tell us your free hours. We plan a month you can finish.</p></div>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-keep">
+      <h2 id="h-keep">Yours to keep.</h2>
+      <p class="sub">Your plan stays on your phone or computer. Take it with you.</p>
+      <div class="grid3">
+        <div class="tile"><h3>Save my plan</h3><p>One file to keep, print or open again later.</p></div>
+        <div class="tile"><h3>Remind me each month</h3><p>A calendar note on the 1st to check your plan.</p></div>
+        <div class="tile"><h3>Share image</h3><p>Show friends what you save. It leaves only if you share it.</p></div>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-faq">
+      <h2 id="h-faq">Questions</h2>
+      <div class="faq">
+        <details><summary>Is it free?</summary><p>Yes. No ads, no account, no catch.</p></details>
+        <details><summary>Does it cancel things for me?</summary><p>No. It tells you what to do. You do it on each service.</p></details>
+        <details><summary>Can I change what it picks?</summary><p>Yes. Tap Keep or Cancel on any service. Your plan adjusts.</p></details>
+        <details><summary>Where is my information kept?</summary><p>Only on your phone or computer. Search sends only the name you type.</p></details>
+        <details><summary>Are the prices right?</summary><p>We check them by hand. You can change any price to match your bill.</p></details>
+        <details><summary>Which countries does it work in?</summary><p>The US, Canada, the UK, Australia and Mexico. Prices are in your money.</p></details>
+        <details><summary>Is it in Spanish?</summary><p>Yes. Tap Español at the top of the page.</p></details>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-go">
+      <div class="band">
+        <h2 id="h-go">Stop paying for all of them.</h2>
+        <p>Make your plan in a minute. Free, with no account.</p>
+        <a class="btn" href="./app.html">Make my plan</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p><b>SubRotato</b> · pay for one service at a time.</p>
+    <p>TV data from <a href="https://www.tvmaze.com">TVMaze</a> (<a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>). Game hours are estimates from <a href="https://howlongtobeat.com">HowLongToBeat</a>, game makers and reviews. Not tied to any service.</p>
+  </footer>
+</div>
+</body>
+</html>

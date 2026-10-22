@@ -1,0 +1,21 @@
+{
+  "name": "sub-rotator",
+  "version": "0.3.0",
+  "private": true,
+  "description": "Pay for one streaming or gaming service at a time. Plans the cheapest rotation from your queue.",
+  "scripts": {
+    "start": "node scripts/serve.mjs",
+    "test": "node tests/pure.test.js && node tests/e2e.test.js && node tests/upcoming.test.js",
+    "test:upcoming": "node tests/upcoming.test.js",
+    "refresh": "node scripts/refresh-upcoming.mjs --discover",
+    "refresh:dry": "node scripts/refresh-upcoming.mjs --dry-run --discover",
+    "test:pure": "node tests/pure.test.js",
+    "test:e2e": "node tests/e2e.test.js"
+  },
+  "devDependencies": {
+    "jsdom": "^30.1.1"
+  },
+  "engines": {
+    "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
+  }
+}

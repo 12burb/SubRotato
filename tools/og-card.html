@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,600..900&family=Figtree:wght@500;600;700;800&display=block" rel="stylesheet">
+<style>
+:root{--blue:#3A2CFF;--ink:#1A1446;--lemon:#FFE24A;--pink:#E0246F;--mint:#0B8A66;--muted:#5B5690;--line:#DAD5F6;
+  --display:"Anybody","Arial Narrow",Arial,sans-serif;--body:"Figtree",system-ui,Arial,sans-serif}
+*{box-sizing:border-box;margin:0}
+html,body{width:1200px;height:630px;overflow:hidden}
+body{background:var(--blue);color:#fff;font-family:var(--body);position:relative}
+body::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 88% 12%,rgba(255,226,74,.22),transparent 38%),radial-gradient(circle at 8% 100%,rgba(224,36,111,.28),transparent 42%)}
+.wrap{position:relative;display:grid;grid-template-columns:1fr 410px;gap:48px;align-items:center;height:100%;padding:0 72px}
+.brand{display:flex;align-items:center;gap:16px;font-family:var(--display);font-stretch:78%;font-weight:850;font-size:40px;letter-spacing:.2px}
+.logo{width:58px;height:58px;display:block}.logo svg{display:block;width:100%;height:100%}
+h1{margin-top:34px;font-family:var(--display);font-stretch:72%;font-weight:900;font-size:84px;line-height:.98;letter-spacing:-.5px;text-wrap:balance}
+h1 em{font-style:normal;color:var(--lemon)}
+.sub{margin-top:26px;font-size:26px;font-weight:700;color:rgba(255,255,255,.9);text-wrap:balance}
+.card{background:#fff;color:var(--ink);border-radius:28px;padding:30px 30px 26px;box-shadow:0 30px 60px rgba(10,6,60,.35);transform:rotate(2.2deg)}
+.lbl{font-size:19px;font-weight:700;color:var(--muted)}
+.big{font-family:var(--display);font-stretch:75%;font-weight:900;font-size:64px;line-height:1.05;color:var(--blue)}
+.was{font-size:19px;font-weight:600;color:var(--muted);margin-top:2px}.was b{color:var(--mint)}
+ul{list-style:none;padding:0;margin:18px 0 0}
+li{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-top:2px solid var(--line);font-size:21px;font-weight:700}
+.dot{display:inline-block;width:14px;height:14px;border-radius:50%;margin-right:12px;vertical-align:-1px}
+.tag{font-size:16px;font-weight:800;padding:5px 12px;border-radius:999px;background:#E8F7F1;color:var(--mint)}
+.tag.stop{background:#FDE7EF;color:var(--pink)}.tag.later{background:#EEEBFF;color:var(--blue)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div>
+    <div class="brand"><span class="logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#FFFFFF"/><circle cx="32" cy="32" r="16" fill="none" stroke="#3A2CFF" stroke-width="5.5"/><circle cx="43.31" cy="20.69" r="8.5" fill="#FFE24A" stroke="#FFFFFF" stroke-width="3.5"/></svg></span>SubRotato</div>
+    <h1 data-t="h1">Pay for one <em>streaming</em> service at a time.</h1>
+    <p class="sub" data-t="sub">Free. No account. Nothing leaves your device.</p>
+  </div>
+  <div class="card">
+    <p class="lbl" data-t="lbl">This month you pay</p>
+    <p class="big">$42.98</p>
+    <p class="was" data-t="was">Your bill today is $105.94. <b>Save $62.96.</b></p>
+    <ul>
+      <li><span><i class="dot" style="background:#3A2CFF"></i>Game Pass</span><span class="tag" data-t="keep">Keep</span></li>
+      <li><span><i class="dot" style="background:#E0246F"></i>Netflix</span><span class="tag" data-t="keep">Keep</span></li>
+      <li><span><i class="dot" style="background:#0B8A66"></i>Disney+</span><span class="tag stop" data-t="cancel">Cancel</span></li>
+      <li><span><i class="dot" style="background:#B45309"></i>Apple TV</span><span class="tag later" data-t="later">January</span></li>
+    </ul>
+  </div>
+</div>
+<script>
+// ?lang=es: the Spanish card (same layout, the landing page's own Spanish words)
+if(/lang=es/.test(location.search)){document.documentElement.lang='es';const T={h1:'Paga un servicio de <em>streaming</em> a la vez.',sub:'Gratis. Sin cuenta. Nada sale de tu dispositivo.',lbl:'Este mes pagas',was:'Hoy pagas $105.94. <b>Ahorra $62.96.</b>',keep:'Mantener',cancel:'Cancelar',later:'Enero'};
+  document.querySelectorAll('[data-t]').forEach(el=>{el.innerHTML=T[el.dataset.t]})}
+</script>
+</body>
+</html>

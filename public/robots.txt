@@ -1,0 +1,5 @@
+# SubRotato: every page may be crawled.
+User-agent: *
+Allow: /
+
+Sitemap: https://subrotato.vercel.app/sitemap.xml

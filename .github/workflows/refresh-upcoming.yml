@@ -1,0 +1,92 @@
+name: refresh-upcoming
+
+# Weekly check of public/upcoming.json against TVMaze, plus new titles from TVMaze and Wikipedia. About one billed minute per run, so roughly
+# 4 to 5 minutes a month. It shares your account's monthly Actions allowance with your other repos,
+# so it is built to stay tiny:
+#   - one job, one weekly schedule, 5 minute hard stop, never overlaps itself
+#   - nothing to install: the script uses only what Node already ships, and the runner already has Node and gh
+#   - a shallow checkout, and at most 140 requests per run (one per TV show, plus about 8 to find new titles), 0.6 s apart
+#   - a quiet week commits nothing and opens nothing
+# It is OFF until launch. Pushing this file does nothing on its own. To turn it on at go-live:
+#   repo Settings > Secrets and variables > Actions > Variables > New variable: UPCOMING_REFRESH = on
+# To pause it again later, set that variable to anything else (or delete it). A skipped job costs zero minutes.
+# One-time repo setting this needs for the pull request step:
+#   Settings > Actions > General > Workflow permissions > "Allow GitHub Actions to create and approve pull requests"
+on:
+  schedule:
+    - cron: '17 14 * * 1'   # Mondays 14:17 UTC, off the top of the hour when GitHub is busiest
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: refresh-upcoming
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    if: ${{ vars.UPCOMING_REFRESH == 'on' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Check dates
+        id: refresh
+        env:
+          REFRESH_CONTACT: ${{ github.server_url }}/${{ github.repository }}
+        run: node scripts/refresh-upcoming.mjs --discover
+
+      # Real changes go through a pull request so a person looks at them. If the only change is the
+      # "checked" date, it is committed straight to the default branch.
+      - name: Publish changes
+        if: steps.refresh.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SUBSTANTIVE: ${{ steps.refresh.outputs.substantive }}
+          BASE: ${{ github.event.repository.default_branch }}
+        run: |
+          git config user.name "sub-rotator-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/upcoming.json
+          if [ "$SUBSTANTIVE" = "true" ]; then
+            git checkout -B bot/upcoming
+            git commit -m "chore: weekly release-date check"
+            git push --force origin bot/upcoming
+            PR=$(gh pr list --head bot/upcoming --state open --json number --jq '.[0].number')
+            if [ -n "$PR" ]; then
+              gh pr edit "$PR" --body-file scripts/.report.md
+            else
+              gh pr create --head bot/upcoming --base "$BASE" --title "Weekly release-date check" --body-file scripts/.report.md
+            fi
+          else
+            git commit -m "chore: refresh checked date"
+            git push
+          fi
+
+      # Movies and games cannot be checked by a script, suggested films need a yes or no (add them, or put the title in
+      # "skip"), and anything the script could not reach needs a look. One issue lists whatever needs a person,
+      # is updated in place each week, and closes itself when nothing is left.
+      - name: Needs-a-look issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FLAGS: ${{ steps.refresh.outputs.flags }}
+          IDEAS: ${{ steps.refresh.outputs.ideas }}
+          UNCHECKED: ${{ steps.refresh.outputs.unchecked }}
+        run: |
+          N=$(gh issue list --state open --label upcoming-recheck --json number --jq '.[0].number')
+          if [ "$FLAGS" != "0" ] || [ "$IDEAS" != "0" ] || [ "$UNCHECKED" != "0" ]; then
+            if [ -n "$N" ]; then
+              gh issue edit "$N" --body-file scripts/.report.md
+            else
+              gh label create upcoming-recheck --color FBCA04 --force
+              gh issue create --title "Release dates need a look" --label upcoming-recheck --body-file scripts/.report.md
+            fi
+          elif [ -n "$N" ]; then
+            gh issue close "$N" --comment "All clear as of $(date -u +%F)."
+          fi
