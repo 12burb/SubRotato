@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title data-es="SubRotato: paga un servicio a la vez">SubRotato: pay for one service at a time</title>
-<meta name="description" content="Tell us what you watch and play. SubRotato tells you which service to pay for each month. Free. No account. Nothing leaves your device.">
+<meta name="description" content="Tell us what you watch and play. SubRotato tells you which service to pay for each month. Free. No account. Your plan stays on your device.">
 <meta property="og:title" content="SubRotato: pay for one streaming service at a time">
 <meta property="og:description" content="Tell us what you watch and play. We tell you what to pay for each month. Free, no account.">
 <link rel="canonical" href="https://subrotato.vercel.app/app.html">
@@ -20,10 +20,14 @@
 <meta name="twitter:image" content="https://subrotato.vercel.app/og.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2216%22%20fill%3D%22%233A2CFF%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2216%22%20fill%3D%22none%22%20stroke%3D%22%23FFFFFF%22%20stroke-width%3D%225.5%22%2F%3E%3Ccircle%20cx%3D%2243.31%22%20cy%3D%2220.69%22%20r%3D%228.5%22%20fill%3D%22%23FFE24A%22%20stroke%3D%22%233A2CFF%22%20stroke-width%3D%223.5%22%2F%3E%3C%2Fsvg%3E">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,600..900&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preload" href="fonts/anybody-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/figtree-latin.woff2" as="font" type="font/woff2" crossorigin>
 <style>
+/* Fonts come from this site (fonts/), not from Google, so opening a page sends nothing to Google. Anybody v13 and Figtree v9 from Google Fonts, latin and latin-ext; SIL OFL 1.1 (fonts/OFL-*.txt). Keep these four rules the same on every page. */
+@font-face{font-family:"Anybody";font-style:normal;font-weight:600 900;font-stretch:50% 150%;font-display:swap;src:url(fonts/anybody-latin-ext.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Anybody";font-style:normal;font-weight:600 900;font-stretch:50% 150%;font-display:swap;src:url(fonts/anybody-latin.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Figtree";font-style:normal;font-weight:400 800;font-display:swap;src:url(fonts/figtree-latin-ext.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Figtree";font-style:normal;font-weight:400 800;font-display:swap;src:url(fonts/figtree-latin.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 :root{
   box-sizing:border-box;
   color-scheme:light;
@@ -829,7 +833,7 @@ details.more[open]>summary{margin-bottom:8px}
       <section class="view" data-view="home" hidden>
         <div class="home-top">
           <p class="home-lead" data-es="Te decimos qué pagar, mes a mes.">We tell you what to pay for, month by month.</p>
-          <p class="fine-note" data-es="Gratis. Sin cuenta. Todo se queda en este teléfono o computadora.">Free. No account. It all stays on this phone or computer.</p>
+          <p class="fine-note" data-es="Gratis. Sin cuenta. Tu plan se queda en este teléfono o computadora.">Free. No account. Your plan stays on this phone or computer.</p>
           <p class="home-open"><button type="button" class="btn ghost small" id="openPlan" data-es="Abrir un plan guardado">Open a saved plan</button><input type="file" id="planFile" class="vh" accept=".html,.htm,.json,text/html,application/json" tabindex="-1" aria-label="Saved plan file" data-es-aria="Archivo del plan guardado"></p>
         </div>
         <div id="checkin"></div>
@@ -869,7 +873,7 @@ details.more[open]>summary{margin-bottom:8px}
           <details class="how more-add" id="moreAdd">
           <summary data-es="¿No está en la lista? Agrega el tuyo o revisa un archivo del banco">Not listed? Add your own or scan a bank file</summary>
           <div class="custom-add">
-            <input type="text" id="cName" placeholder="Other service" aria-label="Other service name" data-es-ph="Otro servicio" data-es-aria="Nombre del otro servicio" autocomplete="off">
+            <input type="text" id="cName" maxlength="80" placeholder="Other service" aria-label="Other service name" data-es-ph="Otro servicio" data-es-aria="Nombre del otro servicio" autocomplete="off">
             <input type="text" id="cPrice" inputmode="decimal" placeholder="Price a month" aria-label="Other service monthly price" data-es-ph="Precio al mes" data-es-aria="Precio al mes del otro servicio" autocomplete="off">
             <button class="btn small" id="cAdd" type="button" data-es="Agregar">Add</button>
           </div>
@@ -906,7 +910,7 @@ details.more[open]>summary{margin-bottom:8px}
           <form class="qadd" id="qadd" autocomplete="off" novalidate>
             <div class="combo field">
               <label for="qTitle" class="vh" data-es="Título">Title</label>
-              <input type="text" id="qTitle" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="qSugg" placeholder="Show, movie or game" data-es-ph="Serie, película o juego">
+              <input type="text" id="qTitle" maxlength="200" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="qSugg" placeholder="Show, movie or game" data-es-ph="Serie, película o juego">
               <ul class="sugg" id="qSugg" role="listbox" aria-label="Suggestions" data-es-aria="Sugerencias" hidden></ul>
               <div class="sugg-msg" id="qMsg" hidden></div>
             </div>
@@ -986,7 +990,7 @@ details.more[open]>summary{margin-bottom:8px}
         <p id="importNote" data-es="Con el archivo del banco, la app reconoce nombres conocidos de streaming y juegos. También reconoce cobros menores de $80 que se repiten casi mes a mes. Solo lee la fecha, la descripción y el monto, en tu dispositivo.">Statement import recognizes well-known streaming and gaming names, plus any charge under $80 that repeats about monthly. It reads only the date, description and amount, on your device.</p>
         <p data-es="Una semana tiene 168 horas. Para calcular tu tiempo, le restamos sueño, trabajo, viajes, escuela, niños y tareas. Contamos cerca del 60% de lo que queda para series y juegos. Los valores de inicio vienen de la encuesta American Time Use Survey 2025. La publicó la Oficina de Estadísticas Laborales de EE. UU. en junio de 2026. Quien trabaja a tiempo completo tiene unas 4 horas libres al día. Pasa unas 2.4 de esas horas en TV y juegos.">The time estimate subtracts sleep, work, travel, school, kids, and chores from a 168-hour week, then counts about 60% of what is left for shows and games. Defaults follow the U.S. Bureau of Labor Statistics American Time Use Survey 2025 (released June 2026): full-time workers have about 4 hours of leisure a day and spend about 2.4 of them on TV and games.</p>
         <p data-es="¿Usarías el servicio más de unos siete meses al año? Entonces pagar por año puede salir mejor que rotar. Rotar funciona mejor con suscripciones mensuales que puedes cancelar y volver a empezar.">Annual plans can beat rotating if you would use the service for more than about seven months of the year. Rotation works best on monthly plans you can cancel and rejoin.</p>
-        <p data-es="Cuando buscas un título, solo enviamos a TVMaze el texto que escribes.">When you search a title, only the text you type is sent to TVMaze.</p>
+        <p data-es="Para encontrar series y sus fechas, le preguntamos a TVMaze. Solo enviamos lo que escribes o el número de la serie en TVMaze.">To find shows and their air dates, we ask TVMaze. We send only the text you type, or the show's TVMaze number.</p>
       </details>
     </footer>
   </main>
@@ -1112,7 +1116,7 @@ const FAMILIES=[
  {k:'kocowa',re:/KOCOWA|WAVVE\s*AMERICAS/,tiers:['kocowa','kocowa-prem'],annual:{kocowa:79.99,'kocowa-prem':89.99}},
  {k:'vix',re:/\bVIX\b|VIX\.COM/,strong:/VIX\.COM|VIX\s*PREMIUM/,tiers:['vix','vix-noads'],annual:{vix:54.99,'vix-noads':84.99}},
  {k:'britbox',re:/BRITBOX/,tiers:['britbox'],annual:{britbox:109.99}},
- {k:'acorn',re:/ACORN\s*\.?\s*TV|ACORNMEDIA/,tiers:['acorn'],annual:{acorn:99.99}},
+ {k:'acorn',re:/ACORN\s*(?:\.\s*)?TV|ACORNMEDIA/,tiers:['acorn'],annual:{acorn:99.99}},   // no two \s* side by side: a long run of spaces stays fast
  {k:'gamepass',re:/\bGAME\s*PASS\b|GAMEPASS|XBOX\s*LIVE/,tiers:['gp-ess','gp-prem','gp-ult','gp-pc']},
  {k:'psplus',re:/PLAYSTATION\s*(PLUS|NETWORK)|\bPS\s*PLUS\b|PSPLUS|SONY\s*(INTERACTIVE|PLAYSTATION)|\bPSN\b/,strong:/PLAYSTATION\s*PLUS|\bPS\s*PLUS\b|PSPLUS/,tiers:['ps-ess','ps-extra','ps-prem'],annual:{'ps-ess':79.99,'ps-extra':134.99,'ps-prem':159.99}}
 ];
@@ -1129,11 +1133,12 @@ function parseCSV(text){
     if(score>bestScore){bestScore=score;delim=d}
   }
   const rows=[];let row=[],cell='',q=false;
+  const CELL_MAX=256;                                  // a bank's cell is short; a longer one is cut, so no check on it can be slow
   for(let i=0;i<text.length;i++){
     const ch=text[i];
     if(q){
-      if(ch==='"'){if(text[i+1]==='"'){cell+='"';i++}else q=false}
-      else cell+=ch;
+      if(ch==='"'){if(text[i+1]==='"'){if(cell.length<CELL_MAX)cell+='"';i++}else q=false}
+      else if(cell.length<CELL_MAX)cell+=ch;
     }else if(ch==='"'&&cell.trim()===''){q=true;cell=''}
     else if(ch===delim){row.push(cell.trim());cell=''}
     else if(ch==='\n'||ch==='\r'){
@@ -1141,7 +1146,7 @@ function parseCSV(text){
       row.push(cell.trim());cell='';
       if(row.some(c=>c!==''))rows.push(row);
       row=[];
-    }else cell+=ch;
+    }else if(cell.length<CELL_MAX)cell+=ch;
   }
   row.push(cell.trim());
   if(row.some(c=>c!==''))rows.push(row);
@@ -1151,7 +1156,8 @@ function parseAmount(s){
   s=String(s==null?'':s).trim();
   if(!s)return NaN;
   s=s.replace(/[\u2212\u2013\u2014]/g,'-');
-  const neg=/\(.*\d.*\)/.test(s)||/-\s*(CR|DR)?$/i.test(s)||/^[^0-9]*-/.test(s)||/\d\s*CR\b/i.test(s);
+  const po=s.indexOf('('),pc=s.lastIndexOf(')');      // accounting parens around a number: (12.34); indexOf, not a slow regex
+  const neg=(po>=0&&pc>po&&/\d/.test(s.slice(po+1,pc)))||/-\s*(CR|DR)?$/i.test(s)||/^[^0-9]*-/.test(s)||/\d\s*CR\b/i.test(s);
   s=s.replace(/[^0-9.,]/g,'');
   if(!/\d/.test(s))return NaN;
   const ld=s.lastIndexOf('.'),lc=s.lastIndexOf(',');
@@ -1193,7 +1199,9 @@ function detectColumns(rows){
   for(let r=0;r<lim;r++){
     const c=rows[r];
     const find=(re,ex)=>c.findIndex(x=>re.test(x)&&!(ex&&ex.test(x)));
-    let date=find(/trans.*date|purchase date|^\W*date|^\W*fecha/i);
+    // "Trans. date", "Transaction date": trans, then date. indexOf, not /trans.*date/, which is slow on a long cell
+    const tDate={test:x=>{const l=String(x).toLowerCase(),i=l.indexOf('trans');return(i>=0&&l.indexOf('date',i+5)>=0)||/purchase date|^\W*date|^\W*fecha/i.test(x)}};
+    let date=find(tDate);
     if(date<0)date=find(/date|posted|fecha/i);
     if(date<0)continue;
     let desc=find(/descr|concepto/i);
@@ -1713,6 +1721,12 @@ const catName=id=>(CATALOG.find(c=>c.id===id)||{}).name||id;
 const planName=id=>(CATALOG.find(c=>c.id===id)||{}).plan||'';
 const entryName=s=>s.custom?s.name:famName(s.id);
 let countryFrom=null,countryMoved=[],countryAside=[];   // what moving country did, said once on the page
+// Text from a saved file, kept to one short line: no line breaks or control characters reach the
+// calendar file, the copied plan or the page. n: the most characters it keeps.
+const oneLine=(t,n)=>{let s=String(t).replace(/[\u0000-\u001f\u007f-\u009f\u2028\u2029]+/g,' ').trim();
+  if(s.length>n){s=s.slice(0,n);if(/[\ud800-\udbff]$/.test(s))s=s.slice(0,-1);s=s.trim()}   // never half an emoji
+  return s};
+const ITEMS_MAX=600,SVC_ITEMS_MAX=300;                   // titles on one list, in all and on one service: a hand-made file cannot make every visit slow
 function load(raw){                                     // raw: a saved plan's data; without it, this browser's own
   try{
     if(raw==null)raw=localStorage.getItem(STORE_KEY);
@@ -1723,11 +1737,12 @@ function load(raw){                                     // raw: a saved plan's d
     const m=/^(\d{4})-(\d{1,2})$/.exec(String(s.startKey||''));
     const delta=m?Math.max(0,(startDate.getFullYear()-(+m[1]))*12+startDate.getMonth()-(+m[2])):null;
     const ciOf=v=>Number.isInteger(v.ci)&&v.ci>=0&&v.ci<COLORS.length?v.ci:0;
-    const cleanItems=(arr,svcMonth,fam,defTier)=>(Array.isArray(arr)?arr.slice(0,300):[]).filter(it=>it&&typeof it.title==='string'&&isFinite(+it.hours)).map(it=>{
-      const o={title:it.title,hours:Math.max(0,Math.min(999,+it.hours)),
+    // anyTier: a service set aside here, whose price options this country does not list; it checks them when it comes back
+    const cleanItems=(arr,svcMonth,fam,defTier,anyTier)=>(Array.isArray(arr)?arr.slice(0,SVC_ITEMS_MAX):[]).filter(it=>it&&typeof it.title==='string'&&oneLine(it.title,200)&&isFinite(+it.hours)).map(it=>{   // a title that is empty once cleaned would be a row with no name
+      const o={title:oneLine(it.title,200),hours:Math.max(0,Math.min(999,+it.hours)),
         earliest:delta==null?0:Math.max(0,Math.min(11,Math.floor(it.earliest==null?svcMonth:(+it.earliest||0))-delta))};
       const t=v2?it.tier:defTier;
-      if(fam&&typeof t==='string'&&famOf(t)===fam)o.tier=t;
+      if(typeof t==='string'&&(anyTier?t.length<=32:!!fam&&famOf(t)===fam))o.tier=t;
       if(Number.isInteger(it.tv)&&it.tv>0)o.tv=it.tv;
       if(it.unconfirmed===true)o.unconfirmed=true;
       if(Array.isArray(it.air)){const a=it.air.filter(x=>Array.isArray(x)&&/^\d{4}-\d{2}$/.test(x[0])&&Number.isInteger(x[1])&&x[1]>0&&x[1]<100).slice(0,24);if(a.length)o.air=a.map(x=>[x[0],x[1]])}
@@ -1739,6 +1754,12 @@ function load(raw){                                     // raw: a saved plan's d
       if(it.airEst===true&&o.air)o.airEst=true;           // the air dates are our estimate, until TVMaze lists them all          // we guessed the hours: a lookup may fill the real ones
       return o;
     });
+    // A service set aside keeps only what load() reads back when a country sells it again, so a file cannot park junk here.
+    const awayOf=v=>{const o={items:cleanItems(v.items,+v.earliest||0,null,null,true),ci:ciOf(v)};
+      if(typeof v.tier==='string'&&v.tier.length<=32)o.tier=v.tier;
+      if(isFinite(+v.price)&&+v.price>=0)o.price=+v.price;
+      ['est','paying','had','yearly'].forEach(k=>{if(typeof v[k]==='boolean')o[k]=v[k]});
+      return o};
     const sel={};
     // Another country: a service not sold here moves its titles to its home here (HBO to Crave in Canada), or is set
     // aside (state.away) and comes back in a country that sells it. A plan saved before countries existed is a US plan.
@@ -1746,17 +1767,17 @@ function load(raw){                                     // raw: a saved plan's d
     const homes=(COUNTRY_DATA[COUNTRY]||{}).homes||{},soldHere=k=>FAMS.some(f=>f.k===k),aFam=k=>Object.values(US_FAM).includes(k)||Object.keys(COUNTRY_DATA).some(c=>(COUNTRY_DATA[c].fams||[]).some(f=>f.k===k));
     const src={},away={};countryMoved=[];countryAside=[];
     const A=s.away&&typeof s.away==='object'&&!Array.isArray(s.away)?s.away:{};
-    Object.keys(A).slice(0,30).forEach(k=>{if(k in Object.prototype||!A[k]||typeof A[k]!=='object')return;if(soldHere(k)&&!own(s.sel,k))src[k]=A[k];else away[k]=A[k]});
+    const back=new Set();                                // set aside before, sold here now: it comes back
+    Object.keys(A).slice(0,30).forEach(k=>{if(k in Object.prototype||!aFam(k)||!A[k]||typeof A[k]!=='object'||Array.isArray(A[k]))return;if(soldHere(k)&&!own(s.sel,k)){src[k]=A[k];back.add(k)}else away[k]=awayOf(A[k])});
     Object.keys(s.sel).forEach(k=>{if(k in Object.prototype)return;const v=s.sel[k];
       if(!(v2&&v&&typeof v==='object'&&!Array.isArray(v)&&!v.custom&&aFam(k)&&!soldHere(k))){if(!src[k])src[k]=v;return}   // a home may already hold titles moved to it
       const h=homes[k],nm=(FAMS_ALL.find(f=>f.k===k)||{name:k}).name;
-      if(h&&soldHere(h)&&Array.isArray(v.items)&&v.items.length){
-        const t=src[h]||(own(s.sel,h)&&s.sel[h])||{tier:cheapest(h),price:CATALOG.find(c=>c.id===cheapest(h)).price,paying:false,items:[],ci:v.ci};
-        src[h]=Object.assign({},t,{items:(Array.isArray(t.items)?t.items:[]).concat(v.items)});countryMoved.push(nm);
-      }else{away[k]=v;countryAside.push(nm)}});
+      const t=h&&soldHere(h)&&Array.isArray(v.items)&&v.items.length?src[h]||(own(s.sel,h)&&s.sel[h])||{tier:cheapest(h),price:CATALOG.find(c=>c.id===cheapest(h)).price,paying:false,items:[],ci:v.ci}:null,ti=t&&Array.isArray(t.items)?t.items:[];
+      if(t&&ti.length+v.items.length<=SVC_ITEMS_MAX){src[h]=Object.assign({},t,{items:ti.concat(v.items)});countryMoved.push(nm)}   // its titles fit on its home here
+      else{away[k]=awayOf(v);countryAside.push(nm)}});   // or they all wait, set aside: none are cut
     Object.keys(src).slice(0,60).forEach(id=>{       // 60 services at most: a saved file can be made by hand
       const v=src[id];
-      if(id in Object.prototype||!v||typeof v!=='object'||Array.isArray(v))return;   // never a built-in name such as __proto__ or toString
+      if(id in Object.prototype||id.length>64||!v||typeof v!=='object'||Array.isArray(v))return;   // never a built-in name such as __proto__ or toString; ids the app makes are short
       const oldTier=!v2&&CATALOG.find(c=>c.id===id);          // before v2 there was one entry per plan
       const fam=v2?(FAMS.some(f=>f.k===id)?id:null):(oldTier?oldTier.fam:null);
       if(fam){
@@ -1774,17 +1795,24 @@ function load(raw){                                     // raw: a saved plan's d
         if(v.had===true)sel[fam].had=true;                   // you paid for it once: no new-member trial
         if(v.yearly===true)sel[fam].yearly=true;             // your statement shows a yearly charge
       }else{
-        if(typeof v.name!=='string'||!v.name||CATALOG.some(c=>c.id===id)||FAMS.some(f=>f.k===id))return;
-        sel[id]={id:id,name:v.name,custom:true,tier:null,price:isFinite(+v.price)&&+v.price>=0?+v.price:0,paying:v.paying!==false,items:cleanItems(v.items,+v.earliest||0,null,null),ci:ciOf(v)};
+        if(typeof v.name!=='string'||!oneLine(v.name,80)||CATALOG.some(c=>c.id===id)||FAMS.some(f=>f.k===id))return;
+        sel[id]={id:id,name:oneLine(v.name,80),custom:true,tier:null,price:isFinite(+v.price)&&+v.price>=0?+v.price:0,paying:v.paying!==false,items:cleanItems(v.items,+v.earliest||0,null,null),ci:ciOf(v)};
       }
     });
-    const e=Object.assign(estClone(),s.est&&typeof s.est==='object'&&!Array.isArray(s.est)?s.est:{});
+    const se=s.est&&typeof s.est==='object'&&!Array.isArray(s.est)?s.est:{},e=estClone();   // only the answers the app asks
+    Object.keys(e).forEach(k=>{if(own(se,k))e[k]=se[k]});
+    if(se.homeCustom===true)e.homeCustom=true;
     if(!Array.isArray(e.home))e.home=[];
     e.home=e.home.filter(k=>EST_HOME.some(h=>h.k===k));
     ['workH','commute','study','care','sleep','admin','share'].forEach(k=>{if(typeof e[k]!=='number'||!isFinite(e[k]))e[k]=EST_DEFAULT[k]});
-    if(typeof e.work!=='string')e.work=EST_DEFAULT.work;
-    if(typeof e.school!=='string')e.school=EST_DEFAULT.school;
+    if(e.work!=='custom'&&!EST_WORK.some(w=>w.k===e.work))e.work=typeof e.work==='string'?'custom':EST_DEFAULT.work;   // a word we do not know: your own numbers
+    if(e.school!=='custom'&&!EST_SCHOOL.some(x=>x.k===e.school))e.school=typeof e.school==='string'?'custom':EST_DEFAULT.school;
     const H=+s.H;
+    // 600 titles in all, on top of 300 a service, set-aside ones included. When a hand-made or older file has more, the list
+    // you were looking at keeps its titles first, then the services that come back here, then the ones still set aside.
+    let left=ITEMS_MAX;const cut=x=>{if(x.items.length>left)x.items=x.items.slice(0,Math.max(0,left));left-=x.items.length};
+    Object.keys(sel).filter(k=>!back.has(k)).concat(Object.keys(sel).filter(k=>back.has(k))).forEach(k=>cut(sel[k]));
+    Object.values(away).forEach(cut);
     const keep={};
     if(s.keep&&typeof s.keep==='object'&&!Array.isArray(s.keep))Object.keys(s.keep).forEach(k=>{if(s.keep[k]===true&&Object.prototype.hasOwnProperty.call(sel,k)){keep[k]=true;sel[k].paying=true}});
     state={v:2,sel:sel,H:isFinite(H)&&H>0?estSnap(H):20,startKey:START_KEY,est:e,keep:keep};
@@ -1804,10 +1832,10 @@ function load(raw){                                     // raw: a saved plan's d
     const L=s.last,str=x=>typeof x==='string'&&x.length<200,ok=a=>Array.isArray(a)&&a.length<=40;   // last month's to-do, for the check-in
     if(L&&typeof L==='object'&&/^\d{4}-\d{1,2}$/.test(String(L.key))&&ok(L.stop)&&ok(L.start)&&ok(L.change)&&ok(L.titles))
       state.last={key:String(L.key),
-        stop:L.stop.filter(r=>r&&str(r.entry)&&own(sel,r.entry)&&str(r.name)).map(r=>({entry:r.entry,name:r.name})),
-        start:L.start.filter(r=>r&&str(r.entry)&&own(sel,r.entry)&&str(r.name)).map(r=>({entry:r.entry,id:str(r.id)?r.id:'',name:r.name})),
-        change:L.change.filter(r=>r&&str(r.entry)&&own(sel,r.entry)&&str(r.toId)&&str(r.name)).map(r=>({entry:r.entry,toId:r.toId,name:r.name})),
-        titles:L.titles.filter(r=>r&&str(r.entry)&&own(sel,r.entry)&&str(r.title)).map(r=>({entry:r.entry,title:r.title}))};
+        stop:L.stop.filter(r=>r&&str(r.entry)&&own(sel,r.entry)&&str(r.name)).map(r=>({entry:r.entry,name:oneLine(r.name,200)})),
+        start:L.start.filter(r=>r&&str(r.entry)&&own(sel,r.entry)&&str(r.name)).map(r=>({entry:r.entry,id:str(r.id)?r.id:'',name:oneLine(r.name,200)})),
+        change:L.change.filter(r=>r&&str(r.entry)&&own(sel,r.entry)&&str(r.toId)&&str(r.name)).map(r=>({entry:r.entry,toId:r.toId,name:oneLine(r.name,200)})),
+        titles:L.titles.filter(r=>r&&str(r.entry)&&own(sel,r.entry)&&str(r.title)).map(r=>({entry:r.entry,title:oneLine(r.title,200)}))};   // one line, like the titles they match
     if(s.hSet===true||(state.H!==20&&state.H!==H_DEFAULT))state.hSet=true;      // you set your time (an older save that moved off a default counts)
     return true;
   }catch(e){return false}
@@ -1830,9 +1858,17 @@ function addFamily(fam,opts){
   if(opts){const s=state.sel[fam];if('paying' in opts)s.paying=opts.paying;if('price' in opts)s.price=opts.price}
   return state.sel[fam];
 }
+// The same limits load() keeps, when you add: what you add now is still all there at the next visit.
+// listFull: the whole list; svcFull: the service a title goes on. Each returns what to say, or ''.
+function listFull(){
+  const own=exBackup!=null?JSON.parse(exBackup):state;   // your own list, not the example
+  const n=o=>Object.values(o||{}).reduce((a,x)=>a+(x&&Array.isArray(x.items)?x.items.length:0),0),aside=n(own.away);   // set-aside titles come back in a country that sells them: load() counts them
+  return n(own.sel)+aside>=ITEMS_MAX?(aside?L('Your list is full: '+ITEMS_MAX+' titles, with the ones set aside. Remove one first.','Tu lista está llena: '+ITEMS_MAX+' títulos, con los guardados aparte. Quita uno primero.'):L('Your list is full: '+ITEMS_MAX+' titles. Remove one first.','Tu lista está llena: '+ITEMS_MAX+' títulos. Quita uno primero.')):'';
+}
+const svcFull=s=>s.items.length>=SVC_ITEMS_MAX?L(entryName(s)+' is full: '+SVC_ITEMS_MAX+' titles. Remove one first.','Ya hay '+SVC_ITEMS_MAX+' títulos en '+entryName(s)+'. Quita uno primero.'):'';
 function addCustomService(name,price,opts){
   const id='c'+Date.now()+'-'+Object.keys(state.sel).length;
-  state.sel[id]=Object.assign({id:id,name:name,custom:true,tier:null,price:price,paying:true,items:[],ci:nextColor()},opts||{});
+  state.sel[id]=Object.assign({id:id,name:oneLine(name,80),custom:true,tier:null,price:price,paying:true,items:[],ci:nextColor()},opts||{});
   return state.sel[id];
 }
 
@@ -2554,7 +2590,7 @@ function planDocument(){
     s.items.map(it=>'<li><span>'+esc(it.title)+(it.tier?' <small>'+esc(L(catName(it.tier),qEsPlan(catName(it.tier))))+'</small>':'')+'</span><span class="num">'+esc(L(hrsW(itemHours(it)),fmtH(itemHours(it))+(fmtH(itemHours(it))==='1'?' hora':' horas')))+'</span></li>').join('')+'</ul></li>').join('');
   const pays=sel.map(s=>'<tr><th scope="row"><i class="dot" style="--c:'+COLORS[(+s.ci||0)%COLORS.length]+'"></i>'+esc(s.custom?s.name:L(catName(s.tier),qEsPlan(catName(s.tier))))+'</th><td>'+(kept(s.id)?L('Kept every month','Lo mantienes cada mes'):s.paying?L('Paying now','Lo pagas ahora'):L('Not paying yet','Aún no lo pagas'))+'</td><td class="num">'+esc(moneyM(+s.price||0))+'</td></tr>').join('');
   const bill=sel.filter(s=>s.paying).reduce((a,s)=>a+Math.max(0,+s.price||0),0);
-  const data=ex?'':'<script type="application/json" id="'+PLAN_MARK+'">'+JSON.stringify({app:'sub-rotator',kind:'plan',v:1,saved:todayIso(),state:state}).replace(/</g,'\\u003c').replace(/\u2028/g,'\\u2028').replace(/\u2029/g,'\\u2029')+'</'+'script>';
+  const data=ex?'':'<script type="application/json" id="'+PLAN_MARK+'">'+JSON.stringify({app:'sub-rotator',kind:'plan',v:1,saved:todayIso(),state:Object.assign({},state,{est:undefined})}).replace(/</g,'\\u003c').replace(/\u2028/g,'\\u2028').replace(/\u2029/g,'\\u2029')+'</'+'script>';
   const link=/^https:$/.test(location.protocol)?' (<a href="'+esc(location.origin+location.pathname)+'">'+esc(location.host)+'</a>)':'';
   const title=(ex?L('Made-up example plan','Plan de ejemplo inventado'):L('My subscription plan','Mi plan de suscripciones'))+' · '+dayLabel(todayIso());
   const css=':root{--ink:#100D2B;--muted:#5B5876;--line:#E3E0F5;--blue:#3A2CFF;--mint:#087A5B;--pink:#E0246F;--soft:#F3F1FF}'+   // a darker green on white paper: 4.5:1 for text
@@ -2649,13 +2685,19 @@ function savePlanFile(){
 function planFromText(text){
   const t=String(text||'').trim();
   let raw=t.charAt(0)==='{'?t:null;
-  if(!raw){const m=/<script[^>]*\bid="subrotator-plan"[^>]*>([\s\S]*?)<\/script>/i.exec(t);if(m)raw=m[1]}
+  if(!raw){   // the data sits last in the file, in <script ... id="subrotator-plan">; plain index scans, so a huge odd file stays fast
+    const k=t.lastIndexOf('id="'+PLAN_MARK+'"'),o=k<0?-1:t.lastIndexOf('<',k),g=k<0?-1:t.indexOf('>',k),e=g<0?-1:t.indexOf('</'+'script>',g);
+    if(o>=0&&t.slice(o,o+7).toLowerCase()==='<script'&&t.slice(o,k).indexOf('>')<0&&e>g)raw=t.slice(g+1,e);
+  }
   try{const o=raw&&JSON.parse(raw);return o&&o.app==='sub-rotator'&&o.state&&typeof o.state==='object'?o:null}catch(e){return null}
 }
 const BEFORE_OPEN_KEY='subrotator:before-open';
 function openPlanText(text){
   const o=planFromText(text);
   if(!o){toast(L('Not a saved plan. Pick the file you saved.','No es un plan guardado. Elige el archivo que guardaste.'));return false}
+  // Free-time answers never come from a file (older saved files still carry the sender's): keep the ones here
+  const ownEst=(exBackup!=null?JSON.parse(exBackup):state).est;
+  if(ownEst&&typeof ownEst==='object')o.state=Object.assign({},o.state,{est:ownEst});
   const fc=o.state.country;
   if(typeof fc==='string'&&fc!==COUNTRY&&Object.prototype.hasOwnProperty.call(COUNTRY_INFO,fc)){   // a plan made in another country opens there, in its money
     const S=o.state.sel;if(!S||typeof S!=='object'||Array.isArray(S)){toast(L('Can’t read that plan.','No se puede leer ese plan.'));return false}
@@ -2676,11 +2718,14 @@ function openPlanText(text){
 function reminderIcs(){
   const nx=lastNow.next,d=new Date(startDate.getFullYear(),startDate.getMonth()+1,1),e=new Date(d.getFullYear(),d.getMonth(),2);
   const ymd=x=>x.getFullYear()+String(x.getMonth()+1).padStart(2,'0')+String(x.getDate()).padStart(2,'0');
-  const ics=x=>String(x).replace(/[\\;,]/g,m=>'\\'+m);
+  // RFC 5545 text: \ ; , escaped, a line break is a literal \n, other control characters are dropped,
+  // so a name from a saved file can never start a line of its own
+  const ics=x=>String(x).replace(/[\\;,]/g,m=>'\\'+m).replace(/\r\n|[\r\n\u2028\u2029]/g,'\\n').replace(/[\u0000-\u001f\u007f-\u009f]/g,'');
+  const fold=l=>{let o='',n=0;for(const ch of l){const c=ch.codePointAt(0),b=c<0x80?1:c<0x800?2:c<0x10000?3:4;if(n+b>75){o+='\r\n ';n=1}o+=ch;n+=b}return o};   // 75 octets a line, in UTF-8
   const first=nx?L('In '+MONTHS[nx.m].name+': '+nx.text+' ','En '+MONTHS[nx.m].name+': '+nx.text+' '):'';
   return ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//SubRotato//EN','BEGIN:VEVENT','UID:subrotato-monthly-'+ymd(d)+'@local','DTSTAMP:'+ymd(new Date())+'T000000Z',
     'DTSTART;VALUE=DATE:'+ymd(d),'DTEND;VALUE=DATE:'+ymd(e),'RRULE:FREQ=MONTHLY;COUNT=12','SUMMARY:'+ics(L('SubRotato: check this month’s plan','SubRotato: revisa el plan de este mes')),
-    'DESCRIPTION:'+ics(first+L('Open SubRotato for this month’s to-do.','Abre SubRotato para ver qué hacer este mes.')),'END:VEVENT','END:VCALENDAR'].join('\r\n');
+    'DESCRIPTION:'+ics(first+L('Open SubRotato for this month’s to-do.','Abre SubRotato para ver qué hacer este mes.')),'END:VEVENT','END:VCALENDAR'].map(fold).join('\r\n');
 }
 function renderAll(){renderChips();renderSubs();renderQueue();renderQadd();renderPlan();renderSoon();renderNext(currentView);renderExplain(currentView);syncExample();setTimeout(enrichAir,0)}
 const airTried=new Set();
@@ -3062,8 +3107,9 @@ function qPickIndex(i){
   if(x.src==='up')qPickUpcoming(x.it);else qPickTv(x.r);
 }
 function addQueueItem(){
-  const t=$('#qTitle'),title=t.value.trim();
+  const t=$('#qTitle'),title=oneLine(t.value,200);   // one line, as load() keeps it
   if(!title){t.focus();return}
+  const full=listFull();if(full){toast(full);return}
   const svcId=$('#qSvc').value;
   let s=state.sel[svcId],added='';
   const hv=($('#qHours').value||'').trim();
@@ -3081,6 +3127,7 @@ function addQueueItem(){
     s=addFamily(qPick.fam,{tier:qPick.famTier||undefined,paying:false});forced=qPick.famTier;added=L('. You do not pay for '+famName(qPick.fam)+' yet.','. Aún no pagas '+famName(qPick.fam)+'.');
   }
   if(!s){toast(L('Add a service in step 1, or tap a name in the list.','Agrega un servicio en el paso 1 o toca un nombre de la lista.'));return}
+  const fullS=svcFull(s);if(fullS){toast(fullS);return}
   const guessed=!(hours>0)||!!(qPick&&qPick.guess&&hv===qPick.hours);   // our guess, not hours you typed
   if(!(hours>0))hours=10;
   const item={title:title,hours:Math.min(hours,999),earliest:Math.max(0,Math.min(11,+$('#qWhen').value||0))};
@@ -3545,7 +3592,7 @@ function showView(name,moveFocus){
   if(moveFocus){h.focus({preventScroll:true});window.scrollTo(0,0)}
 }
 // Help: a short how-to for the page you are on. It stays open as you switch pages and shows that page's help.
-const HELP=L({"services":{"title":"Questions about services","qa":[["Will adding a service cost me money?","No. Adding one here does not sign you up."],["What does I pay for it now mean?","Checked means you pay for it today. Uncheck it if you only want it."],["What is the box with names like Essential or Standard?","Those are the price options for that service. Pick the one on your bill, or the one you want."],["My price is different. What do I do?","Tap the price and type yours. Ours are US prices, before tax."],["What is a bank file? Is it safe?","A list of your bank payments. It is optional, and it never leaves this phone or computer."],["How do I remove a service?","Tap × on its row. Its shows and games go too."]]},"list":{"title":"Questions about My list","qa":[["What happens when I tap a name in the box?","We fill in what we know. Tap Change to check, then tap Add."],["What if my show or game does not show up?","Make sure its service is in step 1. Type the name, pick its service under Change, then tap Add."],["Why does the button say \"Add to Netflix\"?","We add Netflix to step 1. We never touch your real Netflix account."],["Can I change the hours?","Yes, tap Change before you tap Add. After you add it, tap × and add it again."],["What does \"Needs Ultimate\" mean?","Your price option does not have it. Tap the Use button so your plan pays for the right one."]]},"soon":{"title":"Questions about new releases","qa":[["What happens when I tap + Add?","It goes on My list. We add its service to step 1 if needed."],["Does + Add cost me money?","No. Nothing is bought or started."],["What does Buy only mean?","No service has it when it comes out. You have to buy it."],["What do \"Date may change\" and \"Rumored\" mean?","Date may change: it could still move. Rumored: the month is a best guess."]]},"estimates":{"title":"Questions about free time","qa":[["Why do you need my free time?","It tells us how many months to pay. 60 hours takes a month at 2 hours a day."],["Will more free time save me money?","Yes, if it is true. Pick too many hours and you may not finish."],["Do I have to do this step?","No. We use {default} a day, which fits a full-time job."],["I do not know my hours. What do I do?","Under Not sure, tap your work, school and home. We do the math."]]},"home":{"title":"Questions about your plan","qa":[["Why does it say Cancel for one I want?","Its turn comes later. Tap Keep if you want it now."],["What do Keep, Cancel, Start and Not now mean?","Keep and Start: you pay this month. Cancel and Not now: you skip it."],["Can I change what it picked?","Yes, tap the other button on any line. Back to our pick undoes it."],["Does the app cancel or start services for me?","No. You do it on each service’s website or app."],["Where is my information kept?","Only on this phone or computer. Search sends only the name you type."]]}},{"services":{"title":"Preguntas sobre servicios","qa":[["¿Agregar un servicio me cuesta dinero?","No. Agregarlo aquí no te suscribe a nada."],["¿Qué significa Lo pago ahora?","Marcado quiere decir que lo pagas hoy. Quita la marca si solo lo quieres."],["¿Qué es la caja con nombres como Essential o Estándar?","Son las opciones de precio de ese servicio. Elige la que pagas o la que quieras."],["Mi precio es otro. ¿Qué hago?","Toca el precio y escribe el tuyo. Los nuestros son de Estados Unidos, sin impuestos."],["¿Qué es un archivo del banco? ¿Es seguro?","Una lista de tus pagos del banco. Es opcional y nunca sale de este teléfono o computadora."],["¿Cómo quito un servicio?","Toca × en su fila. Sus series y juegos también se van."]]},"list":{"title":"Preguntas sobre Mi lista","qa":[["¿Qué pasa si toco un nombre en la caja?","Llenamos lo que sabemos. Toca Cambiar para revisar y luego toca Agregar."],["¿Y si mi serie o juego no aparece?","Revisa que su servicio esté en el paso 1. Escribe el nombre, elige su servicio en Cambiar y toca Agregar."],["¿Por qué el botón dice \"Agregar a Netflix\"?","Agregamos Netflix al paso 1. Nunca tocamos tu cuenta real de Netflix."],["¿Puedo cambiar las horas?","Sí, toca Cambiar antes de tocar Agregar. Si ya lo agregaste, toca × y agrégalo otra vez."],["¿Qué significa \"Necesita Ultimate\"?","Tu opción de precio no lo tiene. Toca Usar para que tu plan pague la correcta."]]},"soon":{"title":"Preguntas sobre estrenos","qa":[["¿Qué pasa si toco + Agregar?","Va a Mi lista. Si hace falta, agregamos su servicio al paso 1."],["¿+ Agregar me cuesta dinero?","No. No compras ni empiezas nada."],["¿Qué significa Solo compra?","Ningún servicio lo tiene cuando sale. Tienes que comprarlo."],["¿Qué significan \"La fecha puede cambiar\" y \"Rumor\"?","La fecha puede cambiar: todavía se puede mover. Rumor: el mes es lo más probable."]]},"estimates":{"title":"Preguntas sobre tiempo libre","qa":[["¿Para qué sirve mi tiempo libre?","Nos dice cuántos meses pagar. A 2 horas al día, 60 horas son un mes."],["¿Más tiempo libre me ahorra dinero?","Sí, si es verdad. Si eliges demasiadas horas, quizá no termines."],["¿Tengo que hacer este paso?","No. Usamos {default} al día, como con un trabajo de tiempo completo."],["No sé mis horas. ¿Qué hago?","Toca tu trabajo, escuela y casa en Arma tu semana. Nosotros hacemos la cuenta."]]},"home":{"title":"Preguntas sobre tu plan","qa":[["¿Por qué dice Cancelar en uno que quiero?","Su turno llega después. Toca Mantener si lo quieres ahora."],["¿Qué significan Mantener, Cancelar, Empezar y Ahora no?","Mantener y Empezar: pagas este mes. Cancelar y Ahora no: no lo pagas."],["¿Puedo cambiar lo que eligió la app?","Sí, toca el otro botón en cualquier línea. Para deshacerlo, toca Volver a nuestra elección."],["¿La app cancela o empieza servicios por mí?","No. Tú lo haces en la web o la app de cada servicio."],["¿Dónde se guarda mi información?","Solo en este teléfono o computadora. La búsqueda solo envía el nombre que escribes."]]}});
+const HELP=L({"services":{"title":"Questions about services","qa":[["Will adding a service cost me money?","No. Adding one here does not sign you up."],["What does I pay for it now mean?","Checked means you pay for it today. Uncheck it if you only want it."],["What is the box with names like Essential or Standard?","Those are the price options for that service. Pick the one on your bill, or the one you want."],["My price is different. What do I do?","Tap the price and type yours. Ours are US prices, before tax."],["What is a bank file? Is it safe?","A list of your bank payments. It is optional, and it never leaves this phone or computer."],["How do I remove a service?","Tap × on its row. Its shows and games go too."]]},"list":{"title":"Questions about My list","qa":[["What happens when I tap a name in the box?","We fill in what we know. Tap Change to check, then tap Add."],["What if my show or game does not show up?","Make sure its service is in step 1. Type the name, pick its service under Change, then tap Add."],["Why does the button say \"Add to Netflix\"?","We add Netflix to step 1. We never touch your real Netflix account."],["Can I change the hours?","Yes, tap Change before you tap Add. After you add it, tap × and add it again."],["What does \"Needs Ultimate\" mean?","Your price option does not have it. Tap the Use button so your plan pays for the right one."]]},"soon":{"title":"Questions about new releases","qa":[["What happens when I tap + Add?","It goes on My list. We add its service to step 1 if needed."],["Does + Add cost me money?","No. Nothing is bought or started."],["What does Buy only mean?","No service has it when it comes out. You have to buy it."],["What do \"Date may change\" and \"Rumored\" mean?","Date may change: it could still move. Rumored: the month is a best guess."]]},"estimates":{"title":"Questions about free time","qa":[["Why do you need my free time?","It tells us how many months to pay. 60 hours takes a month at 2 hours a day."],["Will more free time save me money?","Yes, if it is true. Pick too many hours and you may not finish."],["Do I have to do this step?","No. We use {default} a day, which fits a full-time job."],["I do not know my hours. What do I do?","Under Not sure, tap your work, school and home. We do the math."]]},"home":{"title":"Questions about your plan","qa":[["Why does it say Cancel for one I want?","Its turn comes later. Tap Keep if you want it now."],["What do Keep, Cancel, Start and Not now mean?","Keep and Start: you pay this month. Cancel and Not now: you skip it."],["Can I change what it picked?","Yes, tap the other button on any line. Back to our pick undoes it."],["Does the app cancel or start services for me?","No. You do it on each service’s website or app."],["Where is my information kept?","Only on this phone or computer. We send TVMaze only what you type, or a show’s number."]]}},{"services":{"title":"Preguntas sobre servicios","qa":[["¿Agregar un servicio me cuesta dinero?","No. Agregarlo aquí no te suscribe a nada."],["¿Qué significa Lo pago ahora?","Marcado quiere decir que lo pagas hoy. Quita la marca si solo lo quieres."],["¿Qué es la caja con nombres como Essential o Estándar?","Son las opciones de precio de ese servicio. Elige la que pagas o la que quieras."],["Mi precio es otro. ¿Qué hago?","Toca el precio y escribe el tuyo. Los nuestros son de Estados Unidos, sin impuestos."],["¿Qué es un archivo del banco? ¿Es seguro?","Una lista de tus pagos del banco. Es opcional y nunca sale de este teléfono o computadora."],["¿Cómo quito un servicio?","Toca × en su fila. Sus series y juegos también se van."]]},"list":{"title":"Preguntas sobre Mi lista","qa":[["¿Qué pasa si toco un nombre en la caja?","Llenamos lo que sabemos. Toca Cambiar para revisar y luego toca Agregar."],["¿Y si mi serie o juego no aparece?","Revisa que su servicio esté en el paso 1. Escribe el nombre, elige su servicio en Cambiar y toca Agregar."],["¿Por qué el botón dice \"Agregar a Netflix\"?","Agregamos Netflix al paso 1. Nunca tocamos tu cuenta real de Netflix."],["¿Puedo cambiar las horas?","Sí, toca Cambiar antes de tocar Agregar. Si ya lo agregaste, toca × y agrégalo otra vez."],["¿Qué significa \"Necesita Ultimate\"?","Tu opción de precio no lo tiene. Toca Usar para que tu plan pague la correcta."]]},"soon":{"title":"Preguntas sobre estrenos","qa":[["¿Qué pasa si toco + Agregar?","Va a Mi lista. Si hace falta, agregamos su servicio al paso 1."],["¿+ Agregar me cuesta dinero?","No. No compras ni empiezas nada."],["¿Qué significa Solo compra?","Ningún servicio lo tiene cuando sale. Tienes que comprarlo."],["¿Qué significan \"La fecha puede cambiar\" y \"Rumor\"?","La fecha puede cambiar: todavía se puede mover. Rumor: el mes es lo más probable."]]},"estimates":{"title":"Preguntas sobre tiempo libre","qa":[["¿Para qué sirve mi tiempo libre?","Nos dice cuántos meses pagar. A 2 horas al día, 60 horas son un mes."],["¿Más tiempo libre me ahorra dinero?","Sí, si es verdad. Si eliges demasiadas horas, quizá no termines."],["¿Tengo que hacer este paso?","No. Usamos {default} al día, como con un trabajo de tiempo completo."],["No sé mis horas. ¿Qué hago?","Toca tu trabajo, escuela y casa en Arma tu semana. Nosotros hacemos la cuenta."]]},"home":{"title":"Preguntas sobre tu plan","qa":[["¿Por qué dice Cancelar en uno que quiero?","Su turno llega después. Toca Mantener si lo quieres ahora."],["¿Qué significan Mantener, Cancelar, Empezar y Ahora no?","Mantener y Empezar: pagas este mes. Cancelar y Ahora no: no lo pagas."],["¿Puedo cambiar lo que eligió la app?","Sí, toca el otro botón en cualquier línea. Para deshacerlo, toca Volver a nuestra elección."],["¿La app cancela o empieza servicios por mí?","No. Tú lo haces en la web o la app de cada servicio."],["¿Dónde se guarda mi información?","Solo en este teléfono o computadora. Solo enviamos a TVMaze lo que escribes o el número de la serie."]]}});
 function renderHelp(){
   const h=HELP[currentView]||HELP.start;
   $('#helpTitle').textContent=h.title;
@@ -3710,7 +3757,7 @@ function subsText(it,short){
 const inQueue=it=>Object.values(state.sel).some(s=>s.items.some(x=>x.title.toLowerCase()===it.title.toLowerCase()));
 // the service and list entry that already hold an upcoming title
 function queuedOf(it){
-  const t=it.title.toLowerCase();
+  const t=oneLine(it.title,200).toLowerCase();          // as the title was saved
   for(const s of Object.values(state.sel)){const item=s.items.find(x=>x.title.toLowerCase()===t);if(item)return {s,item}}
   return null;
 }
@@ -3780,6 +3827,7 @@ function soonAdd(id,choice,hoursStr){
   const left=leaveExample();if(left)choice=defaultService(it);   // your own services pick the plan, not the example's
   const snap=snapshot(),was=queuedOf(it);
   if(left&&was){const p=document.querySelector('#soonList [data-queued="'+CSS.escape(id)+'"]');if(p)p.focus();toast(L('Example cleared. '+it.title+' is already on My list.','Ejemplo quitado. '+it.title+' ya está en Mi lista.'));return}   // your own entry and hours stay
+  if(!was){const full=listFull();if(full){toast(full);return}}   // Change moves a title: the list does not grow
   const el=eligibleTiers(it);
   let hours=parseFloat(String(hoursStr||'').replace(',','.'));
   const prev=was&&was.item;
@@ -3796,9 +3844,11 @@ function soonAdd(id,choice,hoursStr){
     if(!state.sel[c.fam])added=L(' You do not pay for '+famName(c.fam)+' yet.',' Aún no pagas '+famName(c.fam)+'.');
     tier=choice;s=state.sel[c.fam]||addFamily(c.fam,{tier:choice,paying:false});
   }
+  const title=oneLine(it.title,200);   // one line, as load() keeps it
+  if(!(was&&was.s===s)){const full=svcFull(s);if(full){toast(full);return}}
   if(was)was.s.items.splice(was.s.items.indexOf(was.item),1);    // Change: the new plan and hours replace the old entry
-  else if(s.items.some(x=>x.title.toLowerCase()===it.title.toLowerCase())){toast(L('Already in '+entryName(s),'Ya está en '+entryName(s)));return}
-  const item={title:it.title,hours:Math.min(hours,999),earliest:Math.max(0,idx)};
+  else if(s.items.some(x=>x.title.toLowerCase()===title.toLowerCase())){toast(L('Already in '+entryName(s),'Ya está en '+entryName(s)));return}
+  const item={title:title,hours:Math.min(hours,999),earliest:Math.max(0,idx)};
   if(guess&&Number.isInteger(it.tvmazeId))item.hoursGuess=true;
   if(tier)item.tier=tier;
   if(it.kind==='tv'&&Number.isInteger(it.episodes)&&it.episodes>0)item.episodes=it.episodes;
@@ -3849,6 +3899,7 @@ $('#soonList').addEventListener('keydown',e=>{
   else if(e.key==='Enter'&&e.target.matches('[data-soon-hours]')){e.preventDefault();const b=e.target.closest('.soon-row').querySelector('[data-soon="confirm"]');if(b)b.click()}
 });
 
+const beforeRaw=(()=>{try{return localStorage.getItem(STORE_KEY)}catch(e){return null}})();   // your plan as it was saved, before a new country re-prices it: for Undo
 load();
 setHours(state.H||H_DEFAULT);$('#hrs').value=state.H||H_DEFAULT;
 buildEstSliders();renderEst(false);
@@ -3866,8 +3917,11 @@ renderAll();
       const u=new URL(location.href);u.searchParams.set('country',opened.country);location.assign(u.toString())};
     toast(L('Plan opened. It is from '+countryName(COUNTRY)+'.','Plan abierto. Es de '+countryName(COUNTRY)+'.'),back);
   }else if(countryFrom||countryMoved.length||countryAside.length){
+    // a link with ?country= or the country menu moved your plan: Undo puts it back as it was, in its own country
+    const was=countryFrom,undo=was&&beforeRaw?()=>{try{localStorage.setItem(STORE_KEY,beforeRaw);localStorage.setItem(COUNTRY_KEY,was)}catch(e){}
+      const u=new URL(location.href);u.searchParams.set('country',was);location.assign(u.toString())}:null;
     toast(L('Prices are now for '+countryName(COUNTRY)+'.'+(countryMoved.length?' Titles from '+names(countryMoved)+' moved to the service that has them here.':'')+(countryAside.length?' Not sold here, set aside: '+names(countryAside)+'.':''),
-      'Los precios ahora son de '+countryName(COUNTRY)+'.'+(countryMoved.length?' Los títulos de '+names(countryMoved)+' pasaron al servicio que los tiene aquí.':'')+(countryAside.length?' No se venden aquí, guardados aparte: '+names(countryAside)+'.':'')));
+      'Los precios ahora son de '+countryName(COUNTRY)+'.'+(countryMoved.length?' Los títulos de '+names(countryMoved)+' pasaron al servicio que los tiene aquí.':'')+(countryAside.length?' No se venden aquí, guardados aparte: '+names(countryAside)+'.':'')),undo);
     if(countryFrom)save();   // the new prices, so this only shows once
   }
 }

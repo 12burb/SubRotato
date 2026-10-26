@@ -31,13 +31,14 @@ export const ORIGINS = ['Korean', 'Japanese', 'Chinese', 'Taiwanese', 'Thai', 'F
 const LANGUAGE_ES = { Spanish: 'español', Portuguese: 'portugués', French: 'francés', German: 'alemán', Italian: 'italiano', Korean: 'coreano', Japanese: 'japonés', Chinese: 'chino', Mandarin: 'mandarín', Cantonese: 'cantonés', Thai: 'tailandés', Turkish: 'turco', Hebrew: 'hebreo', Arabic: 'árabe', Polish: 'polaco', Danish: 'danés', Swedish: 'sueco', Norwegian: 'noruego', Finnish: 'finlandés', Icelandic: 'islandés', Dutch: 'neerlandés', Russian: 'ruso', Ukrainian: 'ucraniano', Greek: 'griego', Hindi: 'hindi', Tamil: 'tamil', Telugu: 'telugu', Malayalam: 'malayalam', Kannada: 'canarés', Marathi: 'maratí', Bengali: 'bengalí', Punjabi: 'panyabí', Tagalog: 'tagalo', Filipino: 'filipino', Indonesian: 'indonesio', Vietnamese: 'vietnamita', Malay: 'malayo', Czech: 'checo', Hungarian: 'húngaro', Romanian: 'rumano' };
 const BY_LANGUAGE = { Korean: 'Korean', Japanese: 'Japanese', Thai: 'Thai', Turkish: 'Turkish', Hebrew: 'Israeli', German: 'German', Italian: 'Italian', Polish: 'Polish', Danish: 'Nordic', Swedish: 'Nordic', Norwegian: 'Nordic', Finnish: 'Nordic', Icelandic: 'Nordic', Tagalog: 'Filipino', Filipino: 'Filipino', Indonesian: 'Indonesian', Hindi: 'Indian', Tamil: 'Indian', Telugu: 'Indian', Malayalam: 'Indian', Kannada: 'Indian', Marathi: 'Indian', Bengali: 'Indian', Punjabi: 'Indian' };
 const BY_COUNTRY = { KR: 'Korean', JP: 'Japanese', CN: 'Chinese', HK: 'Chinese', TW: 'Taiwanese', TH: 'Thai', PH: 'Filipino', ID: 'Indonesian', IN: 'Indian', TR: 'Turkish', IL: 'Israeli', ES: 'Spanish', MX: 'Mexican', CO: 'Colombian', AR: 'Argentine', CL: 'Chilean', BR: 'Brazilian', GB: 'British', IE: 'Irish', FR: 'French', DE: 'German', IT: 'Italian', DK: 'Nordic', SE: 'Nordic', NO: 'Nordic', FI: 'Nordic', IS: 'Nordic', NL: 'Dutch', BE: 'Belgian', PL: 'Polish', NG: 'Nigerian', ZA: 'South African', AU: 'Australian', NZ: 'New Zealand', CA: 'Canadian' };
+// A lookup by a name TVMaze sent: only the table's own entries, so "constructor" or "__proto__" finds nothing.
+const own = (table, k) => (typeof k === 'string' && Object.prototype.hasOwnProperty.call(table, k) ? table[k] : null);
 // A TVMaze show's origin, when it was not made in the US: its channel's country first, then its language, but only a
 // language spoken mainly in one place (Spanish, Portuguese, Chinese, French or Dutch could be several: a person decides).
 export function originOf(sh) {
   const c = sh && ((sh.network && sh.network.country && sh.network.country.code) || (sh.webChannel && sh.webChannel.country && sh.webChannel.country.code));
-  if (c && c !== 'US' && BY_COUNTRY[c]) return BY_COUNTRY[c];
-  const l = sh && sh.language;
-  return (l && BY_LANGUAGE[l]) || null;   // a US channel (ViX is one) can still carry a Korean show
+  if (c && c !== 'US' && own(BY_COUNTRY, c)) return own(BY_COUNTRY, c);
+  return own(BY_LANGUAGE, sh && sh.language);   // a US channel (ViX is one) can still carry a Korean show
 }
 export function channelToService(name) {
   const n = String(name || '').trim();
@@ -68,29 +69,51 @@ export function dueMs(date) {
 export const daysBetween = (aMs, bMs) => Math.round((bMs - aMs) / DAY);
 const todayMs = today => parseDate(today).ms;
 
+/* ---------- outside text ---------- */
+// Names come from TVMaze and Wikipedia (anyone can edit them) or from a hand edit. A text field may not hold markup
+// (< or >), a control character (line breaks included, and U+2028 or U+2029), a direction control that can flip how
+// the text reads (U+202A-202E, U+2066-2069; the report strips them, so a reviewer would not see one) or more than 200
+// characters. The app escapes what it shows anyway; this keeps the data file, the report and the logs clean too.
+export const TEXT_KEYS = ['title', 'channel', 'subsNote', 'subsNoteEs', 'sport'];
+export const unsafe = s => typeof s === 'string' && (/[<>\u0000-\u001f\u007f-\u009f\u2028\u2029\u202a-\u202e\u2066-\u2069]/.test(s) || s.length > 200);
+// A name needs at least one letter or digit, in any script: one made only of invisible or punctuation characters is no name.
+const named = s => /[\p{L}\p{N}]/u.test(s);
+// Outside text in the report, which becomes a pull request or issue body and is printed to the Actions log: one line
+// in a code span, at most 200 characters, so a name cannot add a heading, a link, an @mention, a #reference, a closing
+// keyword, an image or a workflow command (a log line that starts with "::", or the old form "##[" anywhere in it).
+export const md = s => {
+  const t = [...String(s == null ? '' : s).replace(/[\u202a-\u202e\u2066-\u2069]/g, '').replace(/[\s\u0000-\u001f\u007f-\u009f]+/g, ' ').replace(/`/g, "'").replace(/##\[/g, '## [').trim()].slice(0, 200).join('');
+  return '`' + (t || ' ') + '`';
+};
+// For an error message: a value from the file, quoted on one line. JSON writes "##[" (an old workflow command) as
+// "##" plus the escape for "[", which reads back as the same text.
+const quote = v => JSON.stringify(String(v)).slice(0, 80).replace(/##\[/g, '##\\u005b');
+
 /* ---------- validation ---------- */
 export function validateData(data) {
   const errs = [];
   if (!data || typeof data !== 'object' || Array.isArray(data)) return ['top level must be an object'];
-  Object.keys(data).forEach(k => { if (!TOP_KEYS.includes(k)) errs.push('unknown top-level key "' + k + '"'); });
+  Object.keys(data).forEach(k => { if (!TOP_KEYS.includes(k)) errs.push('unknown top-level key ' + quote(k)); });
   if (!parseDate(data.checked) || parseDate(data.checked).month) errs.push('"checked" must be YYYY-MM-DD');
   // skip: titles (or "tvmaze:<id>") a person said no to, so discovery stops adding or suggesting them
   if ('skip' in data && !(Array.isArray(data.skip) && data.skip.every(x => typeof x === 'string' && x.trim()))) errs.push('"skip" must be a list of titles or "tvmaze:<id>"');
   if (!Array.isArray(data.items)) return errs.concat('"items" must be an array');
   const seen = new Set();
   data.items.forEach((it, i) => {
-    const w = 'items[' + i + ']' + (it && it.id ? ' (' + it.id + ')' : '');
+    const w = 'items[' + i + ']' + (it && it.id ? ' (' + (typeof it.id === 'string' && /^[a-z0-9][a-z0-9-]*$/.test(it.id) ? it.id : quote(it.id)) + ')' : '');
     if (!it || typeof it !== 'object' || Array.isArray(it)) { errs.push(w + ': must be an object'); return; }
-    Object.keys(it).forEach(k => { if (!ITEM_KEYS.includes(k)) errs.push(w + ': unknown key "' + k + '"'); });
+    Object.keys(it).forEach(k => { if (!ITEM_KEYS.includes(k)) errs.push(w + ': unknown key ' + quote(k)); });
     if (typeof it.id !== 'string' || !/^[a-z0-9][a-z0-9-]*$/.test(it.id)) errs.push(w + ': id must be a lowercase slug');
     else if (seen.has(it.id)) errs.push(w + ': duplicate id');
     else seen.add(it.id);
     if (typeof it.title !== 'string' || !it.title.trim()) errs.push(w + ': title is required');
+    TEXT_KEYS.forEach(k => { if (unsafe(it[k])) errs.push(w + ': ' + k + ' has markup (< or >), a control character or a line break, or is over 200 characters'); });
+    if (Array.isArray(it.platforms) && it.platforms.some(unsafe)) errs.push(w + ': platforms has a name with markup, a control character or over 200 characters');
     if (!KINDS.includes(it.kind)) errs.push(w + ': kind must be one of ' + KINDS.join(', '));
     if (!parseDate(it.date)) errs.push(w + ': date must be a real YYYY-MM-DD or YYYY-MM');
     if (!CONFIDENCE.includes(it.confidence)) errs.push(w + ': confidence must be one of ' + CONFIDENCE.join(', '));
     if (!parseDate(it.checked) || parseDate(it.checked).month) errs.push(w + ': checked must be YYYY-MM-DD');
-    if ('service' in it && it.service !== null && !SERVICES.includes(it.service)) errs.push(w + ': unknown service "' + it.service + '"');
+    if ('service' in it && it.service !== null && !SERVICES.includes(it.service)) errs.push(w + ': unknown service ' + quote(it.service));
     if ('channel' in it && it.channel !== null && typeof it.channel !== 'string') errs.push(w + ': channel must be a string or null');
     if ('platforms' in it && !(Array.isArray(it.platforms) && it.platforms.every(p => typeof p === 'string' && p))) errs.push(w + ': platforms must be a list of names');
     if ('hours' in it && it.hours !== null && !(typeof it.hours === 'number' && it.hours > 0 && it.hours <= 999)) errs.push(w + ': hours must be null or a number from 0 to 999');
@@ -207,9 +230,10 @@ export function mergeTvmaze(item, show, today) {
   }
 
   // A channel we do not cover never clears a service someone set (a show can air on one channel and stream on another).
+  // A channel name with markup or a line break is never copied: one vandal edit on TVMaze must not fail the run.
   const channel = (show && ((show.webChannel && show.webChannel.name) || (show.network && show.network.name))) || null;
   const svc = channelToService(channel);
-  if (channel && (svc || !item.service)) { set('channel', channel, 'channel'); set('service', svc, 'service'); }
+  if (typeof channel === 'string' && channel && !unsafe(channel) && (svc || !item.service)) { set('channel', channel, 'channel'); set('service', svc, 'service'); }
 
   // Hours only when every episode has a known length, so a half-empty list never lowers the total, and not
   // while the season may still grow: TVMaze often lists only the first few episodes, or only the aired ones. We
@@ -279,6 +303,11 @@ export function discoverTv(schedule, items, today, opts) {
     const channel = (sh.webChannel && sh.webChannel.name) || (sh.network && sh.network.name) || '';
     const service = channelToService(channel);
     if (!service || !LOWEST_TIER[service]) return;
+    // The name on one line. A name, channel or language with markup, a control character or over 200 characters
+    // is skipped, so one vandal edit on TVMaze never fails the run. So is a name with no letter or digit.
+    if (typeof sh.name !== 'string') return;
+    const name = sh.name.replace(/\s+/g, ' ').trim();
+    if (!named(name) || unsafe(name) || unsafe(channel) || unsafe(sh.language)) return;
     const anime = sh.language === 'Japanese' && sh.type === 'Animation';   // anime: listed when TVMaze names a service we cover (often Crunchyroll or Netflix)
     const origin = anime ? null : originOf(sh);   // made outside the US: tagged (Korean TV shows as a K-drama)
     const world = !anime && !!sh.language && !(o.languages || []).includes(sh.language) && sh.type === 'Scripted';   // a non-English drama or comedy on a service we cover (not reality: a Korean game show is no K-drama): its own cap
@@ -287,28 +316,30 @@ export function discoverTv(schedule, items, today, opts) {
     if (!((+sh.weight || 0) >= o.minWeight)) return;
     if (haveShow.has(sh.id) || haveTitle.has(titleKey(sh.name)) || seen.has(sh.id)) return;
     seen.add(sh.id);
-    picks.push({ e, sh, channel, service, anime, world, origin });
+    picks.push({ e, sh, name, channel, service, anime, world, origin });
   });
   picks.sort((a, b) => (+b.sh.weight || 0) - (+a.sh.weight || 0) || (a.e.airdate < b.e.airdate ? -1 : a.e.airdate > b.e.airdate ? 1 : 0));
   const one = ps => { const t = new Set(); return ps.filter(p => { const k = titleKey(p.sh.name); if (t.has(k)) return false; t.add(k); return true; }); };   // two shows with one name: list one
   const top = one(one(picks.filter(p => !p.anime && !p.world)).slice(0, o.max).concat(one(picks.filter(p => p.anime)).slice(0, o.maxAnime), one(picks.filter(p => p.world)).slice(0, o.maxWorld)));
-  return top.map(({ e, sh, channel, service, anime, world, origin }) => {
+  return top.map(({ e, sh, name, channel, service, anime, world, origin }) => {
     const eps = bySeason.get(sh.id + ':' + e.season) || [e];
     const fb = +sh.averageRuntime || +sh.runtime || 0;
     // With only a premiere or two listed, a sum would badly undercount the season, so leave hours to the app's default.
     // An anime cour is often listed a few episodes at a time, so its hours wait for the weekly check.
     const hours = !anime && eps.length >= 4 && eps.every(x => +x.runtime || fb) ? Math.round(eps.reduce((a, x) => a + (+x.runtime || fb), 0) / 60 * 10) / 10 : null;
     const note = (e.season > 1 ? 'Season ' + e.season : 'New series') + (world && !origin ? ', in ' + sh.language : '');   // where it was made is for a person to set
-    const noteEs = (e.season > 1 ? 'Temporada ' + e.season : 'Serie nueva') + (world && !origin ? ', en ' + (LANGUAGE_ES[sh.language] || sh.language) : '');
+    const noteEs = (e.season > 1 ? 'Temporada ' + e.season : 'Serie nueva') + (world && !origin ? ', en ' + (own(LANGUAGE_ES, sh.language) || sh.language) : '');
+    // TVMaze's own page for the show: its address only when it is exactly that, otherwise built from the id
+    const page = 'https://www.tvmaze.com/shows/' + sh.id;
     return {
       id: freshId(slugify(sh.name + (e.season > 1 ? ' season ' + e.season : '')), ids),
-      title: String(sh.name), kind: 'tv', ...(anime ? { anime: true } : {}), ...(origin ? { origin } : {}), service, channel, subs: [LOWEST_TIER[service]], subsNote: note, subsNoteEs: noteEs,
+      title: name, kind: 'tv', ...(anime ? { anime: true } : {}), ...(origin ? { origin } : {}), service, channel, subs: [LOWEST_TIER[service]], subsNote: note, subsNoteEs: noteEs,
       date: e.airdate, confidence: /^(In Development|To Be Determined)$/.test(sh.status || '') ? 'unconfirmed' : 'confirmed',
       hours: hours > 0 ? hours : null, season: e.season, tvmazeId: sh.id,
-      source: typeof sh.url === 'string' && /^https:\/\/www\.tvmaze\.com\//.test(sh.url) ? sh.url : 'https://www.tvmaze.com/shows/' + sh.id,
+      source: typeof sh.url === 'string' && sh.url.startsWith(page) && /^(?:\/[a-z0-9-]*)?$/i.test(sh.url.slice(page.length)) ? sh.url : page,
       checked: today,
     };
-  });
+  }).filter(it => !validateData({ checked: today, items: [it] }).length);   // a note that came out too long, season 0, a runtime that makes hours over 999: left out rather than fail the run
 }
 
 // Wikipedia keeps a list of original films per streaming service. They are the only free, keyless,
@@ -331,15 +362,35 @@ export function wikiPageUrl(page) { return 'https://en.wikipedia.org/wiki/' + en
 
 const MONTH_NUM = { january: 1, february: 2, march: 3, april: 4, may: 5, june: 6, july: 7, august: 8, september: 9, october: 10, november: 11, december: 12 };
 const iso = (y, m, d) => y + '-' + String(m).padStart(2, '0') + '-' + String(d).padStart(2, '0');
-function wikiPlain(s) {
-  return String(s || '')
-    .replace(/<ref[^>]*\/>/gi, '').replace(/<ref[\s\S]*?<\/ref>/gi, '').replace(/<!--[\s\S]*?-->/g, '')
-    .replace(/\{\{sort\|[^|}]*\|([^}]*)\}\}/gi, '$1')
-    .replace(/\{\{[^{}]*\}\}/g, '')
-    .replace(/\[\[(?:[^\]|]*\|)?([^\]]+)\]\]/g, '$1')
-    .replace(/'{2,}/g, '').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim();
+// Anyone can edit Wikipedia, so every pattern here takes time in step with the text's length. A pattern that scans
+// ahead for a closing mark (</ref>, -->, ]], }}, >) from each of many openings that never close would take time
+// that grows with the square of the length: a few hundred kB would stall the weekly run for minutes.
+// cut() drops each open...close span, left to right, like /open[\s\S]*?close/g, in one pass.
+function cut(s, open, close) {
+  let out = '', i = 0;
+  for (;;) {
+    open.lastIndex = i;
+    const a = open.exec(s);
+    if (!a) break;
+    close.lastIndex = a.index + a[0].length;
+    const b = close.exec(s);
+    if (!b) break;                                      // no close after this opening: none after a later one either
+    out += s.slice(i, a.index);
+    i = b.index + b[0].length;
+  }
+  return out + s.slice(i);
 }
-const noRefs = s => String(s || '').replace(/<ref[^>]*\/>/gi, '').replace(/<ref[\s\S]*?<\/ref>/gi, '').replace(/<!--[\s\S]*?-->/g, '');
+const REF_OPEN = /<ref/gi, REF_CLOSE = /<\/ref>/gi, NOTE_OPEN = /<!--/g, NOTE_CLOSE = /-->/g;
+const noRefs = s => cut(cut(String(s || '').replace(/<ref[^<>]*\/>/gi, ''), REF_OPEN, REF_CLOSE), NOTE_OPEN, NOTE_CLOSE);
+// {{sort|key|shown}} -> shown (the shown part stops at the next {{sort|, so an unclosed one cannot scan the whole text)
+const SORT = /\{\{sort\|[^|}]*\|((?:(?!\{\{sort\|)[^}])*)\}\}/gi;
+function wikiPlain(s) {
+  return noRefs(s)
+    .replace(SORT, '$1')
+    .replace(/\{\{[^{}]*\}\}/g, '')
+    .replace(/\[\[(?:[^\][|]*\|)?([^\][]+)\]\]/g, '$1')
+    .replace(/'{2,}/g, '').replace(/<[^<>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim();
+}
 // "{{sort|117|1 h 57 min}}", "1 h 57 min" or "117 minutes" -> 117
 function wikiMinutes(s) {
   const t = String(s || '');
@@ -352,11 +403,14 @@ function wikiMinutes(s) {
 }
 // Citation access dates live inside <ref> tags, and sort keys ({{dts|...|format=hide}}, data-sort-value,
 // {{sort|key|shown}}) are invisible, so all of those go before any date is read: "Late 2026" is not Dec 31.
+// Each {{...}} is read once and dropped when it says format=hide. One pattern that did both took seconds on 100 kB:
+// after an unclosed "{{" it scanned ahead again from every "|format=hide".
+const HIDDEN = /\|\s*format\s*=\s*hide/i;
 function wikiDate(s) {
   const t = noRefs(s)
-    .replace(/\{\{[^{}]*\|\s*format\s*=\s*hide[^{}]*\}\}/gi, '')
+    .replace(/\{\{([^{}]*)\}\}/g, (m, x) => (HIDDEN.test(x) ? '' : m))
     .replace(/data-sort-value\s*=\s*("[^"]*"|'[^']*'|[^\s|]+)/gi, '')
-    .replace(/\{\{sort\|[^|}]*\|([^}]*)\}\}/gi, '$1');
+    .replace(SORT, '$1');
   let m = /\{\{\s*(?:dts|start date|film date)\s*\|\s*(\d{4})\s*\|\s*(\d{1,2})\s*\|\s*(\d{1,2})/i.exec(t);
   if (m) return iso(+m[1], +m[2], +m[3]);
   m = /\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{1,2}),\s*(\d{4})\b/i.exec(t);
@@ -370,7 +424,21 @@ function wikiDate(s) {
 // can, and otherwise the title is the first cell and the date is the first full date in the row.
 // Stand-up sets, concerts, specials and documentaries are listed too; people rotate for films.
 const NOT_A_FILM = /stand-?up|special|concert|documentar|docuseries|short film|shorts\b/i;
-const lastHeading = s => { const h = [...String(s).matchAll(/^={2,}\s*(.*?)\s*={2,}\s*$/gm)].pop(); return h ? h[1] : null; };
+const MAX_COLS = 40, MAX_SPAN = 100;
+// The last "== Heading ==" line, read by hand: the pattern /^={2,}\s*(.*?)\s*={2,}\s*$/m took seconds on one line of
+// 400 "=" signs and an "x", and minutes on a longer one.
+const lastHeading = s => {
+  const lines = String(s).split(/[\n\r\u2028\u2029]/);
+  for (let k = lines.length - 1; k >= 0; k--) {
+    const l = lines[k].trimEnd();
+    if (l.length < 4 || !l.startsWith('==') || !l.endsWith('==')) continue;
+    let a = 0, b = l.length;
+    while (a < b && l[a] === '=') a++;
+    while (b > a && l[b - 1] === '=') b--;
+    return l.slice(a, b).trim();
+  }
+  return null;
+};
 export function parseWikiFilmRows(wikitext) {
   const out = [];
   const parts = ('\n' + String(wikitext || '')).split(/\n\{\|/);
@@ -385,17 +453,20 @@ export function parseWikiFilmRows(wikitext) {
       .map(h => wikiPlain(h.includes('|') && !/\[\[/.test(h.split('|')[0]) ? h.slice(h.indexOf('|') + 1) : h).toLowerCase());
     const col = re => head.findIndex(h => re.test(h));
     const ci = { title: col(/title|film/), date: col(/release|premiere|date/), runtime: col(/runtime|length/), language: col(/language/), genre: col(/genre/) };
-    const carry = [];                                   // column -> {text, left}: a cell with rowspan fills the rows below
+    // column -> {text, left}: a cell with rowspan fills the rows below. A row is read up to MAX_COLS columns and a
+    // rowspan up to MAX_SPAN rows (film lists use about 8 columns and spans of a few rows), so one very wide row or a huge rowspan cannot
+    // make every later row long: a 430 kB table of that shape took 88 s.
+    const carry = [];
     rows.forEach(r => {
       const lines = r.split('\n').filter(l => /^[|!]/.test(l) && !/^\|[+}]/.test(l) && !/^\{\|/.test(l));
       if (!lines.length || lines.every(l => /^!/.test(l) && !/''/.test(l))) return;      // header row
-      const raw = lines.flatMap(l => l.slice(1).split(/\|\||!!/)).map(c => {
+      const raw = lines.flatMap(l => l.slice(1).split(/\|\||!!/)).slice(0, MAX_COLS).map(c => {
         const bar = c.indexOf('|');                     // "style=... | value": drop cell attributes
         const attr = bar > 0 && !/\[\[|\{\{/.test(c.slice(0, bar)) ? c.slice(0, bar) : '';
-        return { text: attr ? c.slice(bar + 1) : c, span: +((/rowspan\s*=\s*["']?(\d+)/i.exec(attr) || [])[1] || 1) };
+        return { text: attr ? c.slice(bar + 1) : c, span: Math.min(MAX_SPAN, +((/rowspan\s*=\s*["']?(\d+)/i.exec(attr) || [])[1] || 1)) };
       });
       const cells = [];
-      for (let c = 0, k = 0; k < raw.length || c < carry.length; c++) {
+      for (let c = 0, k = 0; c < MAX_COLS && (k < raw.length || c < carry.length); c++) {
         const cy = carry[c];
         if (cy && cy.left > 0) { cells.push(cy.text); cy.left--; continue; }
         if (k >= raw.length) { cells.push(''); continue; }
@@ -428,6 +499,7 @@ export function discoverMovies(pages, items, today, opts) {
     const d = daysBetween(t, p.ms);
     if (d < 0 || d > o.days) return;
     if (o.languages && o.languages.length && r.language && !o.languages.some(l => r.language.toLowerCase().includes(l.toLowerCase()))) return;
+    if (typeof r.title !== 'string' || unsafe(r.title) || !named(r.title)) return;   // markup, a control character or no letter in a Wikipedia title: not suggested
     const k = titleKey(r.title);
     if (!k || haveTitle.has(k)) return;
     haveTitle.add(k);
@@ -474,40 +546,50 @@ export function createFetcher(opts) {
 }
 
 /* ---------- report ---------- */
+// Every outside string (titles, notes, channels, messages, reasons, addresses) goes through md(). A date or an
+// origin that is already in its checked form is printed as it is; anything else is quoted the same way.
 export function renderReport(r) {
-  const L = ['# Weekly release-date check (' + r.today + ')', ''];
+  const day = s => (typeof s === 'string' && parseDate(s) ? s : md(s));
+  const from = s => (ORIGINS.includes(s) ? s : md(s));
+  const page = i => (Number.isInteger(i.tvmazeId) && i.tvmazeId > 0 ? 'https://www.tvmaze.com/shows/' + i.tvmazeId : md(i.source));
+  const reqs = Number.isInteger(r.requests) ? r.requests : 0;
+  const L = ['# Weekly release-date check (' + day(r.today) + ')', ''];
   if (r.changes.length) {
     L.push('## Changed', '');
-    r.changes.forEach(c => { L.push('- **' + c.title + '**'); c.notes.forEach(n => L.push('  - ' + n)); });
+    r.changes.forEach(c => { L.push('- **' + md(c.title) + '**'); c.notes.forEach(n => L.push('  - ' + md(n))); });
     L.push('');
   }
   const added = r.added || [], ideas = r.ideas || [];
   if (added.length) {
     L.push('## Added: new seasons from TVMaze', '', 'Popular season premieres on the services we cover. Check the plan each one needs before merging. To drop one for good, delete it and put its title in `skip`.', '');
-    added.forEach(i => L.push('- **' + i.title + '** (' + (i.anime ? 'Anime, ' : '') + (i.origin ? i.origin + ', ' : '') + i.subsNote + ', ' + i.channel + ', ' + i.date + ') ' + i.source));
+    added.forEach(i => L.push('- **' + md(i.title) + '** (' + (i.anime ? 'Anime, ' : '') + (i.origin ? from(i.origin) + ', ' : '') + md(i.subsNote) + ', ' + md(i.channel) + ', ' + day(i.date) + ') ' + page(i)));
     L.push('');
   }
   if (r.removed.length) {
     L.push('## Removed (came out, or the season ended, more than 30 days ago)', '');
-    r.removed.forEach(i => L.push('- ' + i.title + ' (' + (i.kind === 'sport' && i.ends ? 'last game ' + i.ends : i.date) + ')'));
+    r.removed.forEach(i => L.push('- ' + md(i.title) + ' (' + (i.kind === 'sport' && i.ends ? 'last game ' + day(i.ends) : day(i.date)) + ')'));
     L.push('');
   }
   if (ideas.length) {
     L.push('## Movies to consider', '', 'Listed on Wikipedia but not in `public/upcoming.json`. Not added: confirm the date and the service, then paste the ones worth listing. Put the title of any you do not want in `skip` and it will not come back.', '');
-    ideas.forEach(i => L.push('- [ ] **' + i.title + '** (' + i.channel + ', ' + i.date + ')'));
-    L.push('', '<details><summary>Ready-to-paste JSON</summary>', '', '```json', ideas.map(i => JSON.stringify(normalizeItem(i))).join(',\n'), '```', '', '</details>', '');
+    ideas.forEach(i => L.push('- [ ] **' + md(i.title) + '** (' + md(i.channel) + ', ' + day(i.date) + ')'));
+    // One JSON object a line: JSON escapes line breaks, so nothing in it can start a line and close the code block.
+    // The separators, direction marks and "##[" (an old workflow command) that JSON leaves as they are get escaped
+    // too: still valid JSON, with the same values ("##[" only occurs inside a string).
+    const json = i => JSON.stringify(normalizeItem(i)).replace(/[\u007f-\u009f\u2028\u2029\u202a-\u202e\u2066-\u2069]/g, c => '\\u' + c.charCodeAt(0).toString(16).padStart(4, '0')).replace(/##\[/g, '##\\u005b');
+    L.push('', '<details><summary>Ready-to-paste JSON</summary>', '', '```json', ideas.map(json).join(',\n'), '```', '', '</details>', '');
   }
   if (r.flags.length) {
     L.push('## Needs a human look', '', 'No source can check these automatically. Confirm each date, then update `checked` in `public/upcoming.json`.', '');
-    r.flags.forEach(f => L.push('- [ ] **' + f.title + '** (' + f.date + '): ' + f.message));
+    r.flags.forEach(f => L.push('- [ ] **' + md(f.title) + '** (' + day(f.date) + '): ' + md(f.message)));
     L.push('');
   }
   if (r.unchecked.length) {
     L.push('## Could not check', '');
-    r.unchecked.forEach(u => L.push('- ' + u.title + ': ' + u.reason));
+    r.unchecked.forEach(u => L.push('- ' + md(u.title) + ': ' + md(u.reason)));
     L.push('');
   }
   if (!r.changes.length && !r.removed.length && !r.flags.length && !r.unchecked.length && !added.length && !ideas.length) L.push('Nothing changed.', '');
-  L.push('_' + r.requests + ' request' + (r.requests === 1 ? '' : 's') + (r.wiki ? ' to TVMaze and Wikipedia' : ' to TVMaze') + '. TV data from TVMaze (CC BY-SA 4.0)' + (r.wiki ? '; film lists from Wikipedia (CC BY-SA 4.0)' : '') + '._', '');
+  L.push('_' + reqs + ' request' + (reqs === 1 ? '' : 's') + (r.wiki ? ' to TVMaze and Wikipedia' : ' to TVMaze') + '. TV data from TVMaze (CC BY-SA 4.0)' + (r.wiki ? '; film lists from Wikipedia (CC BY-SA 4.0)' : '') + '._', '');
   return L.join('\n');
 }

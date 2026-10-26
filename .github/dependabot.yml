@@ -1,0 +1,8 @@
+# Keeps the pinned actions in .github/workflows up to date: once a month, a pull request moves each pinned
+# commit SHA (and the version in its comment) to the newest release. Nothing else is watched here.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

@@ -10,6 +10,7 @@
 // movies for a person to check (they are never added on their own). About 8 extra requests.
 // Set REFRESH_CONTACT (a URL or address) to put a contact in the User-Agent, as Wikimedia asks.
 import { readFileSync, writeFileSync, renameSync, appendFileSync } from 'node:fs';
+import { randomUUID } from 'node:crypto';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
@@ -70,6 +71,10 @@ for (let i = 0; i < items.length; i++) {
     }
     fails = 0;
     const m = mergeTvmaze(it, res.json, TODAY);
+    // A value the file cannot hold (a runtime that makes hours over 999, say) keeps the item as it was, so one odd
+    // TVMaze edit never stops the whole run from writing.
+    const bad = validateData({ checked: TODAY, items: [m.item] });
+    if (bad.length) { unchecked.push({ title: it.title, reason: 'TVMaze sent a value the file cannot hold (' + bad[0].replace(/^items\[0\][^:]*: /, '') + '), so it was kept as it was' }); continue; }
     items[i] = m.item; checkedIds.add(it.id);
     if (m.changes.length) changes.push({ title: it.title, notes: m.changes });
   } catch (e) {
@@ -133,7 +138,12 @@ if (errs.length) { console.error('refusing to write an invalid file:\n- ' + errs
 
 const report = renderReport({ today: TODAY, changes, removed, flags, unchecked, added, ideas, wiki: DISCOVER, requests: fetcher.count });
 writeFileSync(REPORT, report);
-console.log(report);
+// The report holds names from TVMaze and Wikipedia. In GitHub Actions a log line can be a workflow command, so
+// commands are off while it prints (stop-commands with a one-time token, then the token to turn them back on).
+if (process.env.GITHUB_ACTIONS === 'true') {
+  const token = randomUUID();
+  console.log('::stop-commands::' + token + '\n' + report + '\n::' + token + '::');
+} else console.log(report);
 
 let changed = false;
 if (write && !flag('dry-run')) {

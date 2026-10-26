@@ -8,7 +8,7 @@ const js = html.match(/<script>([\s\S]*)<\/script>/)[1];
 const block = (a, b) => js.match(new RegExp('// ==' + a + '-START==([\\s\\S]*)// ==' + b + '-END=='))[1];
 const catalog = js.match(/const CATALOG=\[[\s\S]*?\n\];/)[0];
 const code = block('PURE', 'PURE') + catalog + block('CSV', 'CSV') + block('EST', 'EST') + block('TV', 'TV') +
-  '\nreturn {plan,analyzeStatement,makeSampleCsv,parseAmount,parseDateStr,parseCSV,estimate,estClone,estSetWork,estSetSchool,estToggleHome,estSnap,CATALOG,FAMILIES,tvSummary,tvService,tvFamilyOfService,dateMonthIndex,isoDay,FAMILY_DEFAULT,planMonthCost,isCovered,monthCosts};';
+  '\nreturn {plan,analyzeStatement,makeSampleCsv,parseAmount,parseDateStr,parseCSV,detectColumns,estimate,estClone,estSetWork,estSetSchool,estToggleHome,estSnap,CATALOG,FAMILIES,tvSummary,tvService,tvFamilyOfService,dateMonthIndex,isoDay,FAMILY_DEFAULT,planMonthCost,isCovered,monthCosts};';
 const L = new Function(code)();
 
 let passed = 0;
@@ -253,6 +253,30 @@ test('tab file after a long preamble parses as tabs', () => {
   const pre = Array.from({ length: 12 }, (_, i) => 'Account summary line ' + (i + 1)).join('\n');
   const rows = L.parseCSV(pre + '\nDate\tDescription\tAmount\n07/07/2026\tNETFLIX.COM\t-17.99\n08/07/2026\tNETFLIX.COM\t-17.99');
   assert.ok(rows.some(r => r.length === 3 && r[1] === 'NETFLIX.COM'), JSON.stringify(rows.slice(-2)));
+});
+test('statement import: a hostile file stays fast; long cells are cut; Acorn TV and accounting parens still read', () => {
+  const fast = (what, f) => { const t0 = Date.now(); f(); const ms = Date.now() - t0; assert.ok(ms < 1000, what + ' took ' + ms + ' ms'); };
+  fast('( and 80,000 digits', () => L.parseAmount('(' + '1'.repeat(80000)));
+  fast('( and 80,000 digits, closed', () => assert.ok(L.parseAmount('(' + '1'.repeat(80000) + ')') < 0));
+  fast('ACORN, 80,000 spaces and x', () => assert.ok(!L.FAMILIES.find(f => f.k === 'acorn').re.test('ACORN' + ' '.repeat(80000) + 'x')));
+  fast('a file of both, in one row', () => L.analyzeStatement('Date,Description,Amount\n09/07/2026,ACORN' + ' '.repeat(80000) + 'x,(' + '1'.repeat(80000) + '\n10/07/2026,ACORN TV,-9.99\n', L.CATALOG));
+  const rows = L.parseCSV('a,"' + 'b'.repeat(1000) + '","' + '""'.repeat(1000) + '"\nc,' + 'd'.repeat(1000));
+  assert.deepStrictEqual([rows[0][1].length, rows[0][2].length, rows[1][1].length], [256, 256, 256], 'a cell keeps 256 characters');
+  const acorn = ['ACORN.TV', 'ACORN TV', 'ACORN . TV', 'ACORNTV', 'ACORN. TV', 'ACORNMEDIA'];
+  assert.deepStrictEqual(acorn.filter(d => L.FAMILIES.find(f => f.k === 'acorn').re.test(d)), acorn, 'every way a bank writes Acorn TV');
+  assert.deepStrictEqual(['(9.99)', '( 9.99 )', '$ (12.34)', '9.99', '(x) 9.99', '9.99 (x)', ')9.99('].map(L.parseAmount), [-9.99, -9.99, -12.34, 9.99, 9.99, 9.99, 9.99], 'parens around a number, and only then');
+});
+test('statement import: finding the date column stays fast on a long header cell, and still prefers the transaction date', () => {
+  const t0 = Date.now();
+  assert.strictEqual(L.detectColumns([['trans'.repeat(40000), 'x'], ['1', '2']]), null, 'no date column');   // /trans.*date/ took ~13 s on this
+  assert.ok(Date.now() - t0 < 1000, 'took ' + (Date.now() - t0) + ' ms');
+  const col = h => L.detectColumns([h, ['07/07/2026', '07/08/2026', 'NETFLIX.COM', '-17.99']]);
+  assert.strictEqual(col(['Posting Date', 'Trans. Date', 'Description', 'Amount']).date, 1, 'Trans. Date beats Posting Date');
+  assert.strictEqual(col(['Posted Date', 'Transaction Date', 'Description', 'Amount']).date, 1);
+  assert.strictEqual(col(['Posted', 'Purchase date', 'Description', 'Amount']).date, 1);
+  assert.strictEqual(col(['Posted', ' Date', 'Description', 'Amount']).date, 1, 'a cell that starts with Date');
+  assert.strictEqual(col(['Datum', 'Fecha', 'Concepto', 'Importe']).date, 1, 'Spanish');
+  assert.strictEqual(col(['Date transferred', 'Trans date', 'Description', 'Amount']).date, 0, 'date before trans is a plain date column, found first');
 });
 test('Netflix with ads is on the confirmed price list (no estimate mark)', () => {
   assert.ok(!L.CATALOG.find(c => c.id === 'nf-ads').est);

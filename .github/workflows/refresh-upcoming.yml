@@ -12,6 +12,10 @@ name: refresh-upcoming
 # To pause it again later, set that variable to anything else (or delete it). A skipped job costs zero minutes.
 # One-time repo setting this needs for the pull request step:
 #   Settings > Actions > General > Workflow permissions > "Allow GitHub Actions to create and approve pull requests"
+# Safety: actions are pinned to a full commit SHA (the tag is in the comment; .github/dependabot.yml proposes updates
+# once a month). The write token is not saved in .git/config, so the step that reads TVMaze and Wikipedia cannot push;
+# only "Publish changes" puts it in the remote address, right before it pushes. TVMaze and Wikipedia text never reaches
+# a shell line: steps read only true/false and counts from the script, and the report is a file.
 on:
   schedule:
     - cron: '17 14 * * 1'   # Mondays 14:17 UTC, off the top of the hour when GitHub is busiest
@@ -32,9 +36,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           fetch-depth: 1
+          persist-credentials: false
 
       - name: Check dates
         id: refresh
@@ -44,21 +49,38 @@ jobs:
 
       # Real changes go through a pull request so a person looks at them. If the only change is the
       # "checked" date, it is committed straight to the default branch.
+      # A person's work on bot/upcoming is never overwritten: when the open pull request has a commit someone else
+      # wrote (or changed), this week's update is skipped with a warning. The needs-a-look issue below still runs.
       - name: Publish changes
         if: steps.refresh.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
           SUBSTANTIVE: ${{ steps.refresh.outputs.substantive }}
           BASE: ${{ github.event.repository.default_branch }}
         run: |
+          BOT="41898282+github-actions[bot]@users.noreply.github.com"
           git config user.name "sub-rotator-bot"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.email "$BOT"
           git add public/upcoming.json
           if [ "$SUBSTANTIVE" = "true" ]; then
+            # Only a pull request from this repository counts, not one from a fork that reuses the branch name.
+            PR=$(gh pr list --head bot/upcoming --state open --json number,isCrossRepository --jq 'map(select(.isCrossRepository | not)) | .[0].number')
+            LEASE="--force"
+            if [ -n "$PR" ]; then
+              # The head first, then its commits: a push in between shows up in the commits, and the lease stops one after.
+              OID=$(gh pr view "$PR" --json headRefOid --jq '.headRefOid')
+              WHO=$(gh pr view "$PR" --json commits --jq '.commits[] | .authors[].email, .authoredDate == .committedDate')
+              if grep -qvxF -e "$BOT" -e true <<< "$WHO"; then
+                echo "::warning::Pull request #$PR has commits from a person. bot/upcoming was left alone this week. Merge or close the pull request to restart updates."
+                exit 0
+              fi
+              LEASE="--force-with-lease=bot/upcoming:$OID"
+            fi
             git checkout -B bot/upcoming
             git commit -m "chore: weekly release-date check"
-            git push --force origin bot/upcoming
-            PR=$(gh pr list --head bot/upcoming --state open --json number --jq '.[0].number')
+            git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+            git push "$LEASE" origin bot/upcoming
             if [ -n "$PR" ]; then
               gh pr edit "$PR" --body-file scripts/.report.md
             else
@@ -66,6 +88,7 @@ jobs:
             fi
           else
             git commit -m "chore: refresh checked date"
+            git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
             git push
           fi
 
@@ -75,6 +98,7 @@ jobs:
       - name: Needs-a-look issue
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
           FLAGS: ${{ steps.refresh.outputs.flags }}
           IDEAS: ${{ steps.refresh.outputs.ideas }}
           UNCHECKED: ${{ steps.refresh.outputs.unchecked }}

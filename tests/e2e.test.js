@@ -2112,7 +2112,7 @@ test('the next months: every service to cancel is named, in step 4 and in the ca
     hulu: row('hulu', 'hulu', { ci: 2, items: [{ title: 'Hulu show', hours: 5, earliest: 0 }] }),
   }));
   assert.strictEqual(nextText(m), 'Cancel Game Pass Essential, Netflix with ads and Hulu with ads.');
-  assert.match(m.w.eval('reminderIcs()'), /DESCRIPTION:In [A-Z][a-z]+: Cancel Game Pass Essential\\, Netflix with ads and Hulu with ads\./);
+  assert.match(m.w.eval('reminderIcs()').replace(/\r\n /g, ''), /DESCRIPTION:In [A-Z][a-z]+: Cancel Game Pass Essential\\, Netflix with ads and Hulu with ads\./, 'the calendar file, unfolded');
 });
 test('updates: a change that only moves later months is said too', () => {
   const m = mount(v2({ netflix: row('netflix', 'nf-std', { items: [{ title: 'Show', hours: 10, earliest: 0, tier: 'nf-std' }] }) }), { hash: '#list' });
@@ -2838,8 +2838,10 @@ test('SEO: each landing page has a search title and description, canonical and h
     const ld = JSON.parse(d.querySelector('script[type="application/ld+json"]').textContent)['@graph'];
     const types = ld.map(x => x['@type']);
     ['WebSite', 'Organization', 'WebApplication', 'FAQPage'].forEach(t => assert.ok(types.includes(t), page + ' has ' + t));
-    const faq = ld.find(x => x['@type'] === 'FAQPage').mainEntity.map(q => q.name);
-    assert.deepStrictEqual(faq, [...d.querySelectorAll('.faq summary')].map(x => x.textContent.trim()), page + ': the FAQ data is the FAQ on the page');
+    const faq = ld.find(x => x['@type'] === 'FAQPage').mainEntity.map(q => [q['@type'], q.name, q.acceptedAnswer['@type'], q.acceptedAnswer.text]);
+    const shown = [...d.querySelectorAll('.faq details')].map(x => ['Question', x.querySelector('summary').textContent.trim(), 'Answer', x.querySelector('p').textContent.trim()]);
+    assert.ok(shown.length >= 5, page + ': the questions are on the page');
+    assert.deepStrictEqual(faq, shown, page + ': the FAQ data is the FAQ on the page, questions and answers word for word');
     assert.strictEqual(ld.find(x => x['@type'] === 'WebApplication').offers.price, '0');
     assert.strictEqual(d.querySelectorAll('h1').length, 1);
   }
@@ -3234,6 +3236,427 @@ test('lines: with nothing on the list yet, each service still has Keep and Cance
   m.click(m.$('#homeAnswer .al[data-entry=netflix] [data-pick=keep]'));
   assert.ok(ansLines(m).includes('Keep | Netflix Standard | Your pick: keep it every month.'));
   assert.ok(m.$('#part4').hidden, 'no next months without a list');
+});
+
+/* ---------- plan files, country links, and the files the app writes ---------- */
+test('countries: a ?country= link that re-prices your saved plan offers Undo, which brings it back exactly', () => {
+  const us = v2({ netflix: row('netflix', 'nf-std', { price: 15.49 }), hulu: row('hulu', 'hulu', { ci: 1, price: 7.99, items: [{ title: 'The Bear', hours: 5, earliest: 0 }] }), gym: custom('gym', 'Gym', 9.99, { ci: 2 }) }, { country: 'US' });
+  const m = mount(us, { hash: '?country=MX' });
+  assert.match(m.txt('#toast'), /^Prices are now for Mexico\./);
+  const moved = m.saved();
+  assert.ok(moved.country === 'MX' && moved.sel.netflix.price !== 15.49 && !moved.sel.hulu, 'the link moved the plan and saved it');
+  const went = [], RealURL = m.w.URL;
+  m.w.URL = class extends RealURL { toString() { const s = super.toString(); went.push(s); return s; } };   // where Undo reloads to
+  const undo = m.$('#toast .undo');
+  assert.ok(undo, 'the toast offers Undo');
+  m.click(undo);
+  assert.strictEqual(m.w.localStorage.getItem('subrotator:country'), 'US');
+  assert.deepStrictEqual(went.map(u => new RealURL(u).searchParams.get('country')), ['US'], 'it reloads in the United States');
+  const back = mount(m.w.localStorage.getItem('subrotator:v1'), { hash: '?country=US' });   // the page after the reload
+  const sel = JSON.parse(back.w.eval('JSON.stringify(state.sel)'));
+  assert.deepStrictEqual([sel.netflix.price, sel.hulu.price, sel.gym.price], [15.49, 7.99, 9.99], 'your own prices');
+  assert.deepStrictEqual(sel.hulu.items.map(i => i.title), ['The Bear'], 'the Hulu title is on Hulu again');
+  assert.ok(!sel.disney && back.w.eval('COUNTRY') === 'US', 'nothing is left from Mexico');
+  assert.ok(!/Prices are now/.test(back.txt('#toast')), 'nothing moved this time');
+  const first = mount(undefined, { hash: '?country=MX' });
+  assert.ok(!first.$('#toast .undo'), 'a first visit has nothing to undo');
+  assert.deepStrictEqual(m.errs.concat(back.errs, first.errs), []);
+});
+test('open a saved plan: a huge odd file is refused fast, and a name that repeats the data mark does not break your file', () => {
+  const m = mount(v2({ netflix: row('netflix', 'nf-std', { items: [{ title: 'Mine', hours: 5, earliest: 0 }] }) }));
+  const before = JSON.stringify(m.saved());
+  for (const bad of ["'<script'.repeat(300000)", "'<script id=\"subrotator-plan\"'.repeat(80000)", "'id=\"subrotator-plan\">'.repeat(100000)", "'<script id=\"subrotator-plan\">'.repeat(70000)"]) {
+    const t0 = Date.now();
+    assert.strictEqual(m.w.eval('openPlanText(' + bad + ')'), false, bad);
+    assert.ok(Date.now() - t0 < 1000, bad + ' took ' + (Date.now() - t0) + ' ms');
+  }
+  assert.strictEqual(JSON.stringify(m.saved()), before, 'nothing changed');
+  // a real saved file still opens, even when a name the chart shows as text holds the mark
+  const name = 'Gym id="subrotator-plan">{"app":"sub-rotator"}</script>';
+  const p = mount(v2({ gym: custom('gym', name, 9.99, { items: [{ title: 'Class', hours: 4, earliest: 0 }] }), netflix: row('netflix', 'nf-std', { ci: 1, items: [{ title: 'Show', hours: 5, earliest: 0 }] }) }));
+  const doc = p.w.eval('planDocument()');
+  assert.ok(doc.split('id="subrotator-plan"').length > 2, 'the mark shows up before the data too');
+  const n = mount();
+  assert.strictEqual(n.w.eval('openPlanText(' + JSON.stringify(doc) + ')'), true);
+  assert.deepStrictEqual(Object.keys(n.saved().sel).sort(), ['gym', 'netflix']);
+  assert.strictEqual(n.saved().sel.gym.name, name);
+  assert.deepStrictEqual(m.errs.concat(p.errs, n.errs), []);
+});
+test('open a saved plan: 600 titles at most in all, and names and titles from a file stay on one short line', () => {
+  const sel = {};
+  for (let i = 0; i < 60; i++) sel['c' + i] = custom('c' + i, 'Extra ' + i, 1, { ci: i % 8, items: Array.from({ length: 300 }, (_, j) => ({ title: 'T' + i + '-' + j, hours: 1, earliest: 0 })) });
+  const m = mount();
+  assert.strictEqual(m.w.eval('openPlanText(' + JSON.stringify(JSON.stringify({ app: 'sub-rotator', saved: '2026-10-01', state: v2(sel) })) + ')'), true);
+  const count = s => Object.values(s.sel).reduce((a, x) => a + x.items.length, 0);
+  assert.strictEqual(count(m.saved()), 600, '18,000 titles in the file, 600 kept');
+  assert.strictEqual(m.w.eval('Object.values(state.sel).reduce((a,x)=>a+x.items.length,0)'), 600);
+  // line breaks, control characters and very long text
+  const odd = String.fromCharCode(0x85, 0x2028, 0x2029, 0x7f, 0);
+  const file = { app: 'sub-rotator', saved: '2026-10-01', state: v2({
+    gym: custom('gym', 'Gym\r\nEND:VEVENT' + odd + 'x', 9.99, { items: [{ title: 'Line one\nLine two\ttab', hours: 2, earliest: 0 }, { title: '', hours: 1, earliest: 0 }, { title: odd + ' \t\r\n', hours: 1, earliest: 0 }, { title: 'L'.repeat(500), hours: 1, earliest: 0 }] }),   // a title with nothing left in it is no row
+    long: custom('long', 'N'.repeat(300), 1, { ci: 1 }), blank: custom('blank', '\r\n\t', 1, { ci: 2 }) }) };
+  const n = mount();
+  assert.strictEqual(n.w.eval('openPlanText(' + JSON.stringify(JSON.stringify(file)) + ')'), true);
+  const st = n.saved();
+  assert.strictEqual(st.sel.gym.name, 'Gym END:VEVENT x');
+  assert.deepStrictEqual(st.sel.gym.items.map(i => i.title.length > 50 ? i.title.length : i.title), ['Line one Line two tab', 200], 'an empty title, or one of only line breaks and control characters, is left out');
+  assert.deepStrictEqual(n.$$('#queue .qgroup[data-id=gym] .qitem .qt').map(q => q.textContent.length > 50 ? q.textContent.length : q.textContent), ['Line one Line two tab', 200], 'no row without a name on My list');
+  assert.strictEqual(st.sel.long.name.length, 80);
+  assert.ok(!st.sel.blank, 'a name with nothing in it is left out');
+  assert.deepStrictEqual(m.errs.concat(n.errs), []);
+});
+test('calendar file: a name from a saved file cannot add events, links or alarms; the copied plan and the saved file keep it on one line', () => {
+  const evil = 'Zed <b>x</b>\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nURL:https://evil.example/fix\r\nBEGIN:VALARM\r\nTRIGGER:-PT5M\r\nEND:VALARM';
+  const file = JSON.stringify({ app: 'sub-rotator', saved: '2026-10-01', state: v2({ zed: custom('zed', evil, 9.99, { paying: false, items: [{ title: 'Later', hours: 5, earliest: 1 }] }) }) });
+  const check = (ics, why) => {
+    const lines = ics.split('\r\n'), un = ics.replace(/\r\n /g, '').split('\r\n');
+    assert.ok(lines.every(l => Buffer.byteLength(l, 'utf8') <= 75), why + ': a line over 75 octets: ' + lines.find(l => Buffer.byteLength(l, 'utf8') > 75));
+    assert.strictEqual(un.filter(l => l === 'BEGIN:VEVENT').length, 1, why + ': one event');
+    assert.ok(!un.some(l => /^(URL|TRIGGER|ACTION)[:;]/.test(l) || l === 'BEGIN:VALARM'), why + ': no link or alarm of its own');
+    assert.ok(![...un.join('')].some(c => c.charCodeAt(0) < 32 || c.charCodeAt(0) === 127), why + ': no control characters');
+    return un.find(l => l.startsWith('DESCRIPTION:'));
+  };
+  const m = mount();
+  m.w.eval('openPlanText(' + JSON.stringify(file) + ')');
+  assert.match(check(m.w.eval('reminderIcs()'), 'from the file'), /Zed <b>x<\/b> END:VEVENT BEGIN:VEVENT URL:https:\/\/evil/, 'the name stays in the note, as text');
+  const es = mount(undefined, { hash: '?lang=es' });
+  es.w.eval('openPlanText(' + JSON.stringify(file) + ')');
+  check(es.w.eval('reminderIcs()'), 'in Spanish');
+  // even a name with line breaks that got past the file check: escaped, folded, every letter kept
+  const wide = 'ñ'.repeat(40) + ' 🎮🎮🎮 ' + 'é'.repeat(30);
+  m.w.eval('state.sel.zed.name=' + JSON.stringify(evil + ' ' + wide) + ';renderAll()');
+  const d = check(m.w.eval('reminderIcs()'), 'a name with line breaks');
+  assert.ok(d.includes('Zed <b>x</b>\\nEND:VEVENT\\nBEGIN:VEVENT\\nURL:https://evil.example/fix') && d.includes(wide), 'line breaks are written as \\n: ' + d);
+  // the copied plan and the saved file, from the file's name
+  const n = mount();
+  n.w.eval('openPlanText(' + JSON.stringify(file) + ')');
+  const share = n.w.eval('lastShare').split('\n');
+  assert.ok(share.some(l => l.includes('Zed <b>x</b> END:VEVENT BEGIN:VEVENT URL:')), share.join(' | '));
+  assert.ok(!share.some(l => /^(END|BEGIN|URL|TRIGGER)[:;]/.test(l)), 'no line of the copied plan comes from inside the name');
+  const doc = n.w.eval('planDocument()');
+  const shown = doc.replace(/="[^"]*"/g, '=""');   // the page's text, without attribute values (a quoted title may keep a raw <)
+  assert.ok(shown.includes('Zed &lt;b&gt;x&lt;/b&gt; END:VEVENT BEGIN:VEVENT') && !shown.includes('<b>x</b>') && !/[\r\n]END:VEVENT/.test(doc), 'escaped, on one line');
+  assert.deepStrictEqual(m.errs.concat(es.errs, n.errs), []);
+});
+test('save my plan: the file leaves out your free-time answers; opening one keeps the answers here and its hours', () => {
+  const est = { work: 'shift', school: 'part', home: ['u6', 'fam'], workH: 50, care: 22 };
+  const m = mount(v2({ netflix: row('netflix', 'nf-std', { items: [{ title: 'Show', hours: 5, earliest: 0 }] }) }, { H: 60, hSet: true, est }));
+  assert.strictEqual(m.w.eval('state.est.work'), 'shift');
+  const doc = m.w.eval('planDocument()');
+  const data = JSON.parse(/<script type="application\/json" id="subrotator-plan">([\s\S]*?)<\/script>/.exec(doc)[1]);
+  assert.ok(!('est' in data.state) && !/"u6"|"shift"|"part"/.test(doc), 'no free-time answers in the file');
+  assert.deepStrictEqual([data.state.H, data.state.hSet], [60, true]);
+  // someone else opens it: the hours come from the file, their own answers stay
+  const theirs = { work: 'pt', school: 'none', home: ['kid'], workH: 20, care: 5 };
+  const n = mount(v2({}, { est: theirs }));
+  assert.strictEqual(n.w.eval('openPlanText(' + JSON.stringify(doc) + ')'), true);
+  const got = n.saved();
+  assert.deepStrictEqual([got.H, got.est.work, got.est.home, got.est.care], [60, 'pt', ['kid'], 5]);
+  // you open your own file again: your answers are still yours
+  assert.strictEqual(m.w.eval('openPlanText(' + JSON.stringify(doc) + ')'), true);
+  assert.deepStrictEqual([m.saved().H, m.saved().est.work, m.saved().est.home], [60, 'shift', ['u6', 'fam']]);
+  // from the made-up example, your own answers, not the example's
+  const x = mount(v2({ netflix: row('netflix', 'nf-std') }, { est }));
+  x.click(x.$('#loadExample'));
+  x.w.eval('openPlanText(' + JSON.stringify(doc) + ')');
+  assert.strictEqual(x.saved().est.work, 'shift');
+  // a file from another country waits for the reload with your answers in it
+  const g = mount(v2({}, { est }));
+  g.w.eval('openPlanText(' + JSON.stringify(JSON.stringify({ app: 'sub-rotator', saved: '2026-10-01', state: Object.assign(v2({ netflix: row('netflix', 'nf-ads') }), { country: 'GB', est: undefined }) })) + ')');
+  assert.strictEqual(JSON.parse(g.w.localStorage.getItem('subrotator:v1')).est.work, 'shift');
+  // a file saved before the answers were left out still carries the sender's: they are never shown or kept
+  const oldFile = st => JSON.stringify({ app: 'sub-rotator', saved: '2026-10-01', state: v2({ netflix: row('netflix', 'nf-std', { items: [{ title: 'Show', hours: 5, earliest: 0 }] }) }, Object.assign({ H: 60, hSet: true, est }, st)) });
+  const r = mount(v2({}), { hash: '#estimates' });
+  assert.strictEqual(r.w.eval('openPlanText(' + JSON.stringify(oldFile()) + ')'), true);
+  assert.deepStrictEqual([r.saved().H, r.saved().est.work, r.saved().est.school, r.saved().est.home], [60, 'ft', 'none', []], 'the default answers stay; the hours come from the file');
+  assert.deepStrictEqual(r.$$('#estWork [aria-checked=true], #estSchool [aria-checked=true], #estHome [aria-pressed=true]').map(b => b.textContent), ['Full-time job', 'Not studying'], 'none of the sender\'s answers show');
+  const t = mount(v2({}, { est: theirs }));
+  t.w.eval('openPlanText(' + JSON.stringify(oldFile()) + ')');
+  assert.deepStrictEqual([t.saved().est.work, t.saved().est.home], ['pt', ['kid']], 'your own answers are not replaced');
+  const o = mount(v2({}, { est: theirs }));
+  o.w.eval('openPlanText(' + JSON.stringify(oldFile({ country: 'GB' })) + ')');
+  assert.strictEqual(JSON.parse(o.w.localStorage.getItem('subrotator:v1')).est.work, 'pt', 'from another country too');
+  assert.deepStrictEqual(m.errs.concat(n.errs, x.errs, g.errs, r.errs, t.errs, o.errs), []);
+});
+test('my list: what you add keeps to the limits a saved plan keeps, so nothing is cut at the next visit', async () => {
+  const items = (p, n) => Array.from({ length: n }, (_, j) => ({ title: p + j, hours: 1, earliest: 0 }));
+  const count = s => Object.values(s.sel).reduce((a, x) => a + x.items.length, 0);
+  // the boxes stop where a saved plan stops
+  const m = mount(v2({ netflix: row('netflix', 'nf-std', { items: items('N', 300) }) }));
+  assert.deepStrictEqual([m.$('#cName').maxLength, m.$('#qTitle').maxLength], [80, 200]);
+  // a name pasted past the box's limit, or with a line break: the same now as after the next visit
+  m.$('#cName').value = 'Cable '.repeat(20); m.$('#cPrice').value = '20'; m.click(m.$('#cAdd'));   // a script can set more than the box lets you type
+  m.w.eval('addCustomService(' + JSON.stringify('Gym\r\nPlus') + ',9);save()');   // the way a bank file's names come in
+  const names = () => Object.values(m.saved().sel).filter(s => s.custom).map(s => s.name).sort();
+  assert.deepStrictEqual(names().map(n => n.length > 50 ? n.length : n), [80, 'Gym Plus']);
+  const now = m.saved(), next = mount(now).saved();
+  assert.deepStrictEqual(Object.values(next.sel).filter(s => s.custom).map(s => s.name).sort(), names(), 'the next visit keeps every name as it was');
+  // 300 titles on one service: the next one is refused, with a reason
+  m.addBar({ title: 'One more', svc: 'netflix', hours: 2 });
+  assert.match(m.txt('#toast'), /^Netflix is full: 300 titles\. Remove one first\./);
+  assert.strictEqual(m.saved().sel.netflix.items.length, 300);
+  // 600 in all: refused on any service, from the box and from New releases
+  const big = v2({ netflix: row('netflix', 'nf-std', { items: items('N', 300) }), hulu: row('hulu', 'hulu', { ci: 1, items: items('H', 300) }), apple: row('apple', 'apple', { ci: 2 }) });
+  const f = mount(big, { fetch: stub([], upItems()), hash: '#soon' });
+  await sleep(30);
+  f.addBar({ title: 'One more', svc: 'apple', hours: 2 });
+  assert.match(f.txt('#toast'), /^Your list is full: 600 titles\. Remove one first\./);
+  f.w.eval("soonAdd('game-c','gp-ess','')");
+  assert.match(f.txt('#toast'), /^Your list is full: 600 titles\./);
+  assert.ok(!f.saved().sel.gamepass && count(f.saved()) === 600, 'nothing added, no service added');
+  assert.strictEqual(count(mount(f.saved()).saved()), 600, 'all 600 are there at the next visit');
+  // Spanish says the same
+  const es = mount(big, { hash: '?lang=es' });
+  es.addBar({ title: 'Uno más', svc: 'apple', hours: 2 });
+  assert.match(es.txt('#toast'), /^Tu lista está llena: 600 títulos\. Quita uno primero\./);
+  const esS = mount(v2({ netflix: row('netflix', 'nf-std', { items: items('N', 300) }) }), { hash: '?lang=es' });
+  esS.addBar({ title: 'Uno más', svc: 'netflix', hours: 2 });
+  assert.match(esS.txt('#toast'), /^Ya hay 300 títulos en Netflix\. Quita uno primero\./);
+  // a release whose name has a line break: one line on your list, and the row knows it is there
+  const up = upItems(); up.items.push({ id: 'nl', title: 'Two\nLines', kind: 'game', platforms: ['PC'], date: isoOffset(8), confidence: 'confirmed', hours: 6, checked: '2026-10-05' });
+  const r = mount(v2({ gamepass: row('gamepass', 'gp-ult') }), { fetch: stub([], up), hash: '#soon' });
+  await sleep(30);
+  r.w.eval("soonAdd('nl','gp-ult','')");
+  assert.deepStrictEqual(r.saved().sel.gamepass.items.map(i => i.title), ['Two Lines']);
+  assert.ok(r.w.eval("queuedOf(upcoming.items.find(i=>i.id==='nl'))!=null"), 'on My list');
+  r.w.eval("soonAdd('nl','gp-ult','')");
+  assert.strictEqual(r.saved().sel.gamepass.items.length, 1, 'adding it again changes it, not a second copy');
+  assert.deepStrictEqual(m.errs.concat(f.errs, es.errs, esS.errs, r.errs), []);
+});
+test('open a saved plan: very long service ids and unknown set-aside services are left out', () => {
+  const long = 'c1' + 'x'.repeat(30000);
+  const file = { app: 'sub-rotator', saved: '2026-10-01', state: Object.assign(v2({
+    [long]: custom(long, 'Long id', 5, { items: [{ title: 'A', hours: 2, earliest: 0 }] }),
+    gym: custom('gym', 'Gym', 9.99, { ci: 1, items: [{ title: 'Class', hours: 2, earliest: 0 }] }) }),
+  { away: { peacock: row('peacock', 'peacock', { items: [{ title: 'Poker Face', hours: 5, earliest: 0 }] }), junk: { items: [], note: 'x'.repeat(1000) } } }) };
+  const m = mount();
+  assert.strictEqual(m.w.eval('openPlanText(' + JSON.stringify(JSON.stringify(file)) + ')'), true);
+  const st = m.saved();
+  assert.deepStrictEqual(Object.keys(st.sel).sort(), ['gym', 'peacock'], 'the service with a 30,000-letter id is left out');
+  assert.deepStrictEqual(Object.keys(st.away || {}), [], 'Peacock is sold here: it comes back; junk is not a service');
+  assert.deepStrictEqual(st.sel.peacock.items.map(i => i.title), ['Poker Face']);
+  assert.ok(m.w.localStorage.getItem('subrotator:v1').length < 5000, 'what is kept is small');
+  // in Canada Peacock is still set aside, junk is still left out
+  const ca = mount(JSON.stringify(Object.assign({}, file.state, { country: 'CA' })), { hash: '?country=CA' });
+  assert.strictEqual(ca.w.eval('JSON.stringify(Object.keys(state.away||{}))'), '["peacock"]');
+  assert.deepStrictEqual(ca.w.eval('Object.keys(state.sel).sort().join()'), 'gym');
+  assert.deepStrictEqual(m.errs.concat(ca.errs), []);
+});
+test('my list: titles set aside in another country count toward the 600, so coming back never cuts the list you were looking at', () => {
+  const items = (p, n) => Array.from({ length: n }, (_, j) => ({ title: p + j, hours: 1, earliest: 0 }));
+  const counts = o => Object.fromEntries(Object.entries(o || {}).map(([k, x]) => [k, x.items.length]));
+  // the US: Netflix 300 and Peacock 300. In Canada Peacock is set aside, and the list is still full
+  const us = v2({ netflix: row('netflix', 'nf-std', { items: items('N', 300) }), peacock: row('peacock', 'peacock', { ci: 1, items: items('P', 300) }) }, { country: 'US' });
+  const ca = mount(us, { hash: '?country=CA' });
+  assert.deepStrictEqual([counts(ca.saved().sel), counts(ca.saved().away)], [{ netflix: 300 }, { peacock: 300 }]);
+  ca.w.eval("addFamily('disney',{paying:false});save();renderAll()");
+  ca.addBar({ title: 'One more', svc: 'disney', hours: 2 });
+  assert.match(ca.txt('#toast'), /^Your list is full: 600 titles, with the ones set aside\. Remove one first\./);
+  assert.strictEqual(ca.saved().sel.disney.items.length, 0, 'nothing added');
+  const caEs = mount(ca.saved(), { hash: '?country=CA&lang=es' });
+  caEs.addBar({ title: 'Uno más', svc: 'disney', hours: 2 });
+  assert.match(caEs.txt('#toast'), /^Tu lista está llena: 600 títulos, con los guardados aparte\. Quita uno primero\./);
+  // back in the US, every title is there
+  const back = mount(ca.saved(), { hash: '?country=US' });
+  assert.deepStrictEqual(counts(back.saved().sel), { netflix: 300, disney: 0, peacock: 300 });
+  // an older or hand-made plan over the limit: the list you were looking at keeps its titles, what comes back is cut
+  const over = v2({ netflix: row('netflix', 'nf-std', { items: items('N', 300) }), disney: row('disney', 'disney', { ci: 1, items: items('D', 299) }) }, { country: 'CA', away: { peacock: row('peacock', 'peacock', { ci: 2, items: items('P', 300) }) } });
+  const u = mount(over, { hash: '?country=US' });
+  assert.deepStrictEqual(counts(u.saved().sel), { netflix: 300, disney: 299, peacock: 1 });
+  // and one that stays in Canada: the titles set aside are cut, not yours
+  const c2 = mount(over, { hash: '?country=CA' });
+  assert.deepStrictEqual([counts(c2.saved().sel), counts(c2.saved().away)], [{ netflix: 300, disney: 299 }, { peacock: 1 }]);
+  assert.deepStrictEqual(ca.errs.concat(caEs.errs, back.errs, u.errs, c2.errs), []);
+});
+test('countries: a service whose titles do not all fit on its home here is set aside whole, so moving country never cuts titles', () => {
+  const items = (p, n) => Array.from({ length: n }, (_, j) => ({ title: p + j, hours: 1, earliest: 0 }));
+  const counts = o => Object.fromEntries(Object.entries(o || {}).map(([k, x]) => [k, x.items.length]));
+  // the US: Hulu 200 and Disney+ 150. In the UK Hulu's home is Disney+, but 350 is over 300 on one service
+  const us = v2({ hulu: row('hulu', 'hulu', { items: items('H', 200) }), disney: row('disney', 'disney', { ci: 1, items: items('D', 150) }) }, { country: 'US' });
+  const gb = mount(us, { hash: '?country=GB' });
+  assert.deepStrictEqual([counts(gb.saved().sel), counts(gb.saved().away)], [{ disney: 150 }, { hulu: 200 }]);
+  assert.match(gb.txt('#toast'), /Not sold here, set aside: Hulu\./);
+  assert.ok(!/moved to the service/.test(gb.txt('#toast')), 'it does not say they moved: ' + gb.txt('#toast'));
+  const back = mount(gb.saved(), { hash: '?country=US' });
+  assert.deepStrictEqual(counts(back.saved().sel), { disney: 150, hulu: 200 }, 'back in the US, all 350');
+  assert.deepStrictEqual(back.saved().sel.hulu.items.map(i => i.title), items('H', 200).map(i => i.title), 'in their order');
+  // when they fit, they still move, as before
+  const fit = mount(v2({ hulu: row('hulu', 'hulu', { items: items('H', 150) }), disney: row('disney', 'disney', { ci: 1, items: items('D', 150) }) }, { country: 'US' }), { hash: '?country=GB' });
+  assert.deepStrictEqual([counts(fit.saved().sel), counts(fit.saved().away)], [{ disney: 300 }, {}]);
+  assert.match(fit.txt('#toast'), /Titles from Hulu moved to the service that has them here\./);
+  assert.deepStrictEqual(gb.errs.concat(back.errs, fit.errs), []);
+});
+test('open a saved plan: a set-aside service and the free-time answers keep only what the app reads, so a file cannot park junk here', () => {
+  const pad = 'x'.repeat(200000);
+  const away = { crave: { tier: 'crave-prem', price: 22, paying: false, had: true, ci: 3, pad, items: [{ title: 'Crave Show', hours: 6, earliest: 0, tier: 'crave-prem', pad, season: 2 }, { title: '', hours: 1 }], extra: { pad } } };
+  const file = { app: 'sub-rotator', saved: '2026-10-01', state: Object.assign(v2({ netflix: row('netflix', 'nf-std', { items: [{ title: 'Mine', hours: 5, earliest: 0 }] }) }), { country: 'CA', away }) };
+  // opened in the US, where Crave is not sold: it stays set aside, cleaned
+  const m = mount(undefined, { hash: '?country=US' });
+  m.w.eval('openPlanText(' + JSON.stringify(JSON.stringify(Object.assign({}, file, { state: Object.assign({}, file.state, { country: 'US' }) }))) + ')');
+  const raw = m.w.localStorage.getItem('subrotator:v1');
+  assert.ok(raw.length < 10000 && !raw.includes('pad') && !raw.includes('extra'), 'stored: ' + raw.length + ' characters');
+  assert.deepStrictEqual(m.saved().away, { crave: { items: [{ title: 'Crave Show', hours: 6, earliest: 0, tier: 'crave-prem', season: 2 }], ci: 3, tier: 'crave-prem', price: 22, paying: false, had: true } });
+  assert.ok(!/x{1000}/.test(m.w.eval('planDocument()')), 'your own saved file does not pass it on');
+  // in Canada it comes back as it was (at Canada's price, as any move re-prices)
+  const ca = mount(m.saved(), { hash: '?country=CA' });
+  const crave = JSON.parse(ca.w.eval('JSON.stringify(state.sel.crave)'));
+  assert.deepStrictEqual([crave.tier, crave.paying, crave.had, crave.ci, crave.items.map(i => [i.title, i.tier, i.season])], ['crave-prem', false, true, 3, [['Crave Show', 'crave-prem', 2]]]);
+  assert.ok(!ca.w.eval('state.away'), 'nothing is left aside');
+  // free-time answers already stored by an older version: only the ones the app asks
+  const est = { work: 'w'.repeat(100000), school: 'part', home: ['u6', 'nope'], homeCustom: true, sleep: 7, pad, share: 'lots' };
+  const e = mount(v2({ netflix: row('netflix', 'nf-std') }, { est }));
+  e.w.eval('save()');
+  const se = e.saved().est;
+  assert.deepStrictEqual(se, { work: 'custom', school: 'part', home: ['u6'], workH: 40, commute: 5, study: 0, care: 0, sleep: 7, admin: 5, share: 60, homeCustom: true });
+  assert.ok(e.w.localStorage.getItem('subrotator:v1').length < 10000);
+  assert.deepStrictEqual(m.errs.concat(ca.errs, e.errs), []);
+});
+
+// ---------- fonts, privacy copy and the Content-Security-Policy ----------
+const PUB = path.join(__dirname, '..', 'public'), ROOT = path.join(__dirname, '..');
+const pubRead = f => fs.readFileSync(path.join(PUB, f), 'utf8');
+const pubHtml = () => fs.readdirSync(PUB).filter(f => /\.html$/.test(f));
+const vercelJson = () => JSON.parse(fs.readFileSync(path.join(ROOT, 'vercel.json'), 'utf8'));
+const cspMap = csp => Object.fromEntries(csp.split(';').map(x => x.trim()).filter(Boolean).map(x => { const [k, ...v] = x.split(/\s+/); return [k, v]; }));
+test('fonts come from this site: no page asks Google, and Anybody and Figtree are here with their licence', () => {
+  const faces = {};
+  for (const page of ['index.html', 'es.html', 'app.html']) {
+    const src = pubRead(page);
+    assert.ok(!/fonts\.(googleapis|gstatic)\.com/.test(src), page + ': no Google Fonts: opening a page must not send Google your address');
+    const d = new JSDOM(src).window.document;
+    const css = [...d.querySelectorAll('style')].map(s => s.textContent).join('\n');
+    const ff = [...css.matchAll(/@font-face\{([^}]*)\}/g)].map(m => m[1]);
+    faces[page] = ff.join('\n');
+    const one = (fam, subset) => ff.find(f => f.includes('"' + fam + '"') && f.includes('url(fonts/' + fam.toLowerCase() + '-' + subset + '.woff2) format("woff2")'));
+    for (const fam of ['Anybody', 'Figtree']) for (const subset of ['latin', 'latin-ext']) {
+      const f = one(fam, subset);
+      assert.ok(f, page + ': ' + fam + ' ' + subset);
+      assert.ok(f.includes('font-display:swap'), page + ': text shows at once in a fallback font');
+      assert.ok(f.includes(fam === 'Anybody' ? 'font-weight:600 900;font-stretch:50% 150%' : 'font-weight:400 800'), page + ': ' + fam + ' keeps its full range');
+      assert.ok(f.includes(subset === 'latin' ? 'unicode-range:U+0000-00FF,' : 'unicode-range:U+0100-02BA,'), page + ': ' + subset + ' range (Spanish letters are in latin)');
+    }
+    assert.strictEqual(ff.length, 4, page + ': latin and latin-ext only');
+    const pre = [...d.querySelectorAll('link[rel=preload]')].map(l => [l.getAttribute('href'), l.getAttribute('as'), l.getAttribute('type'), l.hasAttribute('crossorigin')]);
+    assert.deepStrictEqual(pre, [['fonts/anybody-latin.woff2', 'font', 'font/woff2', true], ['fonts/figtree-latin.woff2', 'font', 'font/woff2', true]], page + ': the latin files load early');
+    assert.ok(/--display:"Anybody"/.test(src) && /--body:"Figtree"/.test(src), page + ': the tokens still name the fonts');
+  }
+  assert.ok(faces['index.html'] === faces['es.html'] && faces['es.html'] === faces['app.html'], 'the same @font-face rules on every page');
+  for (const f of ['anybody-latin', 'anybody-latin-ext', 'figtree-latin', 'figtree-latin-ext']) {
+    const b = fs.readFileSync(path.join(PUB, 'fonts', f + '.woff2'));
+    assert.strictEqual(b.subarray(0, 4).toString('latin1'), 'wOF2', f + ' is a woff2 file');
+  }
+  for (const f of ['OFL-Anybody.txt', 'OFL-Figtree.txt']) assert.match(pubRead('fonts/' + f), /SIL OPEN FONT LICENSE Version 1\.1/, f + ': the licence ships with the font');
+  const cache = vercelJson().headers.find(h => h.source === '/fonts/(.*)');
+  assert.ok(cache && /^public, max-age=\d+/.test(cache.headers.find(h => h.key === 'Cache-Control').value), 'fonts are cached');
+});
+test('privacy answer: every place that says where your information is kept names TVMaze and what it gets', () => {
+  // what TVMaze gets: the text typed in the search box (any text, a game too) or a show's number, never "nothing else"
+  for (const [page, want] of [['index.html', 'Only on your phone or computer. To find shows and their air dates, it asks TVMaze. It sends only what you type, or a show’s number.'],
+    ['es.html', 'Solo en tu teléfono o computadora. Para encontrar series y sus fechas, le pregunta a TVMaze. Solo envía lo que escribes o el número de la serie.']]) {
+    const d = new JSDOM(pubRead(page)).window.document;
+    const det = [...d.querySelectorAll('.faq details')].find(x => /Where is my information kept|Dónde se guarda mi información/.test(x.textContent));
+    assert.strictEqual(det.querySelector('p').textContent, want, page);
+    const ld = JSON.parse(d.querySelector('script[type="application/ld+json"]').textContent)['@graph'].find(x => x['@type'] === 'FAQPage');
+    assert.ok(ld.mainEntity.some(q => q.acceptedAnswer.text === want), page + ': the search data says the same');
+  }
+  const answer = (m, re) => Object.values(JSON.parse(m.w.eval('JSON.stringify(HELP)'))).flatMap(v => v.qa).find(([q]) => re.test(q));
+  const en = mount(), es = mount(undefined, { hash: '?lang=es' });
+  // the app's help answers are one or two short sentences, so this one is the same message, shorter
+  assert.deepStrictEqual(answer(en, /Where is my information kept/), ['Where is my information kept?', 'Only on this phone or computer. We send TVMaze only what you type, or a show’s number.']);
+  assert.deepStrictEqual(answer(es, /Dónde se guarda/), ['¿Dónde se guarda mi información?', 'Solo en este teléfono o computadora. Solo enviamos a TVMaze lo que escribes o el número de la serie.']);
+  for (const page of ['index.html', 'es.html', 'app.html']) assert.ok(!/nothing else|nada más|only the show\.|solo le enviamos la serie/i.test(pubRead(page)), page + ': no answer says TVMaze gets only the show');
+  // the line under the lead on Your plan, right above the search box: your plan stays, not "it all"
+  assert.strictEqual(en.txt('.home-top .fine-note'), 'Free. No account. Your plan stays on this phone or computer.');
+  assert.strictEqual(es.txt('.home-top .fine-note'), 'Gratis. Sin cuenta. Tu plan se queda en este teléfono o computadora.');
+  assert.ok(!/It all stays|Todo se queda/.test(pubRead('app.html')), 'the old promise is gone');
+  // the app's search snippet must not promise more than that: search text and show numbers do go to TVMaze
+  const appDesc = new JSDOM(pubRead('app.html')).window.document.querySelector('meta[name=description]').content;
+  assert.ok(!/Nothing leaves/i.test(appDesc) && /Your plan stays on your device\./.test(appDesc), 'app.html description: ' + appDesc);
+  const fine = m => m.$$('footer.fine p').map(p => p.textContent).find(t => /TVMaze/.test(t) && !/CC BY-SA/.test(t));
+  assert.strictEqual(fine(en), "To find shows and their air dates, we ask TVMaze. We send only the text you type, or the show's TVMaze number.");
+  assert.strictEqual(fine(es), 'Para encontrar series y sus fechas, le preguntamos a TVMaze. Solo enviamos lo que escribes o el número de la serie en TVMaze.');
+  for (const page of ['index.html', 'es.html', 'app.html']) assert.ok(!/Search sends only the name you type|La búsqueda solo envía el nombre/.test(pubRead(page)), page + ': the old answer is gone');
+  assert.deepStrictEqual(en.errs.concat(es.errs), []);
+});
+test('CSP: vercel.json lists the hash of every inline script the pages run (else: run node tools/csp-hash.mjs)', async () => {
+  const tool = await import(require('url').pathToFileURL(path.join(ROOT, 'tools', 'csp-hash.mjs')).href);
+  // the hashes, worked out a second way: jsdom's own HTML parser and every script it would run
+  const crypto = require('crypto'), mine = new Set();
+  for (const page of pubHtml()) for (const s of new JSDOM(pubRead(page)).window.document.querySelectorAll('script')) {
+    const t = (s.getAttribute('type') || '').trim().toLowerCase();
+    if (t === '' || t === 'module' || /^(text|application)\/(x-)?(java|ecma)script$/.test(t)) mine.add("'sha256-" + crypto.createHash('sha256').update(s.textContent, 'utf8').digest('base64') + "'");
+  }
+  assert.deepStrictEqual(tool.scriptSources(ROOT), [...mine].sort(), 'tools/csp-hash.mjs finds the same scripts as a browser');
+  const csp = tool.cspOf(vercelJson()), dir = cspMap(csp);
+  assert.deepStrictEqual(dir['script-src'], [...mine].sort(), 'vercel.json is stale: run node tools/csp-hash.mjs');
+  assert.strictEqual(mine.size, 1, 'one script: the app');
+  assert.ok(!/unsafe-inline|unsafe-eval|unsafe-hashes|https?:|\*/.test(dir['script-src'].join(' ')), 'only listed scripts run');
+  const tv = pubRead('app.html').match(/const TV_BASE='(https:\/\/[^']+)'/)[1];
+  assert.deepStrictEqual(dir['connect-src'], ["'self'", new URL(tv).origin], 'the app talks to itself and TVMaze, nothing else');
+  assert.deepStrictEqual([dir['default-src'], dir['font-src'], dir['img-src'], dir['object-src'], dir['base-uri'], dir['frame-ancestors'], dir['form-action'], dir['style-src']],
+    [["'self'"], ["'self'"], ["'self'", 'data:'], ["'none'"], ["'none'"], ["'none'"], ["'self'"], ["'unsafe-inline'"]]);
+  // the tool reads a page the way a browser does
+  const got = tool.scriptsIn('<p>a < b</p><!-- <script>no</script> --><title><script></title><script type="application/ld+json">{"a":"x"}</script>' +
+    '<div title="a>b"></div><SCRIPT>\r\nvar s="<"+"/script>",t=\'</scr\'+\'ipt>\';\r\n</Script ><script type="module">1</script>');
+  assert.deepStrictEqual(got.map(s => [s.executable, s.text]), [[false, '{"a":"x"}'], [true, '\nvar s="<"+"/script>",t=\'</scr\'+\'ipt>\';\n'], [true, '1']]);
+  assert.strictEqual(tool.withScriptSrc("default-src 'self'; script-src 'none'; img-src data:", ["'sha256-a'", "'sha256-b'"]), "default-src 'self'; script-src 'sha256-a' 'sha256-b'; img-src data:");
+  const check = require('child_process').spawnSync(process.execPath, [path.join(ROOT, 'tools', 'csp-hash.mjs'), '--check'], { encoding: 'utf8' });
+  assert.strictEqual(check.status, 0, 'node tools/csp-hash.mjs --check: ' + check.stderr);
+});
+test('CSP: no page has inline event handlers or javascript: links, the landing pages run no script, and the app needs no eval', async () => {
+  for (const page of pubHtml()) {
+    const d = new JSDOM(pubRead(page)).window.document;
+    const bad = [...d.querySelectorAll('*')].flatMap(el => [...el.attributes].filter(a => /^on/i.test(a.name) || /^\s*javascript:/i.test(a.value)).map(a => el.tagName + ' ' + a.name));
+    assert.deepStrictEqual(bad, [], page + ': handlers are set in the script, never as attributes (the policy blocks those)');
+    if (page !== 'app.html') assert.deepStrictEqual([...d.scripts].filter(s => s.type !== 'application/ld+json').length, 0, page + ': a plain page, only search data');
+  }
+  const script = pubRead('app.html').split('<script>')[1];
+  assert.ok(!/\beval\s*\(|new Function\s*\(|set(Timeout|Interval)\s*\(\s*['"`]|document\.write|javascript:/.test(script), 'no code from strings: the policy has no unsafe-eval');
+  // what the app draws itself: every view, in both languages, with search results
+  for (const hash of ['#example', '?lang=es#example']) {
+    const f = stub([[/search\/shows/, resp(200, searchJson)], [/shows\/\d+/, resp(200, showJson)]], upItems());
+    const m = mount(undefined, { hash, fetch: f });
+    await sleep(30);
+    for (const v of ['home', 'services', 'list', 'soon', 'estimates']) { m.w.eval("go('" + v + "')"); await sleep(5); }
+    m.click(m.$('#helpBtn'));
+    m.w.eval("go('list')"); m.typeTitle('edge'); await sleep(500);
+    assert.ok(m.$$('#qSugg [role=option]').length > 0, 'search results are drawn');
+    const bad = m.$$('*').flatMap(el => [...el.attributes].filter(a => /^on/i.test(a.name) || /^\s*javascript:/i.test(a.value)).map(a => el.tagName + ' ' + a.name));
+    assert.deepStrictEqual(bad, [], hash + ': no handler attributes in what the script builds');
+    assert.ok(f.calls.every(u => u === 'upcoming.json' || u.startsWith('https://api.tvmaze.com/')), 'fetches only itself and TVMaze: ' + f.calls.join(' '));
+    assert.deepStrictEqual(m.errs, []);
+  }
+});
+test('local server: scripts/serve.mjs sends the vercel.json headers, so the policy works the same on your computer', async () => {
+  const serve = await import(require('url').pathToFileURL(path.join(ROOT, 'scripts', 'serve.mjs')).href);
+  const v = vercelJson(), csp = v.headers.find(h => h.source === '/(.*)').headers.find(h => h.key === 'Content-Security-Policy').value;
+  assert.ok(serve.sourceToRegex('/(.*)').test('/') && serve.sourceToRegex('/(.*)').test('/app.html'));
+  assert.ok(serve.sourceToRegex('/upcoming.json').test('/upcoming.json') && !serve.sourceToRegex('/upcoming.json').test('/upcomingXjson'), 'a dot is a dot');
+  assert.ok(serve.sourceToRegex('/fonts/(.*)').test('/fonts/a.woff2') && !serve.sourceToRegex('/fonts/(.*)').test('/app.html'));
+  assert.ok(serve.sourceToRegex('/u/:id').test('/u/42') && !serve.sourceToRegex('/u/:id').test('/u/4/2'));
+  assert.throws(() => serve.sourceToRegex('/a*'), /cannot read/, 'a pattern it does not know stops the server');
+  assert.strictEqual(serve.headersFor(v, '/fonts/x.woff2')['Cache-Control'], 'public, max-age=604800');
+  assert.strictEqual(serve.headersFor(v, '/fonts/x.woff2')['Content-Security-Policy'], csp);
+  assert.strictEqual(serve.headersFor(v, '/upcoming.json')['Cache-Control'], v.headers.find(h => h.source === '/upcoming.json').headers[0].value);
+  // the real server, on a free port
+  const child = require('child_process').spawn(process.execPath, [path.join(ROOT, 'scripts', 'serve.mjs')], { env: Object.assign({}, process.env, { PORT: '0' }), stdio: ['ignore', 'pipe', 'pipe'] });
+  try {
+    const port = await new Promise((ok, bad) => {
+      let out = ''; const t = setTimeout(() => bad(new Error('the server did not start: ' + out)), 8000);
+      child.stdout.on('data', b => { out += b; const m = out.match(/localhost:(\d+)/); if (m) { clearTimeout(t); ok(m[1]); } });
+      child.on('exit', c => bad(new Error('the server stopped: ' + c + ' ' + out)));
+    });
+    const get = async p => { const r = await fetch('http://127.0.0.1:' + port + p); await r.arrayBuffer(); return r; };
+    for (const p of ['/', '/es.html', '/app.html', '/upcoming.json', '/fonts/figtree-latin.woff2', '/nope.html']) {
+      const r = await get(p);
+      assert.strictEqual(r.headers.get('content-security-policy'), csp, p + ': the same policy as production');
+      assert.strictEqual(r.headers.get('x-frame-options'), 'DENY', p);
+      assert.strictEqual(r.headers.get('x-content-type-options'), 'nosniff', p);
+      assert.strictEqual(r.headers.get('cache-control'), 'no-store', p + ': local edits show at once');
+    }
+    assert.strictEqual((await get('/fonts/anybody-latin.woff2')).headers.get('content-type'), 'font/woff2');
+    assert.strictEqual((await get('/nope.html')).status, 404);
+  } finally { child.kill(); }
 });
 
 test('no script errors on the long-running page', () => assert.deepStrictEqual(M.errs, []));

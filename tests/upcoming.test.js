@@ -380,7 +380,7 @@ test('script: old releases are dropped and unverifiable ones are flagged without
     assert.deepStrictEqual(JSON.parse(r.text).items.map(i => i.id), ['gta', 'late']);
     assert.deepStrictEqual(ghOut(r.out), { changed: 'true', substantive: 'true', flags: '1', ideas: '0', unchecked: '0' });
     assert.match(r.report, /Removed[\s\S]*Old/);
-    assert.match(r.report, /\[ \] \*\*Late\*\*/);
+    assert.match(r.report, /\[ \] \*\*`Late`\*\*/);
     assert.strictEqual(t.hits.length, 0, 'no TV items, so no requests at all');
   } finally { t.srv.close(); }
 });
@@ -390,7 +390,7 @@ test('script: a show TVMaze no longer has is reported, kept, and does not fail t
     const d = data([tvItem({ id: 'gone', title: 'Gone', tvmazeId: 99 }), tvItem({ id: 'ok', title: 'Ok', tvmazeId: 2, date: '2026-10-20' })]);
     const r = await runScript(tmp(), d, ['--today', '2026-10-09'], t.base);
     assert.strictEqual(r.code, 0, r.se);
-    assert.match(r.report, /Could not check[\s\S]*Gone: TVMaze no longer has show 99/);
+    assert.match(r.report, /Could not check[\s\S]*`Gone`: `TVMaze no longer has show 99`/);
     assert.ok(JSON.parse(r.text).items.some(i => i.id === 'gone'));
   } finally { t.srv.close(); }
 });
@@ -414,7 +414,7 @@ test('script: the request cap is hard', async () => {
     const r = await runScript(tmp(), data(items), ['--today', '2026-10-09', '--max-requests', '2'], t.base);
     assert.strictEqual(r.code, 0, r.se);
     assert.strictEqual(t.hits.length, 2);
-    assert.match(r.report, /S3: request budget of 2 reached/);
+    assert.match(r.report, /`S3`: `request budget of 2 reached`/);
   } finally { t.srv.close(); }
 });
 test('script: requests are spaced by --gap-ms', async () => {
@@ -530,7 +530,7 @@ test('discoverTv: K-dramas and other non-English shows on a service we cover com
   assert.deepStrictEqual(got.map(i => i.title), ['English Show', 'Busan Nights', 'Seoul Hearts', 'Fourth K'], 'a Korean TV channel alone gives no service; a game show is no K-drama; 3 at most');
   assert.ok(got.slice(1).every(i => i.origin === 'Korean' && !i.anime));
   assert.deepStrictEqual(L.validateData({ checked: '2026-10-11', items: got }), []);
-  assert.match(L.renderReport({ today: '2026-10-11', changes: [], removed: [], flags: [], unchecked: [], added: got, ideas: [], wiki: false, requests: 1 }), /\*\*Busan Nights\*\* \(Korean, New series/);
+  assert.match(L.renderReport({ today: '2026-10-11', changes: [], removed: [], flags: [], unchecked: [], added: got, ideas: [], wiki: false, requests: 1 }), /\*\*`Busan Nights`\*\* \(Korean, `New series`/);
   const vix = season(60, 'Volver a Caer', 1, '2026-11-01', 6, { language: 'Spanish', channel: 'ViX', weight: 99 });
   vix.forEach(e => { e._embedded.show.webChannel.country = { code: 'US' }; });
   const v = L.discoverTv(vix, [], '2026-10-11');
@@ -631,6 +631,29 @@ test('parseWikiFilmRows: hidden sort keys are not dates, and a date that spans r
   assert.deepStrictEqual(L.parseWikiFilmRows(wt).map(r => [r.title, r.date, r.hours]), [
     ['Shared A', '2026-11-06', 1.7], ['Shared B', '2026-11-06', 1.8], ['After', '2026-11-13', 1.5]]);
 });
+test('parseWikiFilmRows stays fast on hostile wikitext: a long line of "=" signs, and openings that never close', async () => {
+  const L = await lib();
+  const tbl = cell => '{| class="wikitable"\n|-\n! Title !! Release date !! Runtime\n|-\n| ' + cell + ' || ' + cell + ' || ' + cell + '\n|}';
+  const cases = [
+    ['a heading line of "=" signs', '='.repeat(200000) + 'x\n' + tbl("''A'' || November 20, 2026")],   // took seconds at 400 signs, minutes at 800
+    ['"== " and spaces', '==' + ' '.repeat(200000) + 'x\n' + tbl("''A''")],
+    ...['<ref', '<ref>', '<ref name=a /', '<!--', '[[', '[[a|', '{{sort|', '{{sort|a|', '<', '<a'].map(tk => ['many ' + tk, tbl(tk.repeat(Math.ceil(200000 / tk.length)))]),   // each took 1 to 10 s at 100 kB
+    ...['|format=hide', '| format = hide'].map(tk => ['an unclosed "{{" then many ' + tk, tbl('{{' + tk.repeat(Math.ceil(200000 / tk.length)))]),   // 2.9 s at 100 kB
+    ['one very wide row, then many short rows', '{| class="wikitable"\n|-\n| x' + '||x'.repeat(33333) + '\n' + '|-\n| y\n'.repeat(16666) + '|}'],   // 19 s at 217 kB
+    ['a big cell with a huge rowspan, then many short rows', '{| class="wikitable"\n|-\n! Title !! Release date\n|-\n| rowspan="999999" | ' + '{{x '.repeat(12500) + ' || x\n' + '|-\n| y\n'.repeat(9000) + '|}'],   // 12 s at 108 kB
+  ];
+  cases.forEach(([name, w]) => {
+    const t0 = Date.now();
+    L.parseWikiFilmRows(w);
+    const ms = Date.now() - t0;
+    assert.ok(ms < 1000, name + ': ' + ms + ' ms');
+  });
+  // the same readings as before on normal text
+  assert.deepStrictEqual(L.parseWikiFilmRows("== Films ==\n{|\n|-\n! Title !! Release date\n|-\n| ''[[The Big One (2026 film)|The Big One]]''<ref name=\"a/b\" /><!-- x --> || {{sort|2026-12-31|{{nowrap|Late 2026}}}} November 6, 2026<ref>{{cite web|access-date=October 1, 2026}}</ref>\n|}").map(r => [r.title, r.date]), [['The Big One', '2026-11-06']]);
+  // a hidden date is still dropped, a huge rowspan still fills the rows below, and a wide row still reads its first columns
+  assert.deepStrictEqual(L.parseWikiFilmRows("{|\n|-\n! Title !! Release date\n|-\n| ''A'' || rowspan=\"999\" | {{dts|December 31, 2026|format=hide}}{{{x| FORMAT = Hide}} November 20, 2026\n|-\n| ''B''\n|-\n| ''C'' " + '|| x '.repeat(60) + "\n|}").map(r => [r.title, r.date]),
+    [['A', '2026-11-20'], ['B', '2026-11-20'], ['C', '2026-11-20']]);
+});
 test('discoverMovies: English films from today to 180 days out that the list lacks, as unconfirmed suggestions', async () => {
   const L = await lib();
   const pages = [{ service: 'netflix', page: 'List of Netflix original films (since 2026)', rows: L.parseWikiFilmRows(WIKI) }];
@@ -659,11 +682,204 @@ test('renderReport lists added shows and suggested films with ready-to-paste JSO
   const added = [{ title: 'Big Show', subsNote: 'Season 3', channel: 'Netflix', date: '2026-11-05', source: 'https://www.tvmaze.com/shows/10' }];
   const ideas = [{ id: 'small-one', title: 'Small One', kind: 'movie', service: 'netflix', channel: 'Netflix', subs: ['nf-ads'], date: '2026-12-04', confidence: 'unconfirmed', hours: 1.6, source: 'https://en.wikipedia.org/wiki/X', checked: '2026-10-11' }];
   const r = L.renderReport({ today: '2026-10-11', changes: [], removed: [], flags: [], unchecked: [], added, ideas, wiki: true, requests: 9 });
-  assert.match(r, /## Added: new seasons from TVMaze[\s\S]*\*\*Big Show\*\* \(Season 3, Netflix, 2026-11-05\)/);
-  assert.match(r, /## Movies to consider[\s\S]*- \[ \] \*\*Small One\*\* \(Netflix, 2026-12-04\)/);
+  assert.match(r, /## Added: new seasons from TVMaze[\s\S]*\*\*`Big Show`\*\* \(`Season 3`, `Netflix`, 2026-11-05\) `https:\/\/www\.tvmaze\.com\/shows\/10`/);
+  assert.match(r, /## Movies to consider[\s\S]*- \[ \] \*\*`Small One`\*\* \(`Netflix`, 2026-12-04\)/);
   assert.match(r, /```json\n\{"id":"small-one"/);
   assert.match(r, /9 requests to TVMaze and Wikipedia.*Wikipedia \(CC BY-SA 4\.0\)/);
   assert.doesNotMatch(r, /Nothing changed/);
+});
+/* ---------- outside text: TVMaze and Wikipedia names are written by anyone ---------- */
+const ch = n => String.fromCharCode(n);   // control and separator characters, spelled out so the source stays plain
+// Each hostile marker must sit inside a code span: between an odd and an even backtick on its line.
+const inCodeSpans = (line, marker) => line.split('`').every((part, i) => i % 2 === 1 || !part.includes(marker));
+test('renderReport: a show name with line breaks, a heading, a mention, a closing keyword and a link stays on one line in a code span', async () => {
+  const L = await lib();
+  const evil = 'Evil Show\n\n## Approved, merge now\n@octocat closes #1 [click](https://evil.example) `tick`\n::warning::pwned';
+  const added = L.discoverTv(season(999, evil, 2, '2026-11-05', 4, { weight: 100 }), [], '2026-10-11');
+  assert.strictEqual(added.length, 1);
+  assert.strictEqual(added[0].title, 'Evil Show ## Approved, merge now @octocat closes #1 [click](https://evil.example) `tick` ::warning::pwned', 'one line at the source');
+  assert.deepStrictEqual(L.validateData({ checked: '2026-10-11', items: added }), []);
+  const lines = L.renderReport({ today: '2026-10-11', changes: [], removed: [], flags: [], unchecked: [], added, ideas: [], wiki: false, requests: 1 }).split('\n');
+  assert.deepStrictEqual(lines.filter(l => l.includes('Approved')), ["- **`Evil Show ## Approved, merge now @octocat closes #1 [click](https://evil.example) 'tick' ::warning::pwned`** (`Season 2`, `Netflix`, 2026-11-05) https://www.tvmaze.com/shows/999"]);
+  assert.ok(!lines.some(l => /^\s*(## Approved|::|@octocat)/.test(l)), 'no heading, workflow command or mention starts a line');
+});
+test('renderReport: every outside string is one line in a code span of at most 200 characters, whatever it holds', async () => {
+  const L = await lib();
+  const bad = 'X\r\n## Heading\n::error::boom' + ch(0x2028) + ch(0x85) + ch(0x202e) + '@octocat closes #1 ``` <img src=x> ' + 'y'.repeat(300);
+  const r = L.renderReport({ today: bad, changes: [{ title: bad, notes: [bad] }], removed: [{ title: bad, date: bad }, { title: bad, kind: 'sport', ends: bad, date: '2026-01-01' }],
+    flags: [{ title: bad, date: bad, message: bad }], unchecked: [{ title: bad, reason: bad }],
+    added: [{ title: bad, origin: bad, subsNote: bad, channel: bad, date: bad, source: bad }, { title: 'Ok', origin: 'Korean', subsNote: 'Season 2', channel: 'Netflix', date: '2026-11-05', tvmazeId: 'x', source: bad }],
+    ideas: [{ title: bad, channel: bad, date: bad }], wiki: true, requests: bad });
+  [ch(13), ch(0x2028), ch(0x85), ch(0x202e)].forEach(c => assert.ok(!r.includes(c), 'no U+' + c.charCodeAt(0).toString(16)));
+  const lines = r.split('\n');
+  assert.ok(!lines.some(l => /^\s*(## Heading|::|@)/.test(l)), lines.filter(l => /Heading/.test(l)).join('\n'));
+  const hostile = lines.filter(l => l.includes('octocat') && !l.startsWith('{'));   // the JSON lines sit inside a ```json block
+  assert.strictEqual(hostile.length, 10, 'today, change, note, 2 removed, flag, could not check, 2 added, 1 film: ' + hostile.length);
+  const jsonLines = lines.filter(l => l.startsWith('{'));
+  assert.strictEqual(jsonLines.length, 1);
+  assert.strictEqual(JSON.parse(jsonLines[0]).title, bad, 'the ready-to-paste JSON is still exact: separators are escaped, not lost');
+  hostile.forEach(l => {
+    assert.ok(inCodeSpans(l, 'octocat') && inCodeSpans(l, '<img') && inCodeSpans(l, '##'), l);
+    l.split('`').filter((p, i) => i % 2).forEach(p => assert.ok(p.length <= 200, 'span of ' + p.length));
+  });
+  assert.match(r, /\(Korean, `Season 2`, `Netflix`, 2026-11-05\) `X ## Heading/, 'checked values print as they are; an address that is not a TVMaze id is quoted');
+  assert.match(r, /_0 requests to TVMaze and Wikipedia/);
+  assert.strictEqual(L.md(''), '` `');
+  assert.strictEqual(L.md(null), '` `');
+  assert.strictEqual(L.md(' a\t b '), '`a b`');
+  assert.strictEqual(L.md('##[warning]x'), '`## [warning]x`', 'the old workflow command form is broken up');
+});
+test('validateData refuses markup, control characters, line breaks and over 200 characters in names and notes, and its errors stay on one line', async () => {
+  const L = await lib();
+  const v = items => L.validateData({ checked: '2026-10-05', items });
+  const has = (errs, re) => assert.ok(errs.some(e => re.test(e)), re + ' in ' + JSON.stringify(errs));
+  has(v([item({ title: 'Pwn <img src=x onerror=alert(1)>' })]), /title has markup/);
+  has(v([item({ title: 'Two\nlines' })]), /title has markup/);
+  has(v([item({ title: 'x'.repeat(201) })]), /title has .*over 200 characters/);
+  has(v([item({ channel: 'Net' + ch(7) + 'flix' })]), /channel has/);
+  has(v([item({ subsNote: 'Season 2' + ch(0x2028) })]), /subsNote has/);
+  has(v([item({ subsNote: 'Season 2', subsNoteEs: 'Temporada' + ch(0x85) + '2' })]), /subsNoteEs has/);
+  has(v([item({ subsNote: 'Season 2', subsNoteEs: 'Temporada 2' + ch(0x2029) })]), /subsNoteEs has/);
+  has(v([item({ platforms: ['PS5', 'PC<script>'] })]), /platforms has/);
+  const sport = { id: 'pl', title: 'Premier League', kind: 'sport', sport: '<b>Soccer</b>', service: 'peacock', subs: ['peacock'], date: '2026-08-21', ends: '2027-05-23', gamesPerWeek: 1, gameHours: 2, confidence: 'confirmed', checked: '2026-10-20' };
+  has(v([sport]), /sport has/);
+  assert.deepStrictEqual(v([item({ title: 'Love, Death & Robots: Ñandú #2 @home', subsNote: 'x'.repeat(200), subsNoteEs: 'y'.repeat(200), channel: 'Disney+', source: 'NFL-NBC media deal (through 2033); estimate', hours: 10, hoursSource: 'Estimate: ' + 'z'.repeat(300) })]), [], 'commas, ampersands, accents, 200 characters, and a source in prose are fine');
+  // the message names the field, never repeats the text, and an id, key or service from the file is quoted on one line
+  const e = v([Object.assign(item({ title: 'a\n::warning::title' }), { id: 'bad\n::error::id', ['k\n::error::key']: 1, service: 's\r\n::error::svc' })]);
+  assert.ok(e.length >= 4, JSON.stringify(e));
+  e.forEach(x => assert.ok(!/[\r\n]/.test(x), JSON.stringify(x)));
+  assert.ok(!e.some(x => x.includes('::warning::title')));
+  has(e, /unknown key "k\\n::error::key"/);
+  const old = v([item({ ['##[warning]x']: 1 })]);
+  assert.ok(old.some(x => /unknown key "##\\u005bwarning\]x"/.test(x)) && !old.some(x => x.includes('##[')), JSON.stringify(old));
+  has(v([item({ typo: 1 })]), /unknown key "typo"/);
+  has(v([item({ service: 'blockbuster' })]), /unknown service "blockbuster"/);
+});
+test('the shipped public/upcoming.json passes the text checks, and the 4 sports sources in prose stay allowed', async () => {
+  const L = await lib();
+  const d = JSON.parse(fs.readFileSync(path.join(root, 'public', 'upcoming.json'), 'utf8'));
+  assert.ok(d.items.length > 100, d.items.length + ' items');
+  d.items.forEach(it => L.TEXT_KEYS.forEach(k => assert.ok(!L.unsafe(it[k]), it.id + ' ' + k)));
+  assert.deepStrictEqual(L.validateData(d), []);
+});
+test('discoverTv skips a name, channel or language with markup, a control character or over 200 characters, so one vandal edit never fails the run', async () => {
+  const L = await lib();
+  const list = [
+    ...season(70, 'Pwn <img src=x onerror=alert(1)>', 1, '2026-11-01', 6, { weight: 100 }),
+    ...season(71, 'Bell' + ch(7) + 'Show', 1, '2026-11-01', 6, { weight: 100 }),
+    ...season(72, 'x'.repeat(201), 1, '2026-11-01', 6, { weight: 100 }),
+    ...season(73, 'Bad Channel', 1, '2026-11-01', 6, { weight: 100, channel: 'Netflix\n' }),   // still maps to Netflix once trimmed
+    ...season(74, 'Bad Language', 1, '2026-11-01', 6, { weight: 100, language: 'Klingon<script>' }),
+    ...season(75, 'Prototype', 1, '2026-11-01', 6, { weight: 100, language: 'constructor' }),   // a lookup name, not a language we know
+    ...season(76, '  Spaced\n\tOut  Show ', 1, '2026-11-01', 6, { weight: 99 }),
+    ...season(77, 'Long Note', 1, '2026-11-01', 6, { weight: 98, language: 'L'.repeat(195) }),   // fine alone, too long in the note
+    ...season(78, 'Good Show', 1, '2026-11-01', 6, { weight: 97 }),
+    ...season(79, 'Odd Country', 1, '2026-11-01', 6, { weight: 96 }),
+  ];
+  list.filter(e => e._embedded.show.id === 79).forEach(e => { e._embedded.show.webChannel.country = { code: 'toString' }; });
+  list.filter(e => e._embedded.show.id === 78).forEach(e => { e._embedded.show.url = 'https://www.tvmaze.com/shows/78/x) [click](https://evil.example'; });
+  const got = L.discoverTv(list, [], '2026-10-11');
+  assert.deepStrictEqual(got.map(i => i.title), ['Spaced Out Show', 'Good Show', 'Odd Country', 'Prototype']);
+  assert.deepStrictEqual(L.validateData({ checked: '2026-10-11', items: got }), [], 'the run can write what it found');
+  assert.ok(got.every(i => !('origin' in i)), '"toString" and "constructor" are no origin');
+  assert.deepStrictEqual([got[3].subsNote, got[3].subsNoteEs], ['New series, in constructor', 'Serie nueva, en constructor']);
+  assert.strictEqual(got[1].source, 'https://www.tvmaze.com/shows/78', 'an odd address is replaced by the plain one');
+  assert.strictEqual(got[0].source, 'https://www.tvmaze.com/shows/76/x');
+  assert.strictEqual(L.discoverTv(list.concat(season(80, 'Plain', 1, '2026-11-02', 6, { weight: 90 })).map(e => e._embedded.show.id === 80 ? Object.assign({}, e, { _embedded: { show: Object.assign({}, e._embedded.show, { name: undefined }) } }) : e), [], '2026-10-11').some(i => i.title === 'undefined'), false, 'a show with no name is skipped');
+  assert.strictEqual(L.originOf({ language: '__proto__' }), null);
+  assert.strictEqual(L.originOf({ network: { country: { code: 'constructor' } }, language: 'Korean' }), 'Korean');
+});
+test('discoverTv leaves out a show whose numbers the file cannot hold (season 0, show id 0, hours over 999), so the run still writes', async () => {
+  const L = await lib();
+  const got = L.discoverTv([
+    ...season(81, 'Huge Runtime', 2, '2026-11-01', 4, { weight: 100, runtime: 20000 }),   // 4 x 20,000 minutes is 1,333 hours
+    ...season(82, 'Season Zero', 0, '2026-11-01', 4, { weight: 100 }),
+    ...season(0, 'Show Zero', 2, '2026-11-01', 4, { weight: 100 }),
+    ...season(83, 'Fine', 2, '2026-11-01', 4, { weight: 99 }),
+  ], [], '2026-10-11');
+  assert.deepStrictEqual(got.map(i => i.title), ['Fine']);
+  assert.deepStrictEqual(L.validateData({ checked: '2026-10-11', items: got }), []);
+});
+test('script: a TVMaze value the file cannot hold keeps the item as it was, says so, and the run still writes', async () => {
+  const t = await fakeTvmaze({ 5: { body: show({ id: 5, status: 'Ended' }, [1, 2, 3, 4].map(n => ep(1, n, '2026-10-0' + n, 100000))) }, 6: { body: show({ id: 6, status: 'Ended' }, [1, 2, 3, 4].map(n => ep(1, n, '2026-10-0' + n, 30))) } });
+  try {
+    const d = data([tvItem({ id: 'odd', title: 'Odd', tvmazeId: 5, hours: 8, date: '2026-10-01' }), tvItem({ id: 'ok', title: 'Ok', tvmazeId: 6, date: '2026-10-01' })]);
+    const r = await runScript(tmp(), d, ['--today', '2026-10-11'], t.base);
+    assert.strictEqual(r.code, 0, r.se);
+    const items = JSON.parse(r.text).items;
+    assert.strictEqual(items.find(i => i.id === 'odd').hours, 8, 'kept as it was');
+    assert.strictEqual(items.find(i => i.id === 'odd').checked, '2026-10-01', 'not marked as checked');
+    assert.strictEqual(items.find(i => i.id === 'ok').hours, 2, 'the other show is still updated');
+    assert.match(r.report, /## Could not check[\s\S]*- `Odd`: `TVMaze sent a value the file cannot hold \(hours must be null or a number from 0 to 999\), so it was kept as it was`/);
+    assert.strictEqual(ghOut(r.out).unchecked, '1');
+  } finally { t.srv.close(); }
+});
+test('discoverMovies and mergeTvmaze skip a Wikipedia title or a TVMaze channel with markup or a control character', async () => {
+  const L = await lib();
+  const row = (title, date) => ({ title, date, hours: null, language: 'English' });
+  const pages = [{ service: 'netflix', page: 'P', rows: [row('Evil <b>', '2026-12-04'), row('Bell' + ch(7), '2026-12-04'), row('Fine Film', '2026-12-05'), row(42, '2026-12-06')] }];
+  assert.deepStrictEqual(L.discoverMovies(pages, [], '2026-10-11').map(i => i.title), ['Fine Film']);
+  const wt = "{| class=\"wikitable\"\n|-\n! Title !! Release date\n|-\n| ''A < B'' || November 20, 2026\n|-\n| ''C'' || November 21, 2026\n|}";
+  assert.deepStrictEqual(L.discoverMovies([{ service: 'netflix', page: 'P', rows: L.parseWikiFilmRows(wt) }], [], '2026-10-11').map(i => i.title), ['C']);
+  const loose = tvItem(); delete loose.service; delete loose.channel;
+  const hostile = L.mergeTvmaze(loose, show({ webChannel: null, network: { name: 'Evil\n## Approved' } }, [ep(1, 1, '2026-10-20', 30)]), '2026-10-06');
+  assert.ok(!('channel' in hostile.item) && !('service' in hostile.item), JSON.stringify(hostile.item));
+  assert.deepStrictEqual(L.validateData({ checked: '2026-10-06', items: [hostile.item] }), []);
+  assert.strictEqual(L.mergeTvmaze(tvItem({ channel: 'Netflix', service: 'netflix' }), show({ webChannel: { name: 'Net<b>flix' } }, [ep(1, 1, '2026-10-20', 30)]), '2026-10-06').item.channel, 'Netflix', 'kept as it was');
+  assert.strictEqual(L.mergeTvmaze(loose, show({ webChannel: null, network: { name: 'Some Network' } }, []), '2026-10-06').item.channel, 'Some Network', 'a plain name is still copied');
+});
+test('a name with no letter or digit is no name, and a direction control that flips text is refused everywhere (the report strips it, so a reviewer would not see it)', async () => {
+  const L = await lib();
+  const tv = name => L.discoverTv(season(90, name, 1, '2026-11-05', 6, { weight: 100 }), [], '2026-10-11').map(i => i.title);
+  for (const bad of [ch(0x202e), ch(0x200b) + ch(0x200b), ch(0x2066) + ch(0x2069), 'a' + ch(0x202e) + 'b', 'Mid' + ch(0x2067) + 'Isolate' + ch(0x2069), '!!!', '&', ch(0xa0) + ' ' + ch(0xa0)]) {
+    assert.deepStrictEqual(tv(bad), [], JSON.stringify(bad) + ' is not added');
+  }
+  // real names in any script, with digits, accents and punctuation, still come in
+  for (const good of ['오징어 게임', '進撃の巨人', 'Café & Friends: Grey’s', '1923', 'Law & Order: SVU', 'Ты', 'مسلسل']) {
+    const got = L.discoverTv(season(91, good, 1, '2026-11-05', 6, { weight: 100 }), [], '2026-10-11');
+    assert.deepStrictEqual(got.map(i => i.title), [good], good);
+    assert.deepStrictEqual(L.validateData({ checked: '2026-10-11', items: got }), [], good + ' validates');
+  }
+  // the data file refuses the direction controls in every text field, whoever wrote them
+  const v = items => L.validateData({ checked: '2026-10-05', items });
+  for (const c of [0x202a, 0x202b, 0x202c, 0x202d, 0x202e, 0x2066, 0x2067, 0x2068, 0x2069]) {
+    assert.ok(v([item({ title: 'Good' + ch(c) + 'doG' })]).some(e => /title has/.test(e)), 'title with U+' + c.toString(16));
+    assert.ok(L.unsafe('x' + ch(c)), 'unsafe U+' + c.toString(16));
+  }
+  assert.ok(v([item({ channel: 'Net' + ch(0x202e) + 'flix' })]).some(e => /channel has/.test(e)));
+  assert.ok(v([item({ subsNote: 'Season 2', subsNoteEs: 'Temporada' + ch(0x2066) })]).some(e => /subsNoteEs has/.test(e)));
+  // Wikipedia films and TVMaze channels the same way
+  const row = (title, date) => ({ title, date, hours: null, language: 'English' });
+  const pages = [{ service: 'netflix', page: 'P', rows: [row(ch(0x202e), '2026-12-04'), row('!!!', '2026-12-04'), row('Ev' + ch(0x202e) + 'il', '2026-12-04'), row('1917', '2026-12-05'), row('Fine Film', '2026-12-06')] }];
+  assert.deepStrictEqual(L.discoverMovies(pages, [], '2026-10-11').map(i => i.title), ['1917', 'Fine Film']);
+  const loose = tvItem(); delete loose.service; delete loose.channel;
+  assert.ok(!('channel' in L.mergeTvmaze(loose, show({ webChannel: null, network: { name: 'Some' + ch(0x202e) + 'Net' } }, []), '2026-10-06').item), 'a channel with a direction control is not copied');
+});
+test('script --discover: hostile names from TVMaze and Wikipedia neither fail the run nor reach the report or the log raw', async () => {
+  const evilTv = 'Pwn <img src=x onerror=alert(1)>\n\n## Approved, merge now\n::warning::pwned';
+  const wt = "{| class=\"wikitable\"\n|-\n! Title !! Release date\n|-\n| ''Evil < Film'' || November 20, 2026\n|-\n| ''Fine Film @octocat closes #1'' || November 21, 2026\n|-\n| ''##[warning]Film'' || November 22, 2026\n|}";
+  const sch = season(90, evilTv, 1, '2026-11-05', 6, { weight: 100 }).concat(season(91, 'Plain Show\n## Approved\n::warning::pwned', 1, '2026-11-06', 6, { weight: 99 }), season(92, '##[set-output name=substantive;]false', 1, '2026-11-07', 6, { weight: 98 }));
+  const t = await fakeTvmaze({ '/schedule/full': { body: sch }, '/w/api.php': { body: url => (/Netflix original films/.test(url) ? { parse: { wikitext: wt } } : { parse: { wikitext: '' } }) } });
+  try {
+    const r = await runScript(tmp(), data([item({ id: 'g', title: 'A game', date: '2026-12-01', checked: '2026-10-09' })]), ['--today', '2026-10-11', '--discover'], t.base, { WIKI_BASE: t.base });
+    assert.strictEqual(r.code, 0, r.se);
+    assert.deepStrictEqual(JSON.parse(r.text).items.map(i => i.title), ['A game', 'Plain Show ## Approved ::warning::pwned', '##[set-output name=substantive;]false']);
+    const lines = (r.report + '\n' + r.so + '\n' + r.se).split('\n');
+    assert.ok(!lines.some(l => /^\s*(::|## Approved|@octocat)/.test(l)), lines.filter(l => /Approved|::/.test(l)).join('\n'));
+    assert.match(r.report, /- \*\*`Plain Show ## Approved ::warning::pwned`\*\* \(`New series`, `Netflix`, 2026-11-06\) https:\/\/www\.tvmaze\.com\/shows\/91/);
+    assert.match(r.report, /- \[ \] \*\*`Fine Film @octocat closes #1`\*\* \(`Netflix`, 2026-11-21\)/);
+    assert.doesNotMatch(r.report, /Pwn|Evil/);
+    assert.ok(!r.report.includes('##[') && !r.so.includes('##['), 'the old command form "##[" is broken up in the report and in the JSON');
+    assert.match(r.report, /\*\*`## \[set-output name=substantive;\]false`\*\*/);
+    // In GitHub Actions, workflow commands are off while the report prints, and back on after it
+    const gh = await runScript(tmp(), data([item({ id: 'g', title: 'A game', date: '2026-12-01', checked: '2026-10-09' })]), ['--today', '2026-10-11', '--discover'], t.base, { WIKI_BASE: t.base, GITHUB_ACTIONS: 'true' });
+    assert.strictEqual(gh.code, 0, gh.se);
+    const so = gh.so.split('\n'), m = /^::stop-commands::([0-9a-f-]{36})$/.exec(so[0]);
+    assert.ok(m, so[0]);
+    const end = so.indexOf('::' + m[1] + '::');
+    assert.ok(end > 0 && so.slice(1, end).join('\n') === gh.report, 'the whole report sits between the two lines');
+    assert.ok(!gh.report.includes('stop-commands'), 'the issue body has no log commands');
+  } finally { t.srv.close(); }
 });
 test('script --discover: adds a TV premiere, suggests films, says so in the GitHub output, and names a contact', async () => {
   const wikiPage = url => (/Netflix original films/.test(url) ? { parse: { wikitext: WIKI } } : { parse: { wikitext: '' } });
@@ -711,7 +927,7 @@ test('script --discover: a Wikipedia error answer is named in the report', async
   try {
     const r = await runScript(tmp(), data([item({ id: 'g', title: 'A game', date: '2026-12-01', checked: '2026-10-09' })]), ['--today', '2026-10-11', '--discover'], t.base, { WIKI_BASE: t.base });
     assert.strictEqual(r.code, 0, r.se);
-    assert.match(r.report, /New films \(List of Netflix original films \(since 2026\)\): Wikipedia said missingtitle/);
+    assert.match(r.report, /`New films \(List of Netflix original films \(since 2026\)\)`: `Wikipedia said missingtitle`/);
   } finally { t.srv.close(); }
 });
 test('script --discover: a failed schedule or list is reported and the rest of the run goes on', async () => {
@@ -719,8 +935,8 @@ test('script --discover: a failed schedule or list is reported and the rest of t
   try {
     const r = await runScript(tmp(), data([tvItem({ date: '2026-10-20' })]), ['--today', '2026-10-11', '--discover'], t.base, { WIKI_BASE: t.base });
     assert.strictEqual(r.code, 0, r.se);
-    assert.match(r.report, /Could not check[\s\S]*New shows \(TVMaze schedule\): answered 500/);
-    assert.match(r.report, /New films \(List of Netflix original films \(since 2026\)\): answered 404/);
+    assert.match(r.report, /Could not check[\s\S]*`New shows \(TVMaze schedule\)`: `answered 500`/);
+    assert.match(r.report, /`New films \(List of Netflix original films \(since 2026\)\)`: `answered 404`/);
   } finally { t.srv.close(); }
 });
 
@@ -785,6 +1001,129 @@ test('the workflow is cheap by construction: weekly, one job, hard timeout, no i
   assert.match(y, /REFRESH_CONTACT: \$\{\{ github\.server_url \}\}\/\$\{\{ github\.repository \}\}/, 'Wikimedia asks for a contact in the User-Agent');
   assert.match(y, /IDEAS" != "0"/, 'suggested films open the needs-a-look issue');
   assert.match(y, /UNCHECKED" != "0"/, 'so do checks that could not run');
+});
+
+// The steps of a workflow's only job, read line by line (no YAML library): name, full text and the run script.
+function workflowSteps(y) {
+  const lines = y.split(/\r?\n/), at = lines.findIndex(l => /^\s+steps:\s*$/.test(l));
+  const first = lines.findIndex((l, i) => i > at && l.trim() && !l.trim().startsWith('#'));
+  const ind = lines[first].search(/\S/), steps = [];
+  for (let i = first, cur = null; i < lines.length; i++) {
+    const l = lines[i];
+    if (l.trim() && l.search(/\S/) < ind) break;
+    if (l.trim().startsWith('#') && l.search(/\S/) === ind) continue;   // a comment between steps
+    if (l.search(/\S/) === ind && l.trim().startsWith('- ')) { cur = []; steps.push(cur); }
+    if (cur) cur.push(l);
+  }
+  return steps.map(s => {
+    const text = s.join('\n'), r = s.findIndex(l => /^\s*(- )?run:/.test(l));
+    let run = null;
+    if (r >= 0) {
+      const head = /run:\s*(.*)$/.exec(s[r])[1], rin = s[r].search(/\S/);
+      if (!/^[|>]/.test(head)) run = head;
+      else {
+        const body = [];
+        for (let i = r + 1; i < s.length && (!s[i].trim() || s[i].search(/\S/) > rin); i++) body.push(s[i]);
+        const pad = Math.min(...body.filter(l => l.trim()).map(l => l.search(/\S/)));
+        run = body.map(l => l.slice(pad)).join('\n').replace(/\s+$/, '') + '\n';
+      }
+    }
+    return { name: ((/^\s*-?\s*name:\s*(.+)$/m.exec(text) || [])[1] || '').trim(), text, run };
+  });
+}
+const workflowFiles = () => { const dir = path.join(root, '.github', 'workflows'); return fs.readdirSync(dir).filter(f => /\.ya?ml$/.test(f)).map(f => path.join(dir, f)); };
+test('every action in .github/workflows is pinned to a full commit SHA, and Dependabot proposes updates monthly', () => {
+  let n = 0;
+  workflowFiles().forEach(f => {
+    fs.readFileSync(f, 'utf8').split(/\r?\n/).forEach(l => {
+      const m = /^\s*(?:-\s*)?uses:\s*['"]?([^'"\s#]+)/.exec(l);
+      if (!m) return;
+      n++;
+      if (m[1].startsWith('./')) return;   // an action in this repo
+      assert.match(m[1], /^[\w.-]+\/[\w./-]+@[0-9a-f]{40}$/, path.basename(f) + ': ' + l.trim() + ' is not pinned to a 40-character commit SHA');
+      assert.match(l, /#\s*v\d/, 'the tag it stands for is in a comment, so Dependabot and a person can read it');
+    });
+  });
+  assert.ok(n >= 1, 'found the uses: lines');
+  const d = fs.readFileSync(path.join(root, '.github', 'dependabot.yml'), 'utf8');
+  assert.match(d, /^version: 2$/m);
+  assert.match(d, /package-ecosystem: ['"]?github-actions['"]?/);
+  assert.match(d, /interval: ['"]?monthly['"]?/);
+});
+test('the workflow keeps the write token away from the step that reads TVMaze and Wikipedia, and never expands ${{ }} inside a script', () => {
+  const y = fs.readFileSync(path.join(root, '.github', 'workflows', 'refresh-upcoming.yml'), 'utf8');
+  const steps = workflowSteps(y), by = n => steps.find(s => s.name === n);
+  assert.deepStrictEqual(steps.map(s => s.name), ['', 'Check dates', 'Publish changes', 'Needs-a-look issue']);
+  assert.match(steps[0].text, /uses: actions\/checkout@[0-9a-f]{40} /, 'the first step is the checkout (its pin is checked above; Dependabot moves it)');
+  assert.match(steps[0].text, /persist-credentials: false/, 'checkout leaves no token in .git/config');
+  assert.doesNotMatch(by('Check dates').text, /token|secrets\./i, 'the data step gets no token');
+  steps.filter(s => s.run).forEach(s => assert.ok(!s.run.includes('${{'), s.name + ': ${{ }} inside run: would paste text into the script; pass it through env'));
+  assert.ok(steps.filter(s => s.run).length >= 3);
+  const pub = by('Publish changes').run;
+  assert.match(pub, /git remote set-url origin "https:\/\/x-access-token:\$\{GH_TOKEN\}@github\.com\/\$\{GITHUB_REPOSITORY\}\.git"/);
+  const lines = pub.split('\n');
+  lines.forEach((l, i) => { if (/^\s*git push\b/.test(l)) assert.match(lines[i - 1], /git remote set-url origin/, 'the token goes in right before each push: ' + l.trim()); });
+  assert.match(y, /vars\.UPCOMING_REFRESH == 'on'/, 'still off until the repository variable is set');
+  ['Publish changes', 'Needs-a-look issue'].forEach(n => assert.match(by(n).text, /GH_REPO: \$\{\{ github\.repository \}\}/, n + ': gh names the repository itself, whatever the remote address holds'));
+});
+// Git Bash on Windows (never the WSL launcher in System32), bash elsewhere.
+const findBash = () => (process.platform === 'win32'
+  ? [process.env.ProgramFiles && path.join(process.env.ProgramFiles, 'Git', 'bin', 'bash.exe'), 'C:\\Program Files\\Git\\bin\\bash.exe']
+  : ['/bin/bash', '/usr/bin/bash', '/usr/local/bin/bash']).find(p => p && fs.existsSync(p));
+test('the publish step never overwrites a person\'s commits on bot/upcoming (run in bash with a fake gh and git)', () => {
+  const bash = findBash();
+  if (!bash) { console.log('     (skipped: no bash found)'); return; }
+  const y = fs.readFileSync(path.join(root, '.github', 'workflows', 'refresh-upcoming.yml'), 'utf8');
+  const pub = workflowSteps(y).find(s => s.name === 'Publish changes').run;
+  const dir = tmp(), slash = p => p.split(path.sep).join('/');
+  // gh answers like GitHub: "pr list" gives the number, "pr view" the head commit or, per commit, each author's email
+  // and whether the commit date still equals the author date (false when someone amended or rebased it).
+  const fakes = [
+    'gh() { echo "gh $*" >> "$CALLS"; case "$1 $2" in',
+    '  "pr list") printf \'%s\\n\' "$FAKE_PR" ;;',
+    '  "pr view") [ -n "$FAKE_FAIL" ] && return 1; case "$*" in *headRefOid*) echo "$FAKE_OID" ;; *commits*) if [ -n "$FAKE_WHO_FILE" ]; then cat "$FAKE_WHO_FILE"; else printf \'%b\\n\' "$FAKE_WHO"; fi ;; esac ;;',
+    'esac; }',
+    'git() { echo "git $*" >> "$CALLS"; }',
+    ''].join('\n');
+  const script = path.join(dir, 'step.sh');
+  fs.writeFileSync(script, fakes + pub);
+  const BOT = '41898282+github-actions[bot]@users.noreply.github.com', OID = 'a'.repeat(40);
+  const run = env => {
+    const calls = path.join(dir, 'calls-' + Math.random().toString(36).slice(2));
+    fs.writeFileSync(calls, '');
+    // the shell GitHub runs a step in: bash --noprofile --norc -eo pipefail
+    const p = require('child_process').spawnSync(bash, ['--noprofile', '--norc', '-e', '-o', 'pipefail', slash(script)], { cwd: dir, encoding: 'utf8',
+      env: Object.assign({}, process.env, { CALLS: slash(calls), GH_TOKEN: 'TESTTOKEN', GITHUB_REPOSITORY: 'owner/repo', BASE: 'main', SUBSTANTIVE: 'true', FAKE_PR: '', FAKE_OID: OID, FAKE_WHO: '', FAKE_WHO_FILE: '', FAKE_FAIL: '' }, env) });
+    return { code: p.status, out: p.stdout + p.stderr, calls: fs.readFileSync(calls, 'utf8') };
+  };
+  const none = run({});
+  assert.strictEqual(none.code, 0, none.out);
+  assert.match(none.calls, /git remote set-url origin https:\/\/x-access-token:TESTTOKEN@github\.com\/owner\/repo\.git\ngit push --force origin bot\/upcoming\ngh pr create --head bot\/upcoming --base main/);
+  const botOnly = run({ FAKE_PR: '7', FAKE_WHO: BOT + '\\ntrue\\n' + BOT + '\\ntrue' });
+  assert.strictEqual(botOnly.code, 0, botOnly.out);
+  assert.match(botOnly.calls, new RegExp('git push --force-with-lease=bot/upcoming:' + OID + ' origin bot/upcoming\\ngh pr edit 7 --body-file scripts/.report.md'), 'a lease on the head that was checked');
+  assert.doesNotMatch(botOnly.out, /::warning::/);
+  [['a person added a commit', BOT + '\\ntrue\\nmaintainer@example.com\\ntrue'], ['a person co-wrote it', BOT + '\\nhelper@example.com\\ntrue'], ['a person amended the bot\'s commit', BOT + '\\nfalse']].forEach(([why, who]) => {
+    const r = run({ FAKE_PR: '7', FAKE_WHO: who });
+    assert.strictEqual(r.code, 0, why + ': the step ends well, so the needs-a-look issue still runs\n' + r.out);
+    assert.match(r.out, /^::warning::Pull request #7 has commits from a person\./m, why);
+    assert.doesNotMatch(r.calls, /git push|gh pr edit|gh pr create|set-url|git checkout|git commit/, why + ': nothing pushed or edited, no token set\n' + r.calls);
+  });
+  // A long pull request with a person's commit first: with "printf | grep -q" under pipefail, grep stopped early,
+  // printf died of SIGPIPE and the check read as "nobody else", so the push went ahead.
+  const big = path.join(dir, 'who-big.txt');
+  fs.writeFileSync(big, 'maintainer@example.com\ntrue\n' + (BOT + '\ntrue\n').repeat(3000));
+  const long = run({ FAKE_PR: '7', FAKE_WHO_FILE: slash(big) });
+  assert.strictEqual(long.code, 0, long.out);
+  assert.match(long.out, /^::warning::Pull request #7 has commits from a person\./m);
+  assert.doesNotMatch(long.calls, /git push|gh pr edit/, long.calls);
+  const down = run({ FAKE_PR: '7', FAKE_FAIL: '1' });
+  assert.notStrictEqual(down.code, 0, 'gh failing is a failure, not a go-ahead');
+  assert.doesNotMatch(down.calls, /git push/);
+  const stamp = run({ SUBSTANTIVE: 'false' });
+  assert.strictEqual(stamp.code, 0, stamp.out);
+  assert.match(stamp.calls, /git commit -m chore: refresh checked date\ngit remote set-url origin https:\/\/x-access-token:TESTTOKEN@github\.com\/owner\/repo\.git\ngit push\n$/);
+  assert.doesNotMatch(stamp.calls, /^gh /m);
 });
 
 /* ---------- run ---------- */
