@@ -1,36 +1,6 @@
 {
-  "checked": "2026-10-11",
+  "checked": "2026-11-09",
   "items": [
-    {
-      "id": "gears-of-war-e-day",
-      "title": "Gears of War: E-Day",
-      "kind": "game",
-      "platforms": ["Xbox Series", "PC"],
-      "subs": ["gp-ult", "gp-pc"],
-      "subsNote": "Day one. Premium expected about a year after launch",
-      "subsNoteEs": "Desde el primer día. Se espera en Premium como un año después de salir",
-      "date": "2026-10-06",
-      "confidence": "confirmed",
-      "hours": 17,
-      "hoursSource": "HowLongToBeat, Main + Sides (via IsThereAnyDeal): https://isthereanydeal.com/game/gears-of-war-e-day/info/",
-      "source": "https://www.xbox.com/en-US/games/gears-of-war-eday",
-      "checked": "2026-10-10"
-    },
-    {
-      "id": "star-wars-galactic-racer",
-      "title": "Star Wars: Galactic Racer",
-      "kind": "game",
-      "platforms": ["PS5", "Xbox Series", "PC"],
-      "subs": [],
-      "subsNote": "No Game Pass or PS Plus deal announced; about $59.99",
-      "subsNoteEs": "No se anunció en Game Pass ni PS Plus; cuesta unos $59.99",
-      "date": "2026-10-06",
-      "confidence": "confirmed",
-      "hours": 17,
-      "hoursSource": "HowLongToBeat, Main + Sides (via IsThereAnyDeal): https://isthereanydeal.com/game/star-wars-galactic-racer/info/",
-      "source": "https://www.playstation.com/games/star-wars-galactic-racer/",
-      "checked": "2026-10-10"
-    },
     {
       "id": "planet-zoo-2",
       "title": "Planet Zoo 2",
@@ -73,14 +43,14 @@
       "subsNoteEs": "2 episodios el 14 de octubre, luego cada semana en FX y Hulu",
       "date": "2026-10-14",
       "confidence": "confirmed",
-      "hours": null,
+      "hours": 8.6,
       "episodes": 8,
       "release": "weekly",
       "firstDrop": 2,
       "season": 2,
       "tvmazeId": 84641,
       "source": "https://tvline.com/2235708/the-lowdown-season-2-release-date-fx-hulu-ben-affleck-animals-movie-netflix",
-      "checked": "2026-10-11"
+      "checked": "2026-11-09"
     },
     {
       "id": "visionquest",
@@ -93,7 +63,7 @@
       "subsNoteEs": "2 episodios el 13 de octubre, luego cada semana hasta el 10 de noviembre",
       "date": "2026-10-13",
       "confidence": "confirmed",
-      "hours": null,
+      "hours": 6.9,
       "episodes": 8,
       "release": "weekly",
       "firstDrop": 2,
@@ -101,7 +71,7 @@
       "season": 1,
       "tvmazeId": 64950,
       "source": "https://thewaltdisneycompany.com/news/d23-2026-disney-entertainment-showcase/",
-      "checked": "2026-10-11"
+      "checked": "2026-11-09"
     },
     {
       "id": "blueys-happy-snaps",
@@ -129,13 +99,13 @@
       "subsNoteEs": "Los 8 episodios a la vez",
       "date": "2026-10-15",
       "confidence": "confirmed",
-      "hours": null,
+      "hours": 6.6,
       "episodes": 8,
       "release": "all",
       "season": 1,
       "tvmazeId": 64960,
       "source": "https://www.peacocktv.com/blog/peacock-fall-2026-schedule-complete-list-of-shows",
-      "checked": "2026-10-11"
+      "checked": "2026-11-09"
     },
     {
       "id": "the-diplomat-season-4",
@@ -148,13 +118,13 @@
       "subsNoteEs": "Los 8 episodios a la vez",
       "date": "2026-10-15",
       "confidence": "confirmed",
-      "hours": 6.6,
+      "hours": 7,
       "episodes": 8,
       "release": "all",
       "season": 4,
       "tvmazeId": 60213,
       "source": "https://www.whats-on-netflix.com/news/the-diplomat-season-4-netflix-release-date-trailer-photos/",
-      "checked": "2026-10-11"
+      "checked": "2026-11-09"
     },
     {
       "id": "sacrifice",
@@ -212,12 +182,12 @@
       "subsNoteEs": "Episodios cada semana, los viernes",
       "date": "2026-10-16",
       "confidence": "confirmed",
-      "hours": 6.9,
+      "hours": 6.7,
       "release": "weekly",
       "season": 4,
       "tvmazeId": 59344,
       "source": "https://au.variety.com/2026/tv/news/tulsa-king-season-4-release-date-first-teaser-39891/",
-      "checked": "2026-10-11"
+      "checked": "2026-11-09"
     },
     {
       "id": "cyberpunk-edgerunners-2",
@@ -249,13 +219,13 @@
       "subsNoteEs": "Temporada 3, los 10 episodios a la vez",
       "date": "2026-10-22",
       "confidence": "confirmed",
-      "hours": 4.3,
+      "hours": 4.7,
       "episodes": 10,
       "release": "all",
       "season": 3,
       "tvmazeId": 77060,
       "source": "https://au.variety.com/2026/tv/news/nobody-wants-this-season-3-release-date-40171/",
-      "checked": "2026-10-11"
+      "checked": "2026-11-09"
     },
     {
       "id": "call-of-duty-modern-warfare-4",
@@ -284,13 +254,13 @@
       "subsNoteEs": "Parte 4, los 8 episodios a la vez",
       "date": "2026-10-23",
       "confidence": "confirmed",
-      "hours": null,
+      "hours": 6,
       "episodes": 8,
       "release": "all",
       "season": 4,
       "tvmazeId": 50701,
       "source": "https://www.whats-on-netflix.com/news/lupin-part-4-netflix-release-date/",
-      "checked": "2026-10-11"
+      "checked": "2026-11-09"
     },
     {
       "id": "the-invite",
@@ -363,12 +333,12 @@
       "subsNoteEs": "Episodios cada semana; necesitas la opción de precio con Showtime",
       "date": "2026-10-30",
       "confidence": "confirmed",
-      "hours": null,
+      "hours": 8.7,
       "release": "weekly",
       "season": 2,
       "tvmazeId": 78665,
       "source": "https://www.broadwayworld.com/article/DEXTER-RESURRECTION-Season-2-Trailer-Debuts-on-Paramount-20261001",
-      "checked": "2026-10-11"
+      "checked": "2026-11-09"
     },
     {
       "id": "nocturne",
@@ -381,14 +351,14 @@
       "subsNoteEs": "Serie nueva: 2 episodios, luego cada semana",
       "date": "2026-10-30",
       "confidence": "confirmed",
-      "hours": null,
+      "hours": 8.7,
       "episodes": 10,
       "release": "weekly",
       "firstDrop": 2,
       "season": 1,
       "tvmazeId": 66811,
       "source": "https://cinemachords.com/apple-tv-nocturne-cast-release-date/",
-      "checked": "2026-10-11"
+      "checked": "2026-11-09"
     },
     {
       "id": "moana-live-action",
@@ -431,14 +401,14 @@
       "subsNoteEs": "Temporada 4, episodios cada semana, los domingos",
       "date": "2026-11-01",
       "confidence": "confirmed",
-      "hours": null,
+      "hours": 8,
       "episodes": 8,
       "release": "weekly",
       "firstDrop": 1,
       "season": 4,
       "tvmazeId": 34685,
       "source": "https://www.tvline.com/2243685/the-gilded-age-season-4-release-date-hbo/",
-      "checked": "2026-10-11"
+      "checked": "2026-11-09"
     },
     {
       "id": "all-s-fair-season-2",
@@ -457,7 +427,7 @@
       "season": 2,
       "tvmazeId": 78300,
       "source": "https://www.tvline.com/2280111/alls-fair-season-2-release-date-trailer-kim-kardashian-hulu/",
-      "checked": "2026-10-11"
+      "checked": "2026-11-09"
     },
     {
       "id": "black-doves-season-2",
@@ -471,13 +441,13 @@
       "subsNoteEs": "Los 6 episodios a la vez",
       "date": "2026-11-05",
       "confidence": "confirmed",
-      "hours": null,
+      "hours": 5.2,
       "episodes": 6,
       "release": "all",
       "season": 2,
       "tvmazeId": 68407,
       "source": "https://www.tvline.com/2269640/black-doves-season-2-release-date-netflix-family-guy-halloween-special",
-      "checked": "2026-10-11"
+      "checked": "2026-11-09"
     },
     {
       "id": "the-good-daughter",
@@ -496,7 +466,7 @@
       "season": 1,
       "tvmazeId": 75488,
       "source": "https://www.peacocktv.com/blog/peacock-fall-2026-schedule-complete-list-of-shows",
-      "checked": "2026-10-11"
+      "checked": "2026-11-09"
     },
     {
       "id": "being-heumann",
@@ -560,7 +530,7 @@
       "season": 1,
       "tvmazeId": 85058,
       "source": "https://www.whats-on-netflix.com/news/julia-garner-and-anthony-boyle-return-to-netflix-in-ftx-scandal-series-the-altruists-first-look-release-date/",
-      "checked": "2026-10-11"
+      "checked": "2026-11-09"
     },
     {
       "id": "percy-jackson-and-the-olympians-season-3",
@@ -581,7 +551,7 @@
       "season": 3,
       "tvmazeId": 48108,
       "source": "https://thewaltdisneycompany.com/news/d23-2026-disney-entertainment-showcase/",
-      "checked": "2026-10-11"
+      "checked": "2026-11-09"
     },
     {
       "id": "dig",
@@ -600,7 +570,7 @@
       "season": 1,
       "tvmazeId": 84536,
       "source": "https://www.peacocktv.com/blog/peacock-fall-2026-schedule-complete-list-of-shows",
-      "checked": "2026-10-11"
+      "checked": "2026-11-09"
     },
     {
       "id": "the-mosquito-bowl",
@@ -649,7 +619,7 @@
       "season": 2,
       "tvmazeId": 72427,
       "source": "https://au.variety.com/2026/tv/news/hunting-wives-season-2-release-date-first-look-39567/",
-      "checked": "2026-10-11"
+      "checked": "2026-11-09"
     },
     {
       "id": "street-fighter",
@@ -713,7 +683,7 @@
       "season": 6,
       "tvmazeId": 48830,
       "source": "https://au.variety.com/2026/tv/news/tv-news-roundup-week-of-august-24-39708/",
-      "checked": "2026-10-11"
+      "checked": "2026-11-09"
     },
     {
       "id": "bad-day",
@@ -777,7 +747,7 @@
       "season": 1,
       "tvmazeId": 68803,
       "source": "https://engadget.com/entertainment/tv-movies/hbo-maxs-harry-potter-series-premieres-this-christmas-202818238.html?src=rss",
-      "checked": "2026-10-11"
+      "checked": "2026-11-09"
     },
     {
       "id": "clayface",
@@ -827,7 +797,7 @@
       "season": 1,
       "tvmazeId": 86669,
       "source": "https://www.animenewsnetwork.com/press-release/2026-10-09/crunchyroll-unveils-a-slate-of-new-anime-and-exclusive-first-looks-at-new-york-comic-con-2026/.242661",
-      "checked": "2026-10-11"
+      "checked": "2026-11-09"
     },
     {
       "id": "spider-man-brand-new-day",
@@ -875,7 +845,7 @@
       "season": 3,
       "tvmazeId": 75632,
       "source": "https://www.tvline.com/2153855/the-pitt-season-3-everything-we-know-noah-wyle-hbo-max/",
-      "checked": "2026-10-11"
+      "checked": "2026-11-09"
     },
     {
       "id": "ahsoka-season-2",
@@ -893,7 +863,7 @@
       "season": 2,
       "tvmazeId": 52343,
       "source": "https://thewaltdisneycompany.com/news/d23-2026-disney-entertainment-showcase/",
-      "checked": "2026-10-11"
+      "checked": "2026-11-09"
     },
     {
       "id": "neuromancer",
@@ -913,7 +883,7 @@
       "season": 1,
       "tvmazeId": 75029,
       "source": "https://www.tvline.com/2223483/neuromancer-tv-series-release-date-teaser-trailer-apple/",
-      "checked": "2026-10-11"
+      "checked": "2026-11-09"
     },
     {
       "id": "the-odyssey",
@@ -975,7 +945,7 @@
       "season": 3,
       "tvmazeId": 63234,
       "source": "https://comicbookclublive.com/2026/05/05/when-will-daredevil-born-again-season-3-premiere-on-disney/",
-      "checked": "2026-10-11"
+      "checked": "2026-11-09"
     },
     {
       "id": "dune-part-three",
@@ -1069,7 +1039,7 @@
       "season": 1,
       "tvmazeId": 92057,
       "source": "https://www.theouterhaven.net/kagurabachi-comes-to-crunchyroll-april-2027/",
-      "checked": "2026-10-11"
+      "checked": "2026-11-09"
     },
     {
       "id": "the-apothecary-diaries-season-3",
@@ -1168,7 +1138,7 @@
       "season": 2,
       "tvmazeId": 56778,
       "source": "https://www.tvmaze.com/shows/56778/bad-monkey",
-      "checked": "2026-10-11"
+      "checked": "2026-11-09"
     },
     {
       "id": "stick-season-2",
@@ -1181,14 +1151,14 @@
       "subsNoteEs": "Temporada 2: 2 episodios, luego cada semana",
       "date": "2026-11-04",
       "confidence": "confirmed",
-      "hours": 5.3,
+      "hours": 5.4,
       "episodes": 10,
       "release": "weekly",
       "firstDrop": 2,
       "season": 2,
       "tvmazeId": 82227,
       "source": "https://www.tvmaze.com/shows/82227/stick",
-      "checked": "2026-10-11"
+      "checked": "2026-11-09"
     },
     {
       "id": "12-12-12",
@@ -1208,7 +1178,7 @@
       "season": 1,
       "tvmazeId": 84261,
       "source": "https://www.tvmaze.com/shows/84261/12-12-12",
-      "checked": "2026-10-11"
+      "checked": "2026-11-09"
     },
     {
       "id": "yellowjackets-season-4",
@@ -1225,7 +1195,7 @@
       "season": 4,
       "tvmazeId": 36672,
       "source": "https://www.tvmaze.com/shows/36672/yellowjackets",
-      "checked": "2026-10-11"
+      "checked": "2026-11-09"
     },
     {
       "id": "emily-in-paris-season-6",
@@ -1242,7 +1212,7 @@
       "season": 6,
       "tvmazeId": 41632,
       "source": "https://www.tvmaze.com/shows/41632/emily-in-paris",
-      "checked": "2026-10-11"
+      "checked": "2026-11-09"
     },
     {
       "id": "phony",
@@ -1255,51 +1225,14 @@
       "subsNoteEs": "Serie nueva: 2 episodios, luego cada semana",
       "date": "2026-10-20",
       "confidence": "confirmed",
-      "hours": null,
+      "hours": 4,
       "episodes": 8,
       "release": "weekly",
       "firstDrop": 2,
       "season": 1,
       "tvmazeId": 63873,
       "source": "https://www.tvmaze.com/shows/63873/phony",
-      "checked": "2026-10-11"
-    },
-    {
-      "id": "the-apothecary-diaries-season-3-part-1",
-      "title": "The Apothecary Diaries",
-      "kind": "tv",
-      "anime": true,
-      "service": "crunchy",
-      "channel": "Crunchyroll",
-      "subs": ["crunchy"],
-      "subsNote": "Season 3 part 1, weekly simulcast",
-      "subsNoteEs": "Temporada 3 parte 1, cada semana al mismo tiempo que en Japón",
-      "date": "2026-10-02",
-      "confidence": "confirmed",
-      "hours": null,
-      "episodes": 12,
-      "release": "weekly",
-      "source": "https://www.crunchyroll.com/news/seasonal-lineup/2026/9/15/fall-anime-2026-crunchyroll",
-      "checked": "2026-10-16"
-    },
-    {
-      "id": "black-clover-season-2",
-      "title": "Black Clover",
-      "kind": "tv",
-      "anime": true,
-      "service": "crunchy",
-      "channel": "Crunchyroll",
-      "subs": ["crunchy"],
-      "subsNote": "Season 2, weekly simulcast",
-      "subsNoteEs": "Temporada 2, cada semana al mismo tiempo que en Japón",
-      "date": "2026-10-03",
-      "confidence": "confirmed",
-      "hours": null,
-      "release": "weekly",
-      "season": 2,
-      "tvmazeId": 31396,
-      "source": "https://www.crunchyroll.com/news/seasonal-lineup/2026/9/15/fall-anime-2026-crunchyroll",
-      "checked": "2026-10-16"
+      "checked": "2026-11-09"
     },
     {
       "id": "dragon-ball-super-beerus",
@@ -1313,184 +1246,12 @@
       "subsNoteEs": "Nueva versión, cada semana al mismo tiempo que en Japón. También en Hulu, y en Netflix desde el 17 de octubre",
       "date": "2026-10-11",
       "confidence": "confirmed",
-      "hours": null,
+      "hours": 9.5,
       "release": "weekly",
       "season": 1,
       "tvmazeId": 93969,
       "source": "https://www.animenewsnetwork.com/news/2026-10-10/dragon-ball-super-beerus-also-streams-on-hulu-in-u.s-on-october-11/.242688",
-      "checked": "2026-10-16"
-    },
-    {
-      "id": "blue-box-season-2",
-      "title": "Blue Box",
-      "kind": "tv",
-      "anime": true,
-      "service": "netflix",
-      "channel": "Netflix",
-      "subs": ["nf-ads"],
-      "subsNote": "Season 2, new episode every Sunday",
-      "subsNoteEs": "Temporada 2, episodio nuevo cada domingo",
-      "date": "2026-10-04",
-      "confidence": "confirmed",
-      "hours": null,
-      "episodes": 12,
-      "release": "weekly",
-      "season": 2,
-      "tvmazeId": 75572,
-      "source": "https://www.animenewsnetwork.com/preview-guide/2026/fall/blue-box-season-2/.241263",
-      "checked": "2026-10-16"
-    },
-    {
-      "id": "steel-ball-run-jojos-bizarre-adventure-season-2",
-      "title": "Steel Ball Run: JoJo's Bizarre Adventure",
-      "kind": "tv",
-      "anime": true,
-      "service": "netflix",
-      "channel": "Netflix",
-      "subs": ["nf-ads"],
-      "subsNote": "Stages 2 and 3, new episode every Friday",
-      "subsNoteEs": "Etapas 2 y 3, episodio nuevo cada viernes",
-      "date": "2026-09-25",
-      "confidence": "confirmed",
-      "hours": null,
-      "episodes": 11,
-      "release": "weekly",
-      "season": 2,
-      "tvmazeId": 90817,
-      "source": "https://www.netflix.com/tudum/articles/steel-ball-run-jojos-bizarre-adventure-2nd-3rd-stage-how-to-watch",
-      "checked": "2026-10-16"
-    },
-    {
-      "id": "firefly-wedding",
-      "title": "Firefly Wedding",
-      "kind": "tv",
-      "anime": true,
-      "service": "crunchy",
-      "channel": "Crunchyroll",
-      "subs": ["crunchy"],
-      "subsNote": "New series, weekly simulcast",
-      "subsNoteEs": "Serie nueva, cada semana al mismo tiempo que en Japón",
-      "date": "2026-10-09",
-      "confidence": "confirmed",
-      "hours": null,
-      "release": "weekly",
-      "season": 1,
-      "tvmazeId": 91069,
-      "source": "https://www.crunchyroll.com/news/seasonal-lineup/2026/9/15/fall-anime-2026-crunchyroll",
-      "checked": "2026-10-16"
-    },
-    {
-      "id": "overgeared",
-      "title": "Overgeared",
-      "kind": "tv",
-      "anime": true,
-      "service": "crunchy",
-      "channel": "Crunchyroll",
-      "subs": ["crunchy"],
-      "subsNote": "New series, weekly simulcast",
-      "subsNoteEs": "Serie nueva, cada semana al mismo tiempo que en Japón",
-      "date": "2026-09-27",
-      "confidence": "confirmed",
-      "hours": null,
-      "release": "weekly",
-      "season": 1,
-      "tvmazeId": 92844,
-      "source": "https://www.crunchyroll.com/news/seasonal-lineup/2026/9/15/fall-anime-2026-crunchyroll",
-      "checked": "2026-10-16"
-    },
-    {
-      "id": "tokyo-revengers-three-titans",
-      "title": "Tokyo Revengers",
-      "kind": "tv",
-      "anime": true,
-      "service": "hulu",
-      "channel": "Hulu",
-      "subs": ["hulu"],
-      "subsNote": "New season, new episode every Friday",
-      "subsNoteEs": "Nueva temporada, episodio nuevo cada viernes",
-      "date": "2026-10-02",
-      "confidence": "confirmed",
-      "hours": null,
-      "release": "weekly",
-      "source": "https://www.animenewsnetwork.com/news/2026-06-14/tokyo-revengers-war-of-the-three-titans-arc-3rd-trailer-reveals-october-2-debut/.238499",
-      "checked": "2026-10-16"
-    },
-    {
-      "id": "the-ramparts-of-ice-season-2",
-      "title": "The Ramparts of Ice",
-      "kind": "tv",
-      "anime": true,
-      "service": "netflix",
-      "channel": "Netflix",
-      "subs": ["nf-ads"],
-      "subsNote": "Season 2, new episode every Thursday",
-      "subsNoteEs": "Temporada 2, episodio nuevo cada jueves",
-      "date": "2026-10-01",
-      "confidence": "confirmed",
-      "hours": null,
-      "release": "weekly",
-      "season": 2,
-      "tvmazeId": 90251,
-      "source": "https://about.netflix.com/en/news/the-ramparts-of-ice-season-2",
-      "checked": "2026-10-16"
-    },
-    {
-      "id": "the-detective-is-already-dead-season-2",
-      "title": "The Detective Is Already Dead",
-      "kind": "tv",
-      "anime": true,
-      "service": "crunchy",
-      "channel": "Crunchyroll",
-      "subs": ["crunchy"],
-      "subsNote": "Season 2, weekly simulcast",
-      "subsNoteEs": "Temporada 2, cada semana al mismo tiempo que en Japón",
-      "date": "2026-10-07",
-      "confidence": "confirmed",
-      "hours": null,
-      "release": "weekly",
-      "season": 2,
-      "tvmazeId": 55377,
-      "source": "https://www.crunchyroll.com/news/seasonal-lineup/2026/9/15/fall-anime-2026-crunchyroll",
-      "checked": "2026-10-16"
-    },
-    {
-      "id": "aoashi-season-2",
-      "title": "Aoashi",
-      "kind": "tv",
-      "anime": true,
-      "service": "crunchy",
-      "channel": "Crunchyroll",
-      "subs": ["crunchy"],
-      "subsNote": "Season 2, weekly simulcast, 24 episodes",
-      "subsNoteEs": "Temporada 2, cada semana al mismo tiempo que en Japón, 24 episodios",
-      "date": "2026-10-04",
-      "confidence": "confirmed",
-      "hours": null,
-      "episodes": 24,
-      "release": "weekly",
-      "season": 2,
-      "tvmazeId": 61375,
-      "source": "https://www.crunchyroll.com/news/seasonal-lineup/2026/9/15/fall-anime-2026-crunchyroll",
-      "checked": "2026-10-16"
-    },
-    {
-      "id": "ranma-1-2-season-3",
-      "title": "Ranma1/2",
-      "kind": "tv",
-      "anime": true,
-      "service": "netflix",
-      "channel": "Netflix",
-      "subs": ["nf-ads"],
-      "subsNote": "Season 3, new episode every Saturday",
-      "subsNoteEs": "Temporada 3, episodio nuevo cada sábado",
-      "date": "2026-10-03",
-      "confidence": "confirmed",
-      "hours": null,
-      "release": "weekly",
-      "season": 3,
-      "tvmazeId": 79151,
-      "source": "https://www.animenewsnetwork.com/news/2026-07-26/new-ranma-1-2-anime-season-3-reveals-more-cast-members-october-3-debut/.239978",
-      "checked": "2026-10-16"
+      "checked": "2026-11-09"
     },
     {
       "id": "the-one-piece",
@@ -1510,7 +1271,7 @@
       "season": 1,
       "tvmazeId": 73510,
       "source": "https://www.netflix.com/tudum/articles/the-one-piece-release-date",
-      "checked": "2026-10-16"
+      "checked": "2026-11-09"
     },
     {
       "id": "one-punch-man-season-3-part-2",
@@ -1545,7 +1306,7 @@
       "season": 2,
       "tvmazeId": 77383,
       "source": "https://www.netflix.com/tudum/articles/sakamoto-days-season-2-release-date-news",
-      "checked": "2026-10-16"
+      "checked": "2026-11-09"
     },
     {
       "id": "shangri-la-frontier-season-3",
@@ -1564,7 +1325,7 @@
       "season": 3,
       "tvmazeId": 69007,
       "source": "https://finalweapon.net/2026/09/16/shangri-la-frontier-season-3-confirms-two-cour-run-and-january-10-premiere/",
-      "checked": "2026-10-16"
+      "checked": "2026-11-09"
     },
     {
       "id": "mashle-magic-and-muscles-season-3",
@@ -1583,7 +1344,7 @@
       "season": 3,
       "tvmazeId": 67396,
       "source": "https://www.animenewsnetwork.com/news/2026-07-02/mashle-magic-and-muscles-season-3-anime-trailer-unveils-january-2027-debut/.239227",
-      "checked": "2026-10-16"
+      "checked": "2026-11-09"
     },
     {
       "id": "the-guy-she-was-interested-in-wasnt-a-guy-at-all",
@@ -1602,7 +1363,7 @@
       "season": 1,
       "tvmazeId": 92957,
       "source": "https://finalweapon.net/2026/10/08/the-guy-she-was-interested-in-wasnt-a-guy-at-all-anime-premieres-january-8/",
-      "checked": "2026-10-16"
+      "checked": "2026-11-09"
     },
     {
       "id": "fool-night",
@@ -1621,7 +1382,7 @@
       "season": 1,
       "tvmazeId": 92747,
       "source": "https://www.animenewsnetwork.com/news/2026-08-20/fool-night-anime-teaser-reveals-more-cast-november-26-worldwide-netflix-debut/.240745",
-      "checked": "2026-10-16"
+      "checked": "2026-11-09"
     },
     {
       "id": "disney-twisted-wonderland-the-animation-season-2",
@@ -1633,13 +1394,13 @@
       "subs": ["disney", "hulu"],
       "subsNote": "Season 2, out in December",
       "subsNoteEs": "Temporada 2, sale en diciembre",
-      "date": "2026-12",
-      "confidence": "unconfirmed",
-      "hours": null,
+      "date": "2026-12-23",
+      "confidence": "confirmed",
+      "hours": 3.6,
       "season": 2,
       "tvmazeId": 78625,
       "source": "https://www.animenewsnetwork.com/news/2026-07-27/disney-twisted-wonderland-anime-episode-of-savanaclaw-debuts-in-december/.240012",
-      "checked": "2026-10-16"
+      "checked": "2026-11-09"
     },
     {
       "id": "the-fable-season-2",
@@ -1725,7 +1486,7 @@
       "season": 2,
       "tvmazeId": 69046,
       "source": "https://www.animenewsnetwork.com/news/2026-07-04/delicious-in-dungeon-anime-2nd-season-debuts-on-netflix-in-october-2027/.239298",
-      "checked": "2026-10-16"
+      "checked": "2026-11-09"
     },
     {
       "id": "that-time-i-got-reincarnated-as-a-slime-season-4-part-3",
@@ -1761,7 +1522,7 @@
       "season": 2,
       "tvmazeId": 67195,
       "source": "https://www.animenewsnetwork.com/news/2026-08-16/skip-and-loafer-anime-2nd-season-reveals-april-2027-debut-in-teaser-video/.240621",
-      "checked": "2026-10-16"
+      "checked": "2026-11-09"
     },
     {
       "id": "tougen-anki-season-2-part-2",
@@ -1832,38 +1593,6 @@
       "checked": "2026-10-16"
     },
     {
-      "id": "demon-slayer-kimetsu-no-yaiba-infinity-castle-i",
-      "title": "Demon Slayer: Kimetsu no Yaiba Infinity Castle I",
-      "kind": "movie",
-      "anime": true,
-      "service": "netflix",
-      "channel": "Netflix",
-      "subs": ["nf-ads", "hulu", "crunchy"],
-      "subsNote": "Movie, new on Netflix and Hulu, also on Crunchyroll",
-      "subsNoteEs": "Película, nueva en Netflix y Hulu, también en Crunchyroll",
-      "date": "2026-09-28",
-      "confidence": "confirmed",
-      "hours": 2.6,
-      "source": "https://www.netflix.com/title/82723106",
-      "checked": "2026-10-16"
-    },
-    {
-      "id": "mononoke-the-movie-chapter-iii-the-curse-of-the-serpent",
-      "title": "Mononoke the Movie: Chapter III – The Curse of the Serpent",
-      "kind": "movie",
-      "anime": true,
-      "service": "netflix",
-      "channel": "Netflix",
-      "subs": ["nf-ads"],
-      "subsNote": "Last movie of three, first two on Netflix too",
-      "subsNoteEs": "La última de tres películas, las dos primeras también están en Netflix",
-      "date": "2026-09-29",
-      "confidence": "confirmed",
-      "hours": 1.5,
-      "source": "https://about.netflix.com/en/news/mononoke-the-movie-chapter-iii-the-curse-of-the-serpent",
-      "checked": "2026-10-16"
-    },
-    {
       "id": "frieren-beyond-journeys-end-season-3",
       "title": "Frieren: Beyond Journey's End",
       "kind": "tv",
@@ -1879,26 +1608,7 @@
       "season": 3,
       "tvmazeId": 69956,
       "source": "https://en.wikipedia.org/wiki/List_of_Frieren_episodes",
-      "checked": "2026-10-16"
-    },
-    {
-      "id": "magic-knight-rayearth",
-      "title": "Magic Knight Rayearth",
-      "kind": "tv",
-      "anime": true,
-      "service": "crunchy",
-      "channel": "Crunchyroll",
-      "subs": ["crunchy"],
-      "subsNote": "New take on a classic show, weekly simulcast",
-      "subsNoteEs": "Nueva versión de una serie clásica, cada semana al mismo tiempo que en Japón",
-      "date": "2026-10-07",
-      "confidence": "confirmed",
-      "hours": null,
-      "release": "weekly",
-      "season": 1,
-      "tvmazeId": 94494,
-      "source": "https://www.animenewsnetwork.com/news/2026-09-15/crunchyroll-announces-release-schedule-for-fall-2026-season/.241811",
-      "checked": "2026-10-16"
+      "checked": "2026-11-09"
     },
     {
       "id": "mission-yozakura-family-season-2-part-2",
@@ -1915,23 +1625,6 @@
       "hours": null,
       "release": "weekly",
       "source": "https://www.animenewsnetwork.com/preview-guide/2026/fall/mission-yozakura-family-season-2-part-2/.241393",
-      "checked": "2026-10-16"
-    },
-    {
-      "id": "tougen-anki-season-2-part-1",
-      "title": "Tougen Anki",
-      "kind": "tv",
-      "anime": true,
-      "service": "crunchy",
-      "channel": "Crunchyroll",
-      "subs": ["crunchy", "nf-ads"],
-      "subsNote": "Season 2 part 1, weekly simulcast",
-      "subsNoteEs": "Temporada 2 parte 1, cada semana al mismo tiempo que en Japón",
-      "date": "2026-10-02",
-      "confidence": "confirmed",
-      "hours": null,
-      "release": "weekly",
-      "source": "https://www.animenewsnetwork.com/preview-guide/2026/fall/tougen-anki-nikko-kegon-falls-arc/.241400",
       "checked": "2026-10-16"
     },
     {
@@ -1961,9 +1654,9 @@
       "subs": ["disney", "hulu"],
       "subsNote": "New series, 4 episodes first, then 2 a week",
       "subsNoteEs": "Serie nueva, primero 4 episodios, luego 2 por semana",
-      "date": "2026-11-04",
+      "date": "2026-11-03",
       "confidence": "confirmed",
-      "hours": null,
+      "hours": 9.2,
       "episodes": 10,
       "release": "weekly",
       "firstDrop": 4,
@@ -1971,7 +1664,7 @@
       "season": 1,
       "tvmazeId": 90035,
       "source": "https://www.disneyplus.com/explore/articles/the-remarried-empress",
-      "checked": "2026-10-18"
+      "checked": "2026-11-09"
     },
     {
       "id": "tantara",
@@ -1984,12 +1677,12 @@
       "subsNote": "New series, the date is not final yet",
       "subsNoteEs": "Serie nueva, la fecha todavía puede cambiar",
       "date": "2026-12-11",
-      "confidence": "rumored",
+      "confidence": "unconfirmed",
       "hours": null,
       "season": 1,
       "tvmazeId": 89632,
       "source": "https://www.whats-on-netflix.com/news/k-dramas/tantara-netflix-period-k-drama-everything-we-know-so-far-preview/",
-      "checked": "2026-10-18"
+      "checked": "2026-11-09"
     },
     {
       "id": "100-days-of-deception",
@@ -2003,7 +1696,7 @@
       "subsNoteEs": "Serie nueva, 2 episodios cada fin de semana",
       "date": "2026-10-10",
       "confidence": "confirmed",
-      "hours": null,
+      "hours": 24,
       "episodes": 16,
       "release": "weekly",
       "firstDrop": 2,
@@ -2011,69 +1704,7 @@
       "season": 1,
       "tvmazeId": 90249,
       "source": "https://whats-on-netflix.com/news/100-days-of-deception-new-weekly-k-drama-reported-to-be-coming-to-netflix-in-2026/",
-      "checked": "2026-10-18"
-    },
-    {
-      "id": "doctor-x-mafia-in-white",
-      "title": "Doctor X: Mafia in White",
-      "kind": "tv",
-      "origin": "Korean",
-      "service": "netflix",
-      "channel": "Netflix",
-      "subs": ["nf-ads"],
-      "subsNote": "New series, 2 episodes a week on Fri and Sat",
-      "subsNoteEs": "Serie nueva, 2 episodios por semana, los viernes y sábados",
-      "date": "2026-10-09",
-      "confidence": "confirmed",
-      "hours": null,
-      "episodes": 12,
-      "release": "weekly",
-      "firstDrop": 2,
-      "perWeek": 2,
-      "season": 1,
-      "tvmazeId": 91309,
-      "source": "https://www.whats-on-netflix.com/news/k-dramas/sbs-k-drama-doctor-x-coming-to-netflix-in-october-2026/",
-      "checked": "2026-10-18"
-    },
-    {
-      "id": "the-scandal",
-      "title": "The Scandal",
-      "kind": "tv",
-      "origin": "Korean",
-      "service": "netflix",
-      "channel": "Netflix",
-      "subs": ["nf-ads"],
-      "subsNote": "New series, all 8 episodes at once",
-      "subsNoteEs": "Serie nueva, los 8 episodios a la vez",
-      "date": "2026-09-18",
-      "confidence": "confirmed",
-      "hours": null,
-      "episodes": 8,
-      "release": "all",
-      "season": 1,
-      "tvmazeId": 91016,
-      "source": "https://www.whats-on-netflix.com/news/netflix-the-scandal-release-date-cast-plot/",
-      "checked": "2026-10-18"
-    },
-    {
-      "id": "take-charge-of-my-heart",
-      "title": "Take Charge of My Heart",
-      "kind": "tv",
-      "origin": "Korean",
-      "service": "netflix",
-      "channel": "Netflix",
-      "subs": ["nf-ads"],
-      "subsNote": "New series, all 10 episodes at once",
-      "subsNoteEs": "Serie nueva, los 10 episodios a la vez",
-      "date": "2026-10-09",
-      "confidence": "confirmed",
-      "hours": null,
-      "episodes": 10,
-      "release": "all",
-      "season": 1,
-      "tvmazeId": 90007,
-      "source": "https://about.netflix.com/en/news/take-charge-of-my-heart-premieres-october-9",
-      "checked": "2026-10-18"
+      "checked": "2026-11-09"
     },
     {
       "id": "dead-end-job",
@@ -2087,13 +1718,13 @@
       "subsNoteEs": "Serie nueva, los 8 episodios a la vez",
       "date": "2026-10-30",
       "confidence": "confirmed",
-      "hours": null,
+      "hours": 5.1,
       "episodes": 8,
       "release": "all",
       "season": 1,
       "tvmazeId": 84377,
       "source": "https://about.netflix.com/en/news/dead-end-job-sets-october-30-premiere-drops-teaser-trailer-and-poster",
-      "checked": "2026-10-18"
+      "checked": "2026-11-09"
     },
     {
       "id": "the-blue-road",
@@ -2112,7 +1743,7 @@
       "season": 1,
       "tvmazeId": 89972,
       "source": "https://www.koreaherald.com/article/10891740",
-      "checked": "2026-10-18"
+      "checked": "2026-11-09"
     },
     {
       "id": "love-in-disguise",
@@ -2126,7 +1757,7 @@
       "subsNoteEs": "Serie nueva, 2 episodios por semana, los lunes y martes",
       "date": "2026-10-19",
       "confidence": "confirmed",
-      "hours": null,
+      "hours": 15,
       "episodes": 12,
       "release": "weekly",
       "firstDrop": 2,
@@ -2134,7 +1765,7 @@
       "season": 1,
       "tvmazeId": 94124,
       "source": "https://www.soompi.com/article/1868003wpp/watch-yim-si-wan-and-seol-in-ahs-love-in-disguise-announces-premiere-date",
-      "checked": "2026-10-18"
+      "checked": "2026-11-09"
     },
     {
       "id": "final-table",
@@ -2148,56 +1779,12 @@
       "subsNoteEs": "Serie nueva, 12 episodios",
       "date": "2026-10-24",
       "confidence": "confirmed",
-      "hours": null,
+      "hours": 18,
       "episodes": 12,
       "season": 1,
       "tvmazeId": 91448,
       "source": "https://www.soompi.com/article/1869143wpp/ahn-hyo-seops-upcoming-drama-final-table-announces-premiere-date-with-first-stills",
-      "checked": "2026-10-18"
-    },
-    {
-      "id": "between-steps",
-      "title": "Between Steps",
-      "kind": "tv",
-      "origin": "Korean",
-      "service": "hulu",
-      "channel": "Hulu",
-      "subs": ["hulu"],
-      "subsNote": "New series, 2 episodes a week on Mon and Tue",
-      "subsNoteEs": "Serie nueva, 2 episodios por semana, los lunes y martes",
-      "date": "2026-10-05",
-      "confidence": "confirmed",
-      "hours": null,
-      "episodes": 12,
-      "release": "weekly",
-      "firstDrop": 2,
-      "perWeek": 2,
-      "season": 1,
-      "tvmazeId": 92156,
-      "source": "https://www.hulu.com/series/between-steps-994e7dec-fcbd-416e-ab2e-b4de8cc6d154",
-      "checked": "2026-10-18"
-    },
-    {
-      "id": "dive-into-you",
-      "title": "Dive into You",
-      "kind": "tv",
-      "origin": "Korean",
-      "service": "viki",
-      "channel": "Viki",
-      "subs": ["viki"],
-      "subsNote": "New series, 2 episodes each weekend, first 2 free",
-      "subsNoteEs": "Serie nueva, 2 episodios cada fin de semana, los 2 primeros gratis",
-      "date": "2026-09-26",
-      "confidence": "confirmed",
-      "hours": null,
-      "episodes": 12,
-      "release": "weekly",
-      "firstDrop": 2,
-      "perWeek": 2,
-      "season": 1,
-      "tvmazeId": 93826,
-      "source": "https://www.viki.com/tv/41538c-dive-into-you",
-      "checked": "2026-10-18"
+      "checked": "2026-11-09"
     },
     {
       "id": "make-me-tingle",
@@ -2211,14 +1798,14 @@
       "subsNoteEs": "Serie nueva, primero 4 episodios, luego más cada jueves",
       "date": "2026-10-15",
       "confidence": "confirmed",
-      "hours": null,
+      "hours": 9,
       "episodes": 10,
       "release": "weekly",
       "firstDrop": 4,
       "season": 1,
       "tvmazeId": 94382,
       "source": "https://www.viki.com/tv/41700c-make-me-tingle",
-      "checked": "2026-10-18"
+      "checked": "2026-11-09"
     },
     {
       "id": "possible-love",
@@ -2253,7 +1840,7 @@
       "season": 1,
       "tvmazeId": 94618,
       "source": "https://about.netflix.com/en/news/quiztopia-premieres-december-17-teaser-trailer-cast-unveiled",
-      "checked": "2026-10-18"
+      "checked": "2026-11-09"
     },
     {
       "id": "did-someone-happen-to-mention-me",
@@ -2267,11 +1854,11 @@
       "subsNoteEs": "Nueva serie japonesa de comedia",
       "date": "2026-10-22",
       "confidence": "confirmed",
-      "hours": null,
+      "hours": 7,
       "season": 1,
       "tvmazeId": 93812,
       "source": "https://about.netflix.com/en/news/did-someone-happen-to-mention-me-main-trailer",
-      "checked": "2026-10-18"
+      "checked": "2026-11-09"
     },
     {
       "id": "miracles-of-the-er",
@@ -2290,7 +1877,7 @@
       "season": 1,
       "tvmazeId": 94766,
       "source": "https://about.netflix.com/en/news/miracles-of-the-er-premieres-november-12-on-netflix",
-      "checked": "2026-10-18"
+      "checked": "2026-11-09"
     },
     {
       "id": "my-crazy-feminist-girlfriend",
@@ -2389,26 +1976,6 @@
       "checked": "2026-10-18"
     },
     {
-      "id": "red-queen-season-2",
-      "title": "Red Queen",
-      "kind": "tv",
-      "origin": "Spanish",
-      "service": "prime",
-      "channel": "Prime Video",
-      "subs": ["prime"],
-      "subsNote": "Season 2, all 6 episodes at once",
-      "subsNoteEs": "Temporada 2, los 6 episodios a la vez",
-      "date": "2026-10-02",
-      "confidence": "confirmed",
-      "hours": null,
-      "episodes": 6,
-      "release": "all",
-      "season": 2,
-      "tvmazeId": 71269,
-      "source": "https://www.que.es/2026/06/25/reina-roja-2-loba-negra-estreno-prime/",
-      "checked": "2026-10-18"
-    },
-    {
       "id": "under-siege",
       "title": "Under Siege",
       "kind": "tv",
@@ -2420,32 +1987,12 @@
       "subsNoteEs": "Serie nueva, 8 episodios",
       "date": "2026-11-06",
       "confidence": "confirmed",
-      "hours": null,
+      "hours": 6.9,
       "episodes": 8,
       "season": 1,
       "tvmazeId": 94921,
       "source": "https://about.netflix.com/en/news/under-siege-arrives-on-netflix-on-november-6",
-      "checked": "2026-10-18"
-    },
-    {
-      "id": "the-final-problem",
-      "title": "The Final Problem",
-      "kind": "tv",
-      "origin": "Spanish",
-      "service": "netflix",
-      "channel": "Netflix",
-      "subs": ["nf-ads"],
-      "subsNote": "Limited series, all 4 episodes at once",
-      "subsNoteEs": "Miniserie, los 4 episodios a la vez",
-      "date": "2026-09-25",
-      "confidence": "confirmed",
-      "hours": null,
-      "episodes": 4,
-      "release": "all",
-      "season": 1,
-      "tvmazeId": 92984,
-      "source": "https://about.netflix.com/en/news/the-final-problem-arrives-on-netflix-on-september-25",
-      "checked": "2026-10-18"
+      "checked": "2026-11-09"
     },
     {
       "id": "murder-in-galicia",
@@ -2464,25 +2011,7 @@
       "season": 1,
       "tvmazeId": 94913,
       "source": "https://about.netflix.com/en/news/murder-in-galicia-comes-to-netflix-on-13-november",
-      "checked": "2026-10-18"
-    },
-    {
-      "id": "timbiriche",
-      "title": "Timbiriche",
-      "kind": "tv",
-      "origin": "Mexican",
-      "service": "vix",
-      "channel": "ViX",
-      "subs": ["vix"],
-      "subsNote": "New series, new episodes every Friday",
-      "subsNoteEs": "Serie nueva, episodios nuevos cada viernes",
-      "date": "2026-10-09",
-      "confidence": "confirmed",
-      "hours": null,
-      "release": "weekly",
-      "firstDrop": 2,
-      "source": "https://corporate.televisaunivision.com/articles/2026/10/06/the-scripted-series-timbiriche-comes-to-vix-exploring-the-phenomenon-that-shaped-generations/",
-      "checked": "2026-10-18"
+      "checked": "2026-11-09"
     },
     {
       "id": "the-child",
@@ -2533,23 +2062,6 @@
       "checked": "2026-10-18"
     },
     {
-      "id": "the-great-indian-kapil-show-season-5",
-      "title": "The Great Indian Kapil Show",
-      "kind": "tv",
-      "origin": "Indian",
-      "service": "netflix",
-      "channel": "Netflix",
-      "subs": ["nf-ads"],
-      "subsNote": "Season 5, new episode every Saturday",
-      "subsNoteEs": "Temporada 5, episodio nuevo cada sábado",
-      "date": "2026-09-26",
-      "confidence": "confirmed",
-      "hours": null,
-      "release": "weekly",
-      "source": "https://www.indiatvnews.com/entertainment/ott/the-great-indian-kapil-show-season-5-gets-a-release-date-know-when-and-where-to-watch-2026-09-16-1054374",
-      "checked": "2026-10-18"
-    },
-    {
       "id": "gajab-raat",
       "title": "Gajab Raat",
       "kind": "movie",
@@ -2580,26 +2092,6 @@
       "hours": null,
       "episodes": 8,
       "source": "https://www.hollywoodreporterindia.com/features/insight/chaar-yaar-prime-video-sets-october-premiere-for-crime-drama-series",
-      "checked": "2026-10-18"
-    },
-    {
-      "id": "love",
-      "title": "#Love",
-      "kind": "tv",
-      "origin": "Indian",
-      "service": "netflix",
-      "channel": "Netflix",
-      "subs": ["nf-ads"],
-      "subsNote": "New Tamil love story, all 6 episodes at once",
-      "subsNoteEs": "Nueva historia de amor en tamil, los 6 episodios a la vez",
-      "date": "2026-10-02",
-      "confidence": "confirmed",
-      "hours": null,
-      "episodes": 6,
-      "release": "all",
-      "season": 1,
-      "tvmazeId": 94544,
-      "source": "https://www.whats-on-netflix.com/news/everything-you-need-to-know-about-love-netflix-indias-new-romance-series/",
       "checked": "2026-10-18"
     },
     {
@@ -2635,7 +2127,7 @@
       "season": 3,
       "tvmazeId": 59746,
       "source": "https://about.netflix.com/en/news/the-empress-date-announcement-of-the-final-and-third-season",
-      "checked": "2026-10-18"
+      "checked": "2026-11-09"
     },
     {
       "id": "ludwig-season-2",
@@ -2703,13 +2195,13 @@
       "subsNoteEs": "Nueva serie turca de comedia, ya salieron los 8 episodios",
       "date": "2026-10-16",
       "confidence": "confirmed",
-      "hours": null,
+      "hours": 6.1,
       "episodes": 8,
       "release": "all",
       "season": 1,
       "tvmazeId": 91480,
       "source": "https://about.netflix.com/en/news/money-trap-the-karun-treasure-will-be-on-netflix-on-october-sixteenth",
-      "checked": "2026-10-18"
+      "checked": "2026-11-09"
     },
     {
       "id": "allen",
@@ -2739,12 +2231,12 @@
       "subsNoteEs": "Nueva serie sueca de suspenso, 4 episodios",
       "date": "2026-10-30",
       "confidence": "confirmed",
-      "hours": null,
+      "hours": 3,
       "episodes": 4,
       "season": 1,
       "tvmazeId": 93881,
       "source": "https://about.netflix.com/en/news/spot-the-liar-on-october-30-netflix-unveils-launch-date-and-first-look-images-for-swedish-psychological-thriller-a-couple-of-lies",
-      "checked": "2026-10-18"
+      "checked": "2026-11-09"
     },
     {
       "id": "chiaroscuro",
@@ -2763,7 +2255,7 @@
       "season": 1,
       "tvmazeId": 94885,
       "source": "https://about.netflix.com/en/news/chiaroscuro-the-official-trailer-of-the-new-series-premiering-at-the-rome-film-festival-and-coming-to-netflix-on-november-11th",
-      "checked": "2026-10-18"
+      "checked": "2026-11-09"
     },
     {
       "id": "fading-grandeur",
@@ -2777,12 +2269,12 @@
       "subsNoteEs": "Nueva serie española de comedia, 6 episodios",
       "date": "2026-10-23",
       "confidence": "confirmed",
-      "hours": null,
+      "hours": 2.8,
       "episodes": 6,
       "season": 1,
       "tvmazeId": 94542,
       "source": "https://about.netflix.com/en/news/fading-grandeur-premieres-on-netflix-on-23-october-starring-antonio-de-la-torre-and-alexandra-jimenez",
-      "checked": "2026-10-18"
+      "checked": "2026-11-09"
     },
     {
       "id": "the-lord-of-the-rings-the-rings-of-power-season-3",
@@ -2795,7 +2287,7 @@
       "subsNoteEs": "Temporada 3, primero 4 episodios, luego 2 por semana",
       "date": "2026-11-11",
       "confidence": "confirmed",
-      "hours": null,
+      "hours": 9.1,
       "episodes": 8,
       "release": "weekly",
       "firstDrop": 4,
@@ -2803,7 +2295,7 @@
       "season": 3,
       "tvmazeId": 33352,
       "source": "https://www.aboutamazon.com/news/entertainment/lord-of-the-rings-rings-of-power-season-3-prime-video",
-      "checked": "2026-10-18"
+      "checked": "2026-11-09"
     },
     {
       "id": "blade-runner-2099",
@@ -2822,26 +2314,7 @@
       "season": 1,
       "tvmazeId": 60458,
       "source": "https://aboutamazon.com/news/entertainment/blade-runner-2099-prime-video",
-      "checked": "2026-10-18"
-    },
-    {
-      "id": "carrie",
-      "title": "Carrie",
-      "kind": "tv",
-      "service": "prime",
-      "channel": "Prime Video",
-      "subs": ["prime"],
-      "subsNote": "New series, all 8 episodes at once",
-      "subsNoteEs": "Serie nueva, los 8 episodios a la vez",
-      "date": "2026-10-07",
-      "confidence": "confirmed",
-      "hours": null,
-      "episodes": 8,
-      "release": "all",
-      "season": 1,
-      "tvmazeId": 45562,
-      "source": "https://www.aboutamazon.com/md/news/entertainment/carrie-stephen-king-mike-flanagan-prime-video",
-      "checked": "2026-10-18"
+      "checked": "2026-11-09"
     },
     {
       "id": "the-terminal-list-season-2",
@@ -2854,13 +2327,13 @@
       "subsNoteEs": "Temporada 2, los 8 episodios a la vez",
       "date": "2026-10-21",
       "confidence": "confirmed",
-      "hours": null,
+      "hours": 7.3,
       "episodes": 8,
       "release": "all",
       "season": 2,
       "tvmazeId": 47856,
       "source": "https://www.officialjackcarr.com/prime-video-announces-premiere-date-for-the-terminal-list-season-two-starring-chris-pratt/",
-      "checked": "2026-10-18"
+      "checked": "2026-11-09"
     },
     {
       "id": "the-greatest",
@@ -2873,13 +2346,13 @@
       "subsNoteEs": "Serie nueva, los 8 episodios a la vez",
       "date": "2026-11-04",
       "confidence": "confirmed",
-      "hours": null,
+      "hours": 6.7,
       "episodes": 8,
       "release": "all",
       "season": 1,
       "tvmazeId": 78326,
       "source": "https://www.aboutamazon.com/news/entertainment/the-greatest-muhammad-ali-prime-video",
-      "checked": "2026-10-18"
+      "checked": "2026-11-09"
     },
     {
       "id": "madden",
@@ -2929,7 +2402,7 @@
       "season": 1,
       "tvmazeId": 83084,
       "source": "https://www.aboutamazon.com/news/entertainment/bloodaxe-vikings-prime-video",
-      "checked": "2026-10-18"
+      "checked": "2026-11-09"
     },
     {
       "id": "the-seance-of-blake-manor",
@@ -2993,70 +2466,6 @@
       "hours": 10,
       "hoursSource": "Estimate: similar game on HowLongToBeat, Lethal Company (quota-driven co-op job and extraction loop) Main 9.7h, used as a first unlock loop because GRAVHOUNDS enters early access (Game Preview) on Nov 2, 2026; https://howlongtobeat.com/game/139729",
       "source": "https://news.xbox.com/en-us/2026/08/27/gravhounds-revealed-co-op-chaos-bio-engineered-dogs-in-space/",
-      "checked": "2026-10-19"
-    },
-    {
-      "id": "neon-abyss-2",
-      "title": "Neon Abyss 2",
-      "kind": "game",
-      "indie": true,
-      "platforms": ["Xbox Series", "PC", "PS5", "Switch"],
-      "subs": ["gp-prem", "gp-pc"],
-      "subsNote": "In Game Pass Premium, Ultimate and PC Game Pass",
-      "subsNoteEs": "En Game Pass Premium, Ultimate y PC Game Pass",
-      "date": "2026-10-08",
-      "confidence": "confirmed",
-      "hours": 19,
-      "hoursSource": "HowLongToBeat Main + Sides 19 h, shown on IsThereAnyDeal: https://isthereanydeal.com/game/neon-abyss-2/info/",
-      "source": "https://news.xbox.com/en-us/2026/10/07/xbox-game-pass-october-2026-wave-1/",
-      "checked": "2026-10-19"
-    },
-    {
-      "id": "forever-ago",
-      "title": "Forever Ago",
-      "kind": "game",
-      "indie": true,
-      "platforms": ["Xbox Series", "PC", "PS5", "Switch 2"],
-      "subs": ["gp-ult", "gp-pc"],
-      "subsNote": "Day one on Game Pass",
-      "subsNoteEs": "Desde el primer día en Game Pass",
-      "date": "2026-10-08",
-      "confidence": "confirmed",
-      "hours": 5,
-      "hoursSource": "HowLongToBeat Main + Sides 5 h, shown on IsThereAnyDeal: https://isthereanydeal.com/game/forever-ago/info/",
-      "source": "https://news.xbox.com/en-us/2026/10/07/xbox-game-pass-october-2026-wave-1/",
-      "checked": "2026-10-19"
-    },
-    {
-      "id": "well-dweller",
-      "title": "Well Dweller",
-      "kind": "game",
-      "indie": true,
-      "platforms": ["Xbox Series", "Xbox One", "PC", "PS5", "Switch 2", "Switch"],
-      "subs": ["gp-ult", "gp-pc"],
-      "subsNote": "Day one on Game Pass",
-      "subsNoteEs": "Desde el primer día en Game Pass",
-      "date": "2026-09-22",
-      "confidence": "confirmed",
-      "hours": 11,
-      "hoursSource": "HowLongToBeat Main + Sides 11 h, shown on IsThereAnyDeal: https://isthereanydeal.com/game/well-dweller/info/",
-      "source": "https://news.xbox.com/en-us/2026/09/15/xbox-game-pass-september-2026-wave-2/",
-      "checked": "2026-10-19"
-    },
-    {
-      "id": "echo-weaver",
-      "title": "Echo Weaver",
-      "kind": "game",
-      "indie": true,
-      "platforms": ["Xbox Series", "Xbox One", "PC", "PS5", "Switch 2"],
-      "subs": ["gp-ult", "gp-pc"],
-      "subsNote": "Day one on Game Pass",
-      "subsNoteEs": "Desde el primer día en Game Pass",
-      "date": "2026-10-08",
-      "confidence": "confirmed",
-      "hours": 15,
-      "hoursSource": "HowLongToBeat Main + Sides 15 h, shown on IsThereAnyDeal: https://isthereanydeal.com/game/echo-weaver/info/",
-      "source": "https://news.xbox.com/en-us/2026/10/07/xbox-game-pass-october-2026-wave-1/",
       "checked": "2026-10-19"
     },
     {
@@ -3124,22 +2533,6 @@
       "checked": "2026-10-19"
     },
     {
-      "id": "mad-king-redemption",
-      "title": "Mad King Redemption",
-      "kind": "game",
-      "indie": true,
-      "platforms": ["Xbox Series", "PC"],
-      "subs": ["gp-prem", "gp-pc"],
-      "subsNote": "In Game Pass Premium, Ultimate and PC Game Pass",
-      "subsNoteEs": "En Game Pass Premium, Ultimate y PC Game Pass",
-      "date": "2026-09-23",
-      "confidence": "confirmed",
-      "hours": 10,
-      "hoursSource": "Estimate: current early access content (2 of 4 planned biomes), from Steam user reviews; one reviewer beat both current dungeons in about 10h and another says you can 'easily get around 10 hours' from early access; HowLongToBeat has no times; https://store.steampowered.com/app/2369580/Mad_King_Redemption/",
-      "source": "https://news.xbox.com/en-us/2026/09/15/xbox-game-pass-september-2026-wave-2/",
-      "checked": "2026-10-19"
-    },
-    {
       "id": "mycopunk",
       "title": "Mycopunk",
       "kind": "game",
@@ -3153,38 +2546,6 @@
       "hours": 61,
       "hoursSource": "HowLongToBeat Main + Sides 61 h (Main Story N/A, Completionist 79 h), shown on IsThereAnyDeal. Note: endless co-op shooter that was in early access, so treat this with care: https://isthereanydeal.com/game/mycopunk/info/",
       "source": "https://blog.playstation.com/2026/10/14/playstation-plus-game-catalog-for-october-mafia-the-old-country-horizon-forbidden-west-mycopunk-and-more/",
-      "checked": "2026-10-19"
-    },
-    {
-      "id": "ball-x-pit",
-      "title": "Ball x Pit",
-      "kind": "game",
-      "indie": true,
-      "platforms": ["PC", "PS5", "Xbox Series", "Switch", "Switch 2"],
-      "subs": ["gp-prem", "gp-pc", "ps-extra"],
-      "subsNote": "On Game Pass; joins PS Plus Extra September 22",
-      "subsNoteEs": "En Game Pass; llega a PS Plus Extra el 22 de septiembre",
-      "date": "2026-09-22",
-      "confidence": "confirmed",
-      "hours": 25,
-      "hoursSource": "HowLongToBeat Main + Sides 25 h (Main 19 h, Completionist 36 h), shown on IsThereAnyDeal: https://isthereanydeal.com/game/ball-x-pit/info/",
-      "source": "https://blog.playstation.com/?p=423012",
-      "checked": "2026-10-19"
-    },
-    {
-      "id": "dungeons-of-hinterberg",
-      "title": "Dungeons of Hinterberg",
-      "kind": "game",
-      "indie": true,
-      "platforms": ["PC", "Xbox Series", "PS5", "PS4"],
-      "subs": ["ps-extra"],
-      "subsNote": "In PS Plus Extra from September 29",
-      "subsNoteEs": "En PS Plus Extra desde el 29 de septiembre",
-      "date": "2026-09-29",
-      "confidence": "confirmed",
-      "hours": 21,
-      "hoursSource": "HowLongToBeat Main + Sides 21 h (Main 16 h, Completionist 26 h), shown on IsThereAnyDeal: https://isthereanydeal.com/game/dungeons-of-hinterberg/info/",
-      "source": "https://blog.playstation.com/?p=423012",
       "checked": "2026-10-19"
     },
     {
@@ -3826,6 +3187,143 @@
       "gameHours": 2,
       "source": "https://unanimodeportes.com/deportes/futbol/champions-league/cuando-inicia-donde-ver-2026-27/",
       "checked": "2026-10-20"
+    },
+    {
+      "id": "mayor-of-kingstown-season-5",
+      "title": "Mayor of Kingstown",
+      "kind": "tv",
+      "service": "paramount",
+      "channel": "Paramount+",
+      "subs": ["paramount"],
+      "subsNote": "Season 5",
+      "subsNoteEs": "Temporada 5",
+      "date": "2027-01-15",
+      "confidence": "confirmed",
+      "hours": null,
+      "season": 5,
+      "tvmazeId": 45840,
+      "source": "https://www.tvmaze.com/shows/45840/mayor-of-kingstown",
+      "checked": "2026-11-09"
+    },
+    {
+      "id": "the-devil-s-hour-season-3",
+      "title": "The Devil's Hour",
+      "kind": "tv",
+      "service": "prime",
+      "channel": "Prime Video",
+      "subs": ["prime"],
+      "subsNote": "Season 3",
+      "subsNoteEs": "Temporada 3",
+      "date": "2026-12-04",
+      "confidence": "confirmed",
+      "hours": null,
+      "season": 3,
+      "tvmazeId": 53882,
+      "source": "https://www.tvmaze.com/shows/53882/the-devils-hour",
+      "checked": "2026-11-09"
+    },
+    {
+      "id": "frisco-king",
+      "title": "Frisco King",
+      "kind": "tv",
+      "service": "paramount",
+      "channel": "Paramount+",
+      "subs": ["paramount"],
+      "subsNote": "New series",
+      "subsNoteEs": "Serie nueva",
+      "date": "2026-12-18",
+      "confidence": "unconfirmed",
+      "hours": null,
+      "season": 1,
+      "tvmazeId": 85216,
+      "source": "https://www.tvmaze.com/shows/85216/frisco-king",
+      "checked": "2026-11-09"
+    },
+    {
+      "id": "your-friendly-neighborhood-spider-man-season-2",
+      "title": "Your Friendly Neighborhood Spider-Man",
+      "kind": "tv",
+      "service": "disney",
+      "channel": "Disney+",
+      "subs": ["disney"],
+      "subsNote": "Season 2",
+      "subsNoteEs": "Temporada 2",
+      "date": "2027-01-13",
+      "confidence": "confirmed",
+      "hours": null,
+      "season": 2,
+      "tvmazeId": 58952,
+      "source": "https://www.tvmaze.com/shows/58952/your-friendly-neighborhood-spider-man",
+      "checked": "2026-11-09"
+    },
+    {
+      "id": "criminal",
+      "title": "Criminal",
+      "kind": "tv",
+      "service": "prime",
+      "channel": "Prime Video",
+      "subs": ["prime"],
+      "subsNote": "New series",
+      "subsNoteEs": "Serie nueva",
+      "date": "2027-01-13",
+      "confidence": "unconfirmed",
+      "hours": null,
+      "season": 1,
+      "tvmazeId": 73877,
+      "source": "https://www.tvmaze.com/shows/73877/criminal",
+      "checked": "2026-11-09"
+    },
+    {
+      "id": "blue-eye-samurai-season-2",
+      "title": "Blue Eye Samurai",
+      "kind": "tv",
+      "service": "netflix",
+      "channel": "Netflix",
+      "subs": ["nf-ads"],
+      "subsNote": "Season 2",
+      "subsNoteEs": "Temporada 2",
+      "date": "2027-01-19",
+      "confidence": "confirmed",
+      "hours": null,
+      "season": 2,
+      "tvmazeId": 51112,
+      "source": "https://www.tvmaze.com/shows/51112/blue-eye-samurai",
+      "checked": "2026-11-09"
+    },
+    {
+      "id": "maxton-hall-season-3",
+      "title": "Maxton Hall",
+      "kind": "tv",
+      "origin": "German",
+      "service": "prime",
+      "channel": "Prime Video",
+      "subs": ["prime"],
+      "subsNote": "Season 3",
+      "subsNoteEs": "Temporada 3",
+      "date": "2026-12-09",
+      "confidence": "confirmed",
+      "hours": null,
+      "season": 3,
+      "tvmazeId": 63973,
+      "source": "https://www.tvmaze.com/shows/63973/maxton-hall",
+      "checked": "2026-11-09"
+    },
+    {
+      "id": "animal-season-2",
+      "title": "Animal",
+      "kind": "tv",
+      "service": "netflix",
+      "channel": "Netflix",
+      "subs": ["nf-ads"],
+      "subsNote": "Season 2, in Spanish",
+      "subsNoteEs": "Temporada 2, en español",
+      "date": "2027-01-01",
+      "confidence": "confirmed",
+      "hours": null,
+      "season": 2,
+      "tvmazeId": 86556,
+      "source": "https://www.tvmaze.com/shows/86556/animal",
+      "checked": "2026-11-09"
     }
   ]
 }
